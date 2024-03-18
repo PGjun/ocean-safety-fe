@@ -14,6 +14,8 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         'loginback-gradient':
           'linear-gradient(111.26deg, #2262C6 2.4%, #184995 96.05%)',
+        'sidebarback-gradient':
+          'linear-gradient(111.26deg, #2262C6 2.4%, #184995 96.05%)',
       },
     },
   },

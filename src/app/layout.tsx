@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { pretendard } from '@/constants/fonts'
+import { Header } from '@/components/Header'
+import NextTopLoader from 'nextjs-toploader'
+import { MainNavbar } from '@/components/MainNavbar'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -14,7 +17,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={pretendard.className}>{children}</body>
+      <body className={pretendard.className}>
+        <NextTopLoader />
+        <div className="flex">
+          <MainNavbar />
+          <div className="flex-1">
+            <Header />
+            {children}
+          </div>
+        </div>
+      </body>
     </html>
   )
 }

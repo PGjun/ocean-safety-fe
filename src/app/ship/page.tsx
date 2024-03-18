@@ -6,7 +6,7 @@ export default function Home() {
   const canvasRef = useRef(null)
 
   useEffect(() => {
-    const canvas = canvasRef.current
+    const canvas: any = canvasRef.current
     const ctx = canvas.getContext('2d')
     const shipImage = new Image()
 

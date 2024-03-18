@@ -3,5 +3,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return <div className="m-auto h-screen w-[1360px]">{children}</div>
+  return <div>{children}</div>
 }
