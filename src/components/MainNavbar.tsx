@@ -45,6 +45,8 @@ const navMenuList = [
 export const MainNavbar = () => {
   const currentPath = usePathname()
 
+  const isLoginPage = currentPath === '/login'
+
   const [openNav, setOpenNav] = useState(false)
   const handleBackClick = (e: any) => {
     // 모달 밖을 클릭했을 때 모달을 닫도록 처리 , 발동여부 옵셔널(bgClickEnabled)
@@ -77,7 +79,7 @@ export const MainNavbar = () => {
     return () => breackPoint.removeEventListener('change', handleWidthChange)
   }, [])
 
-  return (
+  return isLoginPage ? null : (
     <div className={`${isMobile ? 'fixed' : 'relative'} z-50 min-w-[293px]`}>
       {isMobile && openNav && (
         <div

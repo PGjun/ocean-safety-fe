@@ -31,9 +31,13 @@ export const Header = () => {
 
   return isLoginPage ? null : (
     <header className="sticky top-0 z-40 bg-slate-100">
-      <div className="flex h-[60px] flex-1 items-center justify-center">
-        {isMobile ? <div>LOGO</div> : ''}
-      </div>
+      {isMobile ? (
+        <div className="flex h-[60px] flex-1 items-center justify-center">
+          <div>LOGO</div>
+        </div>
+      ) : (
+        <div className="h-[60px] flex-1 items-center justify-end"></div>
+      )}
     </header>
   )
 }
