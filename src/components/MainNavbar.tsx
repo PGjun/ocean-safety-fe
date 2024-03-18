@@ -78,7 +78,7 @@ export const MainNavbar = () => {
   }, [])
 
   return (
-    <div className={`${isMobile ? 'fixed' : 'relative'} w-[293px]`}>
+    <div className={`${isMobile ? 'fixed' : 'relative'} min-w-[293px]`}>
       {isMobile && openNav && (
         <div
           className="fixed inset-0 bg-gray-500 bg-opacity-70"
@@ -103,7 +103,7 @@ export const MainNavbar = () => {
         <div className="h-[112px] bg-white p-[32px] text-center text-[32px] font-bold">
           LOGO
         </div>
-        <nav className="bg-sidebarback-gradient flex h-full flex-col gap-[24px] rounded-tr-[68px] py-[40px] pl-[24px] pr-[40px] ">
+        <nav className="flex h-full w-[293px] flex-col gap-[24px] rounded-tr-[68px] bg-sidebarback-gradient py-[40px] pl-[24px] pr-[40px]">
           {navMenuList.map((item, idx) => {
             const isSelected = currentPath === item.path
             const selected = 'bg-white font-bold text-[#2262C6]'
