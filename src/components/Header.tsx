@@ -30,7 +30,7 @@ export const Header = () => {
   }, [])
 
   return isLoginPage ? null : (
-    <header className="bg-slate-100">
+    <header className="sticky top-0 z-40 bg-slate-100">
       <div className="flex h-[60px] flex-1 items-center justify-center">
         {isMobile ? <div>LOGO</div> : ''}
       </div>

@@ -78,7 +78,7 @@ export const MainNavbar = () => {
   }, [])
 
   return (
-    <div className={`${isMobile ? 'fixed' : 'relative'} min-w-[293px]`}>
+    <div className={`${isMobile ? 'fixed' : 'relative'} z-50 min-w-[293px]`}>
       {isMobile && openNav && (
         <div
           className="fixed inset-0 bg-gray-500 bg-opacity-70"
