@@ -1,6 +1,6 @@
 import Canvas from './Canvas'
 import GoogleMapWrapper from './GoogleMapWrapper'
-import { QrScanner } from './QrScanner'
+import QrScanner from './QrScanner'
 
 export default function TestPage() {
   return (

@@ -1,42 +1,39 @@
 'use client'
 
-import React, { Component } from 'react'
-import QrReader from 'react-qr-scanner'
+import React, { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 
-export class QrScanner extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      delay: 100,
-      result: 'No result',
+const QrReader = dynamic(() => import('react-qr-scanner'), { ssr: false })
+
+const QrScanner = () => {
+  const [result, setResult] = useState('No result')
+
+  const handleScan = (data) => {
+    if (data) {
+      setResult(data.text)
     }
+  }
 
-    this.handleScan = this.handleScan.bind(this)
-  }
-  handleScan(data) {
-    this.setState({
-      result: data,
-    })
-  }
-  handleError(err) {
+  const handleError = (err) => {
     console.error(err)
   }
-  render() {
-    const previewStyle = {
-      height: 240,
-      width: 320,
-    }
 
-    return (
-      <div>
-        <QrReader
-          delay={this.state.delay}
-          style={previewStyle}
-          onError={this.handleError}
-          onScan={this.handleScan}
-        />
-        <p>{this.state.result}</p>
-      </div>
-    )
+  const previewStyle = {
+    height: 240,
+    width: 320,
   }
+
+  return (
+    <div>
+      <QrReader
+        delay={100}
+        style={previewStyle}
+        onError={handleError}
+        onScan={handleScan}
+      />
+      <p>{result}</p>
+    </div>
+  )
 }
+
+export default QrScanner
