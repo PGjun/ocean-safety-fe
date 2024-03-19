@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import MobileMenu from '/public/icons/mobile-menu.svg'
 import { NavIcon } from './SvgIcons'
 import { PATHS } from '@/constants/paths'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 const navMenuList = [
   { IconComponent: NavIcon.Home, name: '홈', path: '/' },
@@ -40,6 +41,11 @@ const navMenuList = [
     name: '공지사항',
     path: PATHS.NOTICE,
   },
+  {
+    IconComponent: NavIcon.Notice,
+    name: 'test',
+    path: '/test',
+  },
 ]
 
 export const MainNavbar = () => {
@@ -55,29 +61,15 @@ export const MainNavbar = () => {
     }
   }
 
-  const [isMobile, setIsMobile] = useState(false)
+  const isMobile = useMediaQuery('(max-width: 768px)')
 
-  // 창 너비에 따라 openNav 상태를 조절하기 위한 효과
   useEffect(() => {
-    const breackPoint = window.matchMedia('(min-width: 768px)') // Tailwind의 'md' 브레이크포인트는 768px입니다.
-    const handleWidthChange = (e: any) => {
-      if (e.matches) {
-        setOpenNav(true) // 너비가 'md' 이상일 경우 메뉴를 항상 열린 상태로 유지
-        setIsMobile(false)
-      } else {
-        setOpenNav(false) // 그 외의 경우에는 기본 상태(닫힘)로 설정
-        setIsMobile(true)
-      }
+    if (isMobile) {
+      setOpenNav(false)
+    } else {
+      setOpenNav(true)
     }
-
-    handleWidthChange(breackPoint) // 컴포넌트 마운트 시 초기 상태 설정
-    // 이벤트 리스너 등록
-    breackPoint.addEventListener('change', handleWidthChange)
-    handleWidthChange(breackPoint) // 컴포넌트 마운트 시 초기 상태 설정
-
-    // 컴포넌트 언마운트 시 이벤트 리스너 제거
-    return () => breackPoint.removeEventListener('change', handleWidthChange)
-  }, [])
+  }, [isMobile])
 
   return isLoginPage ? null : (
     <div className={`${isMobile ? 'fixed' : 'relative'} z-50 min-w-[293px]`}>

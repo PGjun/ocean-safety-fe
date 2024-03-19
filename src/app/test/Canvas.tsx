@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 
-export default function Home() {
+export default function Canvas() {
   const canvasRef = useRef(null)
 
   useEffect(() => {
