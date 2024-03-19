@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function LoginPage() {
   return (
     <div className="m-auto flex min-h-screen items-center justify-center bg-loginback-gradient">
@@ -6,7 +8,7 @@ export default function LoginPage() {
           <div className="text-[32px] font-bold text-blue-600 md:text-[56px]">
             LOGO
           </div>
-          <div className="text-[18px]">승조원 안전관리 시스템</div>
+          <div className="text-[18px]">승선원 안전관리 시스템</div>
         </div>
 
         <div className="group relative mt-[50px] flex w-full items-center rounded-[12px] border border-[#666666] px-[24px] text-[14px] shadow-sm focus-within:border-blue-500 focus-within:outline focus-within:outline-2 focus-within:outline-blue-500 md:text-[18px]">
@@ -45,10 +47,11 @@ export default function LoginPage() {
             로그인 유지
           </label>
         </div>
-
-        <button className="mt-[40px] w-full rounded bg-[#333333] py-[20px] font-bold text-white md:py-[23px] md:text-[20px]">
-          로그인
-        </button>
+        <Link href={'/?login=true'}>
+          <button className="mt-[40px] w-full rounded bg-[#333333] py-[20px] font-bold text-white md:py-[23px] md:text-[20px]">
+            로그인
+          </button>
+        </Link>
       </div>
     </div>
   )
