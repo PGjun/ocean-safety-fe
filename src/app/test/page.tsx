@@ -1,5 +1,6 @@
 import Canvas from './Canvas'
 import GoogleMapWrapper from './GoogleMapWrapper'
+import { QrScanner } from './QrScanner'
 
 export default function TestPage() {
   return (
@@ -7,6 +8,9 @@ export default function TestPage() {
       <GoogleMapWrapper />
       <div className="mt-[50px]">
         <Canvas />
+      </div>
+      <div className="mt-[50px]">
+        <QrScanner />
       </div>
     </div>
   )
