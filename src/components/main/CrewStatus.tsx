@@ -37,6 +37,7 @@ export const CrewStatus = () => {
         승선원 현황
         <span className="text-[14px] font-normal"> 2024년 03월 01일</span>
       </div>
+
       <div className="grid grid-cols-3 gap-[8px] md:w-[636px] md:gap-[16px]">
         {dashBoardList.map((item, idx) => {
           return (
