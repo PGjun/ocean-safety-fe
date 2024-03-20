@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function LoginPage() {
   return (
     <div className="m-auto flex min-h-screen items-center justify-center bg-loginback-gradient">
-      <div className="h-[539px] w-[361px] rounded-[20px] bg-white px-[20px] py-[56px] shadow md:h-[654px] md:w-[754px] md:px-[84px]">
+      <div className="h-[539px] w-[310px] rounded-[20px] bg-white px-[20px] py-[56px] shadow md:h-[654px] md:w-[754px] md:px-[84px]">
         <div className="text-center">
           <div className="text-[32px] font-bold text-blue-600 md:text-[56px]">
             LOGO
