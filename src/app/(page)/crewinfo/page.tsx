@@ -1,5 +1,6 @@
 'use client'
 
+import { Pagination } from '@/components/common/Pagination'
 import { PATHS } from '@/constants/paths'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import Link from 'next/link'
@@ -131,6 +132,13 @@ export default function CrewInfoPage() {
             })}
           </div>
         )}
+        <div className="mt-[20px] flex w-full justify-center">
+          <Pagination
+            path={() => {
+              return '/'
+            }}
+          />
+        </div>
 
         <div className="relative h-screen">
           <div className="mt-[40px] flex items-center justify-between">
