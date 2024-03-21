@@ -19,10 +19,10 @@ const QrScanner = () => {
     console.error(err)
   }
 
-  const previewStyle = {
-    height: 240,
-    width: 320,
-  }
+  // const previewStyle = {
+  //   height: 190,
+  //   width: 170,
+  // }
 
   // useEffect(() => {
   //   if (result !== 'No result') {
@@ -32,7 +32,7 @@ const QrScanner = () => {
 
   return (
     <div>
-      <button
+      {/* <button
         onClick={() => {
           setResult('No result')
           setQrOpen(!qrOpen)
@@ -40,29 +40,29 @@ const QrScanner = () => {
         className="rounded-xl bg-blue-500 p-[10px] text-[24px] font-bold text-white"
       >
         QR 스캔
-      </button>
-      {qrOpen && (
-        <>
+      </button> */}
+      <>
+        <div className="border-[6px] border-[#2262C6]">
           <QrReader
             delay={100}
-            style={previewStyle}
+            // style={previewStyle}
             onError={handleError}
             onScan={handleScan}
           />
-          <p>
-            {result !== 'No result' && (
-              <button
-                onClick={() => {
-                  window.open(result)
-                }}
-                className="rounded-xl border border-blue-500 p-[10px] text-[24px] font-bold "
-              >
-                {result}
-              </button>
-            )}
-          </p>
-        </>
-      )}
+        </div>
+        <p>
+          {result !== 'No result' && (
+            <button
+              onClick={() => {
+                window.open(result)
+              }}
+              className="rounded-xl border border-blue-500 p-[10px] text-[24px] font-bold "
+            >
+              {result}
+            </button>
+          )}
+        </p>
+      </>
     </div>
   )
 }

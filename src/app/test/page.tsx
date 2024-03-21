@@ -9,8 +9,10 @@ export default function TestPage() {
       <div className="mt-[50px]">
         <Canvas />
       </div>
-      <div className="mt-[50px]">
-        <QrScanner />
+      <div className="mt-[50px] w-[190px]">
+        <div>
+          <QrScanner />
+        </div>
       </div>
     </div>
   )
