@@ -1,6 +1,7 @@
 'use client'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { Fragment } from 'react'
 
 const HealthList = [
   { name: 'No' },
@@ -21,6 +22,54 @@ const HealthList = [
   },
   {
     name: '기록 일시',
+  },
+]
+
+const HealthRows = [
+  {
+    a: '1',
+    b: '이름',
+    c: '81',
+    d: '120 / 80',
+    e: '36.8',
+    f: '0',
+    g: '2024-03-01 16:00:00',
+  },
+  {
+    a: '1',
+    b: '이름',
+    c: '81',
+    d: '120 / 80',
+    e: '36.8',
+    f: '0',
+    g: '2024-03-01 16:00:00',
+  },
+  {
+    a: '1',
+    b: '이름',
+    c: '81',
+    d: '120 / 80',
+    e: '36.8',
+    f: '0',
+    g: '2024-03-01 16:00:00',
+  },
+  {
+    a: '1',
+    b: '이름',
+    c: '81',
+    d: '120 / 80',
+    e: '36.8',
+    f: '0',
+    g: '2024-03-01 16:00:00',
+  },
+  {
+    a: '1',
+    b: '이름',
+    c: '81',
+    d: '120 / 80',
+    e: '36.8',
+    f: '0',
+    g: '2024-03-01 16:00:00',
   },
 ]
 
@@ -53,41 +102,19 @@ export const CrewHealthInfo = () => {
                 </div>
               )
             })}
-            <div className="border-b py-[16px]">1</div>
-            <div className="border-b py-[16px]">이름</div>
-            <div className="border-b py-[16px]">81</div>
-            <div className="border-b py-[16px]">120 / 80</div>
-            <div className="border-b py-[16px]">36.8</div>
-            <div className="border-b py-[16px]">0</div>
-            <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-            <div className="border-b py-[16px]">1</div>
-            <div className="border-b py-[16px]">이름</div>
-            <div className="border-b py-[16px]">81</div>
-            <div className="border-b py-[16px]">120 / 80</div>
-            <div className="border-b py-[16px]">36.8</div>
-            <div className="border-b py-[16px]">0</div>
-            <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-            <div className="border-b py-[16px]">1</div>
-            <div className="border-b py-[16px]">이름</div>
-            <div className="border-b py-[16px]">81</div>
-            <div className="border-b py-[16px]">120 / 80</div>
-            <div className="border-b py-[16px]">36.8</div>
-            <div className="border-b py-[16px]">0</div>
-            <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-            <div className="border-b py-[16px]">1</div>
-            <div className="border-b py-[16px]">이름</div>
-            <div className="border-b py-[16px]">81</div>
-            <div className="border-b py-[16px]">120 / 80</div>
-            <div className="border-b py-[16px]">36.8</div>
-            <div className="border-b py-[16px]">0</div>
-            <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-            <div className="border-b py-[16px]">1</div>
-            <div className="border-b py-[16px]">이름</div>
-            <div className="border-b py-[16px]">81</div>
-            <div className="border-b py-[16px]">120 / 80</div>
-            <div className="border-b py-[16px]">36.8</div>
-            <div className="border-b py-[16px]">0</div>
-            <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
+            {HealthRows.map((item, idx) => {
+              return (
+                <Fragment key={idx}>
+                  <div className="border-b py-[16px]">{item.a}</div>
+                  <div className="border-b py-[16px]">{item.b}</div>
+                  <div className="border-b py-[16px]">{item.c}</div>
+                  <div className="border-b py-[16px]">{item.d}</div>
+                  <div className="border-b py-[16px]">{item.e}</div>
+                  <div className="border-b py-[16px]">{item.f}</div>
+                  <div className="border-b py-[16px]">{item.g}</div>
+                </Fragment>
+              )
+            })}
           </div>
         </>
       )}

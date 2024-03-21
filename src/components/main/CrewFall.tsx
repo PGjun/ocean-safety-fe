@@ -1,6 +1,7 @@
 'use client'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { Fragment } from 'react'
 
 const FallList = [
   { name: 'No' },
@@ -16,6 +17,14 @@ const FallList = [
   {
     name: '처리상황',
   },
+]
+
+const FallRows = [
+  { a: '1', b: '이름', c: '낙상감지', d: '2024-03-01 16:00:00', e: '이상보고' },
+  { a: '1', b: '이름', c: '낙상감지', d: '2024-03-01 16:00:00', e: '이상보고' },
+  { a: '1', b: '이름', c: '낙상감지', d: '2024-03-01 16:00:00', e: '이상보고' },
+  { a: '1', b: '이름', c: '낙상감지', d: '2024-03-01 16:00:00', e: '이상보고' },
+  { a: '1', b: '이름', c: '낙상감지', d: '2024-03-01 16:00:00', e: '이상보고' },
 ]
 
 export const CrewFall = () => {
@@ -37,69 +46,31 @@ export const CrewFall = () => {
           ))}
         </div>
       ) : (
-        <>
-          <div className="grid grid-cols-[repeat(5,auto)] border-t border-[#c4c4c4] text-center">
-            {FallList.map((item, idx) => {
-              return (
-                <div key={idx}>
-                  <div className="border-b border-[#c4c4c4] py-[10px] text-[14px] font-bold">
-                    {item.name}
-                  </div>
+        <div className="grid grid-cols-[repeat(5,auto)] border-t border-[#c4c4c4] text-center">
+          {FallList.map((item, idx) => {
+            return (
+              <div key={idx}>
+                <div className="border-b border-[#c4c4c4] py-[10px] text-[14px] font-bold">
+                  {item.name}
                 </div>
-              )
-            })}
-            <>
-              <div className="border-b py-[16px]">1</div>
-              <div className="border-b py-[16px]">이름</div>
-              <div className="border-b py-[16px]">낙상감지</div>
-              <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-              <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
-                <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                이상보고
               </div>
-            </>
-            <>
-              <div className="border-b py-[16px]">1</div>
-              <div className="border-b py-[16px]">이름</div>
-              <div className="border-b py-[16px]">낙상감지</div>
-              <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-              <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
-                <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                이상보고
-              </div>
-            </>
-            <>
-              <div className="border-b py-[16px]">1</div>
-              <div className="border-b py-[16px]">이름</div>
-              <div className="border-b py-[16px]">낙상감지</div>
-              <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-              <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
-                <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                이상보고
-              </div>
-            </>
-            <>
-              <div className="border-b py-[16px]">1</div>
-              <div className="border-b py-[16px]">이름</div>
-              <div className="border-b py-[16px]">낙상감지</div>
-              <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-              <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
-                <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                이상보고
-              </div>
-            </>
-            <>
-              <div className="border-b py-[16px]">1</div>
-              <div className="border-b py-[16px]">이름</div>
-              <div className="border-b py-[16px]">낙상감지</div>
-              <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-              <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
-                <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                이상보고
-              </div>
-            </>
-          </div>
-        </>
+            )
+          })}
+          {FallRows.map((item, idx) => {
+            return (
+              <Fragment key={idx}>
+                <div className="border-b py-[16px]">{item.a}</div>
+                <div className="border-b py-[16px]">{item.b}</div>
+                <div className="border-b py-[16px]">{item.c}</div>
+                <div className="border-b py-[16px]">{item.d}</div>
+                <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
+                  <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
+                  {item.e}
+                </div>
+              </Fragment>
+            )
+          })}
+        </div>
       )}
     </div>
   )

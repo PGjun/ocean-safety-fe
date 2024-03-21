@@ -1,6 +1,7 @@
 'use client'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { Fragment } from 'react'
 
 const SOSList = [
   { name: 'No' },
@@ -16,6 +17,14 @@ const SOSList = [
   {
     name: '처리상황',
   },
+]
+
+const SOSRows = [
+  { a: '1', b: '이름', c: 'SOS', d: '2024-03-01 16:00:00', e: '이상보고' },
+  { a: '1', b: '이름', c: 'SOS', d: '2024-03-01 16:00:00', e: '이상보고' },
+  { a: '1', b: '이름', c: 'SOS', d: '2024-03-01 16:00:00', e: '이상보고' },
+  { a: '1', b: '이름', c: 'SOS', d: '2024-03-01 16:00:00', e: '이상보고' },
+  { a: '1', b: '이름', c: 'SOS', d: '2024-03-01 16:00:00', e: '이상보고' },
 ]
 
 export const CrewSos = () => {
@@ -48,56 +57,20 @@ export const CrewSos = () => {
                 </div>
               )
             })}
-            <>
-              <div className="border-b py-[16px]">1</div>
-              <div className="border-b py-[16px]">이름</div>
-              <div className="border-b py-[16px]">SOS</div>
-              <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-              <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
-                <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                이상보고
-              </div>
-            </>
-            <>
-              <div className="border-b py-[16px]">1</div>
-              <div className="border-b py-[16px]">이름</div>
-              <div className="border-b py-[16px]">SOS</div>
-              <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-              <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
-                <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                이상보고
-              </div>
-            </>
-            <>
-              <div className="border-b py-[16px]">1</div>
-              <div className="border-b py-[16px]">이름</div>
-              <div className="border-b py-[16px]">SOS</div>
-              <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-              <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
-                <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                이상보고
-              </div>
-            </>
-            <>
-              <div className="border-b py-[16px]">1</div>
-              <div className="border-b py-[16px]">이름</div>
-              <div className="border-b py-[16px]">SOS</div>
-              <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-              <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
-                <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                이상보고
-              </div>
-            </>
-            <>
-              <div className="border-b py-[16px]">1</div>
-              <div className="border-b py-[16px]">이름</div>
-              <div className="border-b py-[16px]">SOS</div>
-              <div className="border-b py-[16px]">2024-03-01 16:00:00</div>
-              <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
-                <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                이상보고
-              </div>
-            </>
+            {SOSRows.map((item, idx) => {
+              return (
+                <Fragment key={idx}>
+                  <div className="border-b py-[16px]">{item.a}</div>
+                  <div className="border-b py-[16px]">{item.b}</div>
+                  <div className="border-b py-[16px]">{item.c}</div>
+                  <div className="border-b py-[16px]">{item.d}</div>
+                  <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
+                    <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
+                    {item.e}
+                  </div>
+                </Fragment>
+              )
+            })}
           </div>
         </>
       )}
