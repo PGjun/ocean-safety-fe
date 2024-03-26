@@ -106,7 +106,7 @@ export default function CrewInfoPage() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-[repeat(5,auto)] border-t border-[#c4c4c4] text-center">
+          <div className="mt-[10px] grid grid-cols-[repeat(5,auto)] border-t border-[#c4c4c4] text-center">
             {CrewList.map((item, idx) => {
               return (
                 <div key={idx}>
