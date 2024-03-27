@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 function CanvasComponent() {
   const canvasRef = useRef(null)
@@ -9,24 +9,24 @@ function CanvasComponent() {
 
   // Canvas와 빨간 점 초기화
   useEffect(() => {
-    const canvas = canvasRef.current
+    const canvas: any = canvasRef.current
     canvas.width = 400
     canvas.height = 400
   }, [])
 
   // 빨간 점 그리기
-  const drawDot = (x, y) => {
-    const canvas = canvasRef.current
-    const context = canvas.getContext('2d')
-    context.clearRect(0, 0, canvas.width, canvas.height) // 이전 점을 지우고 새로 그림
-    context.fillStyle = 'red'
-    context.beginPath()
-    context.arc(x, y, 5, 0, 2 * Math.PI)
-    context.fill()
+  const drawDot = (x: any, y: any) => {
+    const canvas: any = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, canvas.width, canvas.height) // 이전 점을 지우고 새로 그림
+    ctx.fillStyle = 'red'
+    ctx.beginPath()
+    ctx.arc(x, y, 5, 0, 2 * Math.PI)
+    ctx.fill()
   }
 
   // 클릭하여 점 찍기
-  const handleMouseDown = (event) => {
+  const handleMouseDown = (event: any) => {
     setIsDragging(true)
     const { offsetX, offsetY } = event.nativeEvent
     setMousePosition({ x: offsetX, y: offsetY })
@@ -34,7 +34,7 @@ function CanvasComponent() {
   }
 
   // 드래그하여 점 움직이기
-  const handleMouseMove = (event) => {
+  const handleMouseMove = (event: any) => {
     if (!isDragging) return
     const { offsetX, offsetY } = event.nativeEvent
     setMousePosition({ x: offsetX, y: offsetY })
