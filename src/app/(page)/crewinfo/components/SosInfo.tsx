@@ -2,7 +2,7 @@ import { Pagination } from '@/components/common/Pagination'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { Fragment } from 'react'
 
-const CrewList = [
+const COLTITLES = [
   { name: 'No' },
   {
     name: '이름',
@@ -18,7 +18,7 @@ const CrewList = [
   },
 ]
 
-const CrewRows = [
+const SosRows = [
   { a: '1', b: '이름', c: 'SOS', d: '2024-03-01 16:00:00', e: '이상보고' },
   { a: '2', b: '이름', c: 'SOS', d: '2024-03-01 16:00:00', e: '이상보고' },
   { a: '3', b: '이름', c: 'SOS', d: '2024-03-01 16:00:00', e: '이상보고' },
@@ -45,7 +45,7 @@ export const SosInfo = () => {
         </div>
       ) : (
         <div className="mt-[10px] grid grid-cols-[repeat(5,auto)] border-t border-[#c4c4c4] text-center">
-          {CrewList.map((item, idx) => {
+          {COLTITLES.map((item, idx) => {
             return (
               <div key={idx}>
                 <div className="border-b border-[#c4c4c4] py-[10px] text-[14px] font-bold">
@@ -54,7 +54,7 @@ export const SosInfo = () => {
               </div>
             )
           })}
-          {CrewRows.map((item, idx) => {
+          {SosRows.map((item, idx) => {
             return (
               <Fragment key={idx}>
                 <div className="border-b py-[16px]">{item.a}</div>

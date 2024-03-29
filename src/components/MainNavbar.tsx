@@ -17,6 +17,11 @@ const navMenuList = [
     path: PATHS.CREW_INFO,
   },
   {
+    IconComponent: NavIcon.GroupInfo,
+    name: '그룹(선박) 정보',
+    path: PATHS.GROUP_INFO,
+  },
+  {
     IconComponent: NavIcon.Monitoring,
     name: '선내 위치 모니터링',
     path: PATHS.MONITORING,

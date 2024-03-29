@@ -3,7 +3,7 @@
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { Fragment } from 'react'
 
-const SOSList = [
+const COLTITLES = [
   { name: 'No' },
   {
     name: '이름',
@@ -19,7 +19,7 @@ const SOSList = [
   },
 ]
 
-const SOSRows = [
+const SosRows = [
   { a: '1', b: '이름', c: 'SOS', d: '2024-03-01 16:00:00', e: '이상보고' },
   { a: '1', b: '이름', c: 'SOS', d: '2024-03-01 16:00:00', e: '이상보고' },
   { a: '1', b: '이름', c: 'SOS', d: '2024-03-01 16:00:00', e: '이상보고' },
@@ -48,7 +48,7 @@ export const CrewSos = () => {
       ) : (
         <>
           <div className="grid grid-cols-[repeat(5,auto)] border-t border-[#c4c4c4] text-center">
-            {SOSList.map((item, idx) => {
+            {COLTITLES.map((item, idx) => {
               return (
                 <div key={idx}>
                   <div className="border-b border-[#c4c4c4] py-[10px] text-[14px] font-bold">
@@ -57,7 +57,7 @@ export const CrewSos = () => {
                 </div>
               )
             })}
-            {SOSRows.map((item, idx) => {
+            {SosRows.map((item, idx) => {
               return (
                 <Fragment key={idx}>
                   <div className="border-b py-[16px]">{item.a}</div>
