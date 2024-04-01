@@ -4,6 +4,7 @@ import { PATHS } from '@/constants/paths'
 import Link from 'next/link'
 import { useForm, Controller, Control } from 'react-hook-form'
 import Image from 'next/image'
+import { DatePickerSingle } from '@/components/common/DatePicker'
 
 interface Field {
   control: Control<any>
@@ -130,7 +131,7 @@ const crewInfofields = [
     name: 'birth',
     label: '생년월일',
     defaultValue: '',
-    component: Field,
+    component: DatePickerSingle,
   },
   {
     name: 'age',
@@ -183,7 +184,7 @@ const crewInfofields = [
     name: 'safety-training-date',
     label: '마지막 이수 일자',
     defaultValue: '',
-    component: Field,
+    component: DatePickerSingle,
   },
   {
     name: 'crew-level',
@@ -196,7 +197,7 @@ const crewInfofields = [
     name: 'crew-join-date',
     label: '승선원 가입일',
     defaultValue: '',
-    component: Field,
+    component: DatePickerSingle,
   },
   {
     name: 'group',
@@ -215,7 +216,7 @@ const crewInfofields = [
     name: 'personal-info-date',
     label: '개인정보제공 동의 일',
     defaultValue: '',
-    component: Field,
+    component: DatePickerSingle,
   },
 ]
 
@@ -282,7 +283,7 @@ const wearableFields = [
     name: 'birth',
     label: '생년월일',
     defaultValue: '',
-    component: Field,
+    component: DatePickerSingle,
   },
   {
     name: 'age',

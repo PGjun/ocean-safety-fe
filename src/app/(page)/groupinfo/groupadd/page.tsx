@@ -3,6 +3,7 @@
 import { PATHS } from '@/constants/paths'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ChangeEvent, useRef, useState } from 'react'
 import { Control, Controller, useForm } from 'react-hook-form'
 
 interface Field {
@@ -64,7 +65,8 @@ const groupFields = [
   {
     name: 'inter-gross-ton',
     label: '국제총톤수',
-    defaultValue: '국제총톤수를 입력하세요.',
+    placeholder: '국제총톤수를 입력하세요.',
+    defaultValue: '',
     component: Field,
   },
   {
@@ -162,6 +164,8 @@ const GroupInfoForm = () => {
 }
 
 const ShipDrawing = () => {
+  const [file, setFile] = useState({ name: '' })
+  const fileRef = useRef<HTMLInputElement>(null)
   return (
     <div>
       <div className="text-[18px] font-bold">선박 도면</div>
@@ -170,11 +174,25 @@ const ShipDrawing = () => {
           type="text"
           className="flex-1 bg-white"
           placeholder="선박 도면을 등록해 주세요."
+          value={file.name}
           disabled
         />
-        <button className="rounded border border-[#C4C4C4] px-[12px] py-[2px] text-[12px]">
+        <button
+          onClick={() => {
+            if (fileRef.current !== null) fileRef.current.click()
+          }}
+          className="rounded border border-[#C4C4C4] px-[12px] py-[2px] text-[12px]"
+        >
           파일 업로드
         </button>
+        <input
+          ref={fileRef}
+          type="file"
+          onChange={(e) => {
+            if (e.target.files?.[0]) setFile(e.target.files[0])
+          }}
+          className="hidden"
+        />
       </div>
 
       <div className="mt-[20px] text-[12px] font-bold md:text-[14px]">
