@@ -1,6 +1,10 @@
 'use client'
 
+import Image from 'next/image'
 import { Fragment, useState } from 'react'
+import { SosMessage } from './components/SosMessage'
+import { HealthInfo } from './components/HealthInfo'
+import { Pagination } from '@/components/common/Pagination'
 
 const TabGroup = [
   {
@@ -40,9 +44,36 @@ const MonitoringTab = () => {
         })}
       </div>
 
-      {activeTab === 'tab1' && <div>일반메시지</div>}
-      {activeTab === 'tab2' && <div>응급메시지</div>}
-      {activeTab === 'tab3' && <div>건강정보</div>}
+      {activeTab === 'tab1' && (
+        <div>
+          <div className="mt-[26px] border-t border-[#888888] text-[12px] md:text-[14px]">
+            <div className="border-b px-[8px] py-[10px]">
+              [ 16:00:00 ] 출근 완료
+            </div>
+            <div className="border-b px-[8px] py-[10px]">
+              [ 16:00:00 ] 출근 완료
+            </div>
+            <div className="border-b px-[8px] py-[10px]">
+              [ 16:00:00 ] 출근 완료
+            </div>
+            <div className="border-b px-[8px] py-[10px]">
+              [ 16:00:00 ] 출근 완료
+            </div>
+            <div className="border-b px-[8px] py-[10px]">
+              [ 16:00:00 ] 출근 완료
+            </div>
+          </div>
+          <div className="mt-[20px] flex w-full justify-center">
+            <Pagination
+              path={() => {
+                return '/'
+              }}
+            />
+          </div>
+        </div>
+      )}
+      {activeTab === 'tab2' && <SosMessage />}
+      {activeTab === 'tab3' && <HealthInfo />}
     </>
   )
 }
@@ -54,8 +85,39 @@ export default function MonitoringPage() {
         <div className="text-[22px] font-bold md:text-[26px]">
           선내 위치 모니터링
         </div>
-        <div className="mt-[32px] text-[18px] font-bold md:text-[20px]">
-          모니터링 기록
+        <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
+          <span className="text-[14px] md:text-[16px]">선박 선택</span>
+          <div className="flex w-full rounded border border-[#C4C4C4] md:w-[300px]">
+            <button className="border-r border-[#C4C4C4] px-[13px]">{`<`}</button>
+            <div className="flex-1 px-[90px] py-[10px] text-[12px] md:text-[14px]">
+              강원호
+            </div>
+            <button className="border-l border-[#C4C4C4] px-[13px]">{`>`}</button>
+          </div>
+        </div>
+        <div className="mt-[10px]">
+          <Image
+            src="/temp-ship.png"
+            alt="tempship"
+            width={1100}
+            height={200}
+            style={{ objectFit: 'fill' }}
+          />
+        </div>
+        <div className="mt-[32px] flex flex-col justify-between md:flex-row md:items-center">
+          <div className="text-[18px] font-bold md:text-[20px]">
+            모니터링 기록
+          </div>
+          <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
+            <span className="text-[14px] md:text-[16px]">승선원 선택</span>
+            <div className="flex w-full rounded border border-[#C4C4C4] md:w-[300px]">
+              <button className="border-r border-[#C4C4C4] px-[13px]">{`<`}</button>
+              <div className="flex-1 px-[90px] py-[10px] text-[12px] md:text-[14px]">
+                김김김
+              </div>
+              <button className="border-l border-[#C4C4C4] px-[13px]">{`>`}</button>
+            </div>
+          </div>
         </div>
         <div className="mt-[20px]">
           <MonitoringTab />
