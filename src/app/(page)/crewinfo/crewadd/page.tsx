@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useForm, Controller, Control } from 'react-hook-form'
 import Image from 'next/image'
 import { DatePickerSingle } from '@/components/common/DatePicker'
+import { SlideDropDown } from '@/components/common/SlideDropDown'
 
 interface Field {
   control: Control<any>
@@ -362,13 +363,7 @@ const AreaSettings = () => {
     <div className="mt-[10px]">
       <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
         <span className="text-[14px] md:text-[16px]">선박 선택</span>
-        <div className="flex w-full rounded border border-[#C4C4C4] md:w-[300px]">
-          <button className="border-r border-[#C4C4C4] px-[13px]">{`<`}</button>
-          <div className="flex-1 px-[90px] py-[10px] text-[12px] md:text-[14px]">
-            강원호
-          </div>
-          <button className="border-l border-[#C4C4C4] px-[13px]">{`>`}</button>
-        </div>
+        <SlideDropDown />
       </div>
       <div className="mt-[10px]">
         <Image
@@ -401,13 +396,12 @@ const AreaSettings = () => {
       <div className="mt-[32px] font-bold">소속 그룹</div>
       <div className="mt-[15px] text-[14px]">그룹 선택</div>
       <div className="mt-[5px]">
-        <div className="flex rounded border border-[#C4C4C4]">
-          <button className="border-r border-[#C4C4C4] px-[13px]">{`<`}</button>
-          <div className="flex-1 px-[90px] py-[10px] text-center text-[12px] md:text-[14px]">
-            유에스티21
-          </div>
-          <button className="border-l border-[#C4C4C4] px-[13px]">{`>`}</button>
-        </div>
+        <SlideDropDown
+          dropData={[
+            [{ value: '0', label: '유에스티21' }],
+            [{ value: '1', label: '유에스티32' }],
+          ]}
+        />
       </div>
     </div>
   )

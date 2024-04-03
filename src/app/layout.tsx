@@ -4,6 +4,7 @@ import { pretendard } from '@/constants/fonts'
 import { Header } from '@/components/Header'
 import NextTopLoader from 'nextjs-toploader'
 import { MainNavbar } from '@/components/MainNavbar'
+import ModalWrapper from '@/components/modal/ModalWrapper'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -23,6 +24,7 @@ export default function RootLayout({
           <MainNavbar />
           <div className="flex-1">
             <Header />
+            <ModalWrapper />
             {children}
           </div>
         </div>

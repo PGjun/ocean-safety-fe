@@ -1,0 +1,48 @@
+import { useEffect, useState } from 'react'
+import io from 'socket.io-client'
+import useModalStore from '@/stores/modalStore'
+
+interface ModalData {
+  type: string
+  message: string
+}
+
+const useWebSocket = () => {
+  const [sendMessage, setSendMessage] = useState<(type: string) => void>(
+    () => () => {},
+  )
+
+  useEffect(() => {
+    const socket = io('http://localhost:8080')
+
+    socket.on('알림', (modalData: ModalData) => {
+      const modalId = useModalStore
+        .getState()
+        .openModal('EMERGENCIES', { modalData }, false)
+      console.log('알림 열림', modalId)
+
+      //   setTimeout(() => {
+      //     useModalStore.getState().closeModal(modalId)
+      //     console.log('알림 닫음', modalId)
+      //   }, 20000)
+    })
+
+    // sendMessage 함수를 정의합니다. 서버로 메시지를 보내는 기능을 수행합니다.
+    const send = (type: string) => {
+      socket.emit('requestModal', type)
+    }
+
+    // useState를 통해 설정된 sendMessage 함수를 업데이트합니다.
+    setSendMessage(() => send)
+
+    return () => {
+      console.log('WebSocket 연결 종료')
+      socket.close()
+    }
+  }, [])
+
+  // 컴포넌트에서 사용할 수 있도록 sendMessage 함수를 반환합니다.
+  return { sendMessage }
+}
+
+export default useWebSocket

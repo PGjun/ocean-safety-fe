@@ -5,6 +5,7 @@ import { Fragment, useState } from 'react'
 import { SosMessage } from './components/SosMessage'
 import { HealthInfo } from './components/HealthInfo'
 import { Pagination } from '@/components/common/Pagination'
+import { SlideDropDown } from '@/components/common/SlideDropDown'
 
 const TabGroup = [
   {
@@ -87,13 +88,7 @@ export default function MonitoringPage() {
         </div>
         <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
           <span className="text-[14px] md:text-[16px]">선박 선택</span>
-          <div className="flex w-full rounded border border-[#C4C4C4] md:w-[300px]">
-            <button className="border-r border-[#C4C4C4] px-[13px]">{`<`}</button>
-            <div className="flex-1 px-[90px] py-[10px] text-[12px] md:text-[14px]">
-              강원호
-            </div>
-            <button className="border-l border-[#C4C4C4] px-[13px]">{`>`}</button>
-          </div>
+          <SlideDropDown />
         </div>
         <div className="mt-[10px]">
           <Image
@@ -110,13 +105,12 @@ export default function MonitoringPage() {
           </div>
           <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
             <span className="text-[14px] md:text-[16px]">승선원 선택</span>
-            <div className="flex w-full rounded border border-[#C4C4C4] md:w-[300px]">
-              <button className="border-r border-[#C4C4C4] px-[13px]">{`<`}</button>
-              <div className="flex-1 px-[90px] py-[10px] text-[12px] md:text-[14px]">
-                김김김
-              </div>
-              <button className="border-l border-[#C4C4C4] px-[13px]">{`>`}</button>
-            </div>
+            <SlideDropDown
+              dropData={[
+                [{ value: '0', label: '김김김' }],
+                [{ value: '1', label: '박박박' }],
+              ]}
+            />
           </div>
         </div>
         <div className="mt-[20px]">

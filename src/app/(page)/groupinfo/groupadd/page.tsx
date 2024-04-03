@@ -1,5 +1,6 @@
 'use client'
 
+import { DatePickerSingle } from '@/components/common/DatePicker'
 import { PATHS } from '@/constants/paths'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -88,7 +89,7 @@ const groupFields = [
     label: '진수일',
     placeholder: '진수일을 입력하세요',
     defaultValue: '',
-    component: Field,
+    component: DatePickerSingle,
   },
   {
     name: 'dockyard',
