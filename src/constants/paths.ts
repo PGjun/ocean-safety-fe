@@ -5,6 +5,7 @@ export const PATHS = {
   GROUP_ADD: '/groupinfo/groupadd',
   MONITORING: '/monitoring',
   SOS: '/sos',
+  SOS_DETAIL: '/sos/detail',
   FALL_DETECTION: '/falldetection',
   HEALTH_INFO: '/healthinfo',
   NOTICE: '/notice',

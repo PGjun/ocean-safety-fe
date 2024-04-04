@@ -3,8 +3,8 @@ import React from 'react'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 
 const containerStyle = {
-  width: '500px',
-  height: '500px',
+  width: '100%',
+  height: '100%',
 }
 
 const center = {
@@ -71,8 +71,8 @@ function GoogleMapWrapper() {
           />
         </>
       </GoogleMap>
-      <div>{currentCenter.lat}</div>
-      <div>{currentCenter.lng}</div>
+      {/* <div>{currentCenter.lat}</div>
+      <div>{currentCenter.lng}</div> */}
     </>
   ) : (
     <></>

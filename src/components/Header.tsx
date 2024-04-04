@@ -15,9 +15,7 @@ export const Header = () => {
 
   return isLoginPage ? null : (
     <header className="sticky top-0 z-40 bg-white">
-      {!isMobile && (
-        <div className="ml-[30px] h-3 rounded-bl-full bg-slate-100"></div>
-      )}
+      {!isMobile && <div className="h-3 rounded-bl-full bg-slate-100"></div>}
       {isMobile ? (
         <div className="flex h-[60px] flex-1 items-center justify-center">
           <div>LOGO</div>
@@ -31,14 +29,14 @@ export const Header = () => {
           </div>
         </div>
       )}
-      <div className="flex gap-2">
+      {/* <div className="flex gap-2">
         <button onClick={() => sendMessage('SOS')} className="border">
           SOS
         </button>
         <button onClick={() => sendMessage('FALL')} className="border">
           FALL
         </button>
-      </div>
+      </div> */}
     </header>
   )
 }

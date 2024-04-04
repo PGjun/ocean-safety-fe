@@ -81,41 +81,39 @@ const MonitoringTab = () => {
 
 export default function MonitoringPage() {
   return (
-    <div className="mb-[100px] mt-[32px] flex justify-center md:mx-[40px]">
-      <div className="w-[310px] gap-[32px] md:w-[1100px]">
-        <div className="text-[22px] font-bold md:text-[26px]">
-          선내 위치 모니터링
+    <div className="md:mx-[40px]">
+      <div className="text-[22px] font-bold md:text-[26px]">
+        선내 위치 모니터링
+      </div>
+      <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
+        <span className="text-[14px] md:text-[16px]">선박 선택</span>
+        <SlideDropDown />
+      </div>
+      <div className="mt-[10px]">
+        <Image
+          src="/temp-ship.png"
+          alt="tempship"
+          width={1100}
+          height={200}
+          style={{ objectFit: 'fill' }}
+        />
+      </div>
+      <div className="mt-[32px] flex flex-col justify-between md:flex-row md:items-center">
+        <div className="text-[18px] font-bold md:text-[20px]">
+          모니터링 기록
         </div>
         <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
-          <span className="text-[14px] md:text-[16px]">선박 선택</span>
-          <SlideDropDown />
-        </div>
-        <div className="mt-[10px]">
-          <Image
-            src="/temp-ship.png"
-            alt="tempship"
-            width={1100}
-            height={200}
-            style={{ objectFit: 'fill' }}
+          <span className="text-[14px] md:text-[16px]">승선원 선택</span>
+          <SlideDropDown
+            dropData={[
+              [{ value: '0', label: '김김김' }],
+              [{ value: '1', label: '박박박' }],
+            ]}
           />
         </div>
-        <div className="mt-[32px] flex flex-col justify-between md:flex-row md:items-center">
-          <div className="text-[18px] font-bold md:text-[20px]">
-            모니터링 기록
-          </div>
-          <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
-            <span className="text-[14px] md:text-[16px]">승선원 선택</span>
-            <SlideDropDown
-              dropData={[
-                [{ value: '0', label: '김김김' }],
-                [{ value: '1', label: '박박박' }],
-              ]}
-            />
-          </div>
-        </div>
-        <div className="mt-[20px]">
-          <MonitoringTab />
-        </div>
+      </div>
+      <div className="mt-[20px]">
+        <MonitoringTab />
       </div>
     </div>
   )

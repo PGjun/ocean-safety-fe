@@ -409,27 +409,25 @@ const AreaSettings = () => {
 
 export default function CrewAdd() {
   return (
-    <div className="mt-[10px] justify-center last:flex md:mx-[40px]">
-      <div className="w-[310px] md:w-[1100px]">
-        <div className="text-[22px] font-bold">승선원 추가</div>
-        <div className="mt-[20px] font-bold">승선원 내역</div>
-        <CrewInfoForm />
-        <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
-        <div className="mt-[20px] font-bold">웨어러블 정보</div>
-        <WearableForm />
-        <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
-        <div className="mt-[20px] font-bold">제한 구역 설정</div>
-        <AreaSettings />
-        <div className="mb-[150px] mt-[30px] flex justify-center gap-[5px] md:mb-[100px] md:mt-[60px]">
-          <Link href={PATHS.CREW_INFO}>
-            <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
-              취소
-            </button>
-          </Link>
-          <button className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]">
-            추가
+    <div className="md:mx-[40px]">
+      <div className="text-[22px] font-bold">승선원 추가</div>
+      <div className="mt-[20px] font-bold">승선원 내역</div>
+      <CrewInfoForm />
+      <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
+      <div className="mt-[20px] font-bold">웨어러블 정보</div>
+      <WearableForm />
+      <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
+      <div className="mt-[20px] font-bold">제한 구역 설정</div>
+      <AreaSettings />
+      <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
+        <Link href={PATHS.CREW_INFO}>
+          <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
+            취소
           </button>
-        </div>
+        </Link>
+        <button className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]">
+          추가
+        </button>
       </div>
     </div>
   )

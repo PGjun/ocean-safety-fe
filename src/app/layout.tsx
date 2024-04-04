@@ -5,6 +5,7 @@ import { Header } from '@/components/Header'
 import NextTopLoader from 'nextjs-toploader'
 import { MainNavbar } from '@/components/MainNavbar'
 import ModalWrapper from '@/components/modal/ModalWrapper'
+import { LayoutProvider } from '@/components/LayoutProvider'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -25,7 +26,7 @@ export default function RootLayout({
           <div className="flex-1">
             <Header />
             <ModalWrapper />
-            {children}
+            <LayoutProvider>{children}</LayoutProvider>
           </div>
         </div>
       </body>

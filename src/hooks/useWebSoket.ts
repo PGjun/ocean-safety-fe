@@ -13,7 +13,10 @@ const useWebSocket = () => {
   )
 
   useEffect(() => {
-    const socket = io('http://localhost:8080')
+    const socket = io('http://localhost:8080', {
+      reconnectionAttempts: 5, //최대 재연결 시도 횟수
+      reconnectionDelay: 10000, //재연결 시도 간격
+    })
 
     socket.on('알림', (modalData: ModalData) => {
       const modalId = useModalStore
