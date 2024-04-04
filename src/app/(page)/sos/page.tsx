@@ -274,21 +274,23 @@ const SosInfo = () => {
       {isMobile ? (
         <div className="mt-[10px] border-t border-[#c4c4c4]">
           {SosRows.map((item, idx) => (
-            <div key={idx} className="border-b p-[8px] text-[12px]">
-              <div>
-                No. {item.a} 이름 : {item.b} 아이디 : {item.c}
+            <Link key={idx} href={PATHS.SOS_DETAIL}>
+              <div className="border-b p-[8px] text-[12px]">
+                <div>
+                  No. {item.a} 이름 : {item.b} 아이디 : {item.c}
+                </div>
+                <div>
+                  좌표X : {item.d} 좌표Y : {item.e} 응급코드 : {item.f}
+                </div>
+                <div>
+                  비상연락처 : {item.g} 기록일시 : {item.h}
+                </div>
+                <div className="inline-flex items-center gap-[4px] rounded bg-[#FFF0F0] px-[20px] py-[2px]">
+                  <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
+                  {item.i}
+                </div>
               </div>
-              <div>
-                좌표X : {item.d} 좌표Y : {item.e} 응급코드 : {item.f}
-              </div>
-              <div>
-                비상연락처 : {item.g} 기록일시 : {item.h}
-              </div>
-              <div className="inline-flex items-center gap-[4px] rounded bg-[#FFF0F0] px-[20px] py-[2px]">
-                <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                {item.i}
-              </div>
-            </div>
+            </Link>
           ))}
         </div>
       ) : (
