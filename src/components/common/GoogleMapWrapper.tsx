@@ -1,6 +1,12 @@
 'use client'
 import React from 'react'
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
+import {
+  GoogleMap,
+  Marker,
+  OverlayView,
+  useJsApiLoader,
+} from '@react-google-maps/api'
+import { usePathname } from 'next/navigation'
 
 const containerStyle = {
   width: '100%',
@@ -34,7 +40,6 @@ function GoogleMapWrapper() {
       map: map,
       title: '여기는 어디인가요?', // 마커에 마우스를 올렸을 때 보여줄 텍스트입니다.
     })
-
     setMap(map)
   }, [])
 
@@ -52,6 +57,8 @@ function GoogleMapWrapper() {
     }
   }
 
+  const currentPath = usePathname()
+
   return isLoaded ? (
     <>
       <GoogleMap
@@ -62,12 +69,38 @@ function GoogleMapWrapper() {
         onUnmount={onUnmount}
         onCenterChanged={onCenterChanged} // 지도 중심 변경 이벤트 핸들러 추가
       >
-        {/* Child components, such as markers, info windows, etc. */}
         <>
+          <OverlayView position={center} mapPaneName="overlayLayer">
+            {currentPath !== '/sos/detail' ? (
+              <div className="absolute -left-[55px] -top-[80px] flex w-[108px] flex-col items-center rounded-[10px] bg-[#FF3819] py-[8px] text-[12px] font-bold text-white">
+                SOS Location
+              </div>
+            ) : (
+              <div className="absolute -left-[130px] -top-[135px] flex w-[257px] flex-col items-center rounded-[10px] bg-[#FF3819] py-[8px] text-[18px] font-bold text-white">
+                SOS Location Tracking
+                <div className="mt-[8px] text-[16px] font-normal">이정희</div>
+                <div className="text-[12px] font-normal">
+                  TIME : 2024-03-01 16:00:00
+                </div>
+              </div>
+            )}
+          </OverlayView>
           <Marker
             position={center}
-            // 선택적으로 마커 클릭 이벤트 핸들러 추가 가능
             onClick={() => alert('마커 클릭')}
+            // label={{
+            //   text: 'SOS Location', // 여기에 표시하고 싶은 텍스트를 입력하세요.
+            //   color: 'white', // 텍스트 색상
+            //   fontSize: '12px', // 텍스트 크기
+            //   fontWeight: 'bold', // 글자 두께
+            //   className:
+            //     'absolute bg-[#FF3819] rounded-[10px] px-[16px] py-[7px] -top-[5px] -left-[55px]',
+            // }}
+            icon={{
+              url: '/icons/map-marker.svg', // 이 경로는 서버에서 접근 가능한 경로로 설정해야 합니다.
+              // 필요하다면 크기 조정도 가능합니다:
+              // scaledSize: new window.google.maps.Size(50, 50),
+            }}
           />
         </>
       </GoogleMap>

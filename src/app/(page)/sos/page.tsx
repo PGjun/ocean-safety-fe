@@ -1,13 +1,14 @@
 'use client'
 
-import GoogleMapWrapper from '@/app/test/GoogleMapWrapper'
+import GoogleMapWrapper from '@/components/common/GoogleMapWrapper'
 import { CommonIcon } from '@/components/SvgIcons'
 import { Pagination } from '@/components/common/Pagination'
 import { PATHS } from '@/constants/paths'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import Link from 'next/link'
 import { Fragment } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Control, Controller, useForm } from 'react-hook-form'
+import DropDown from '@/components/common/DropDown'
 
 const SearchFilter = ({ control, name, label, placeholder }: any) => (
   <Controller
@@ -15,14 +16,14 @@ const SearchFilter = ({ control, name, label, placeholder }: any) => (
     name={name}
     render={({ field }) => {
       return (
-        <div className="flex flex-col rounded border border-[#DEE2E6] bg-white px-[20px] py-[18px] md:py-[10px]">
+        <div className="flex h-[64px] flex-col rounded border border-[#DEE2E6] bg-white px-[20px] py-[18px] md:py-[10px]">
           <div className="text-[14px] font-bold md:text-[12px]">{label}</div>
           <input
             id={name}
             type="text"
             value={field.value || ''}
             onChange={(e) => field.onChange(e.target.value)}
-            className="w-full bg-white md:text-[14px]"
+            className="w-full bg-white placeholder:text-[#C4C4C4] md:text-[14px]"
             placeholder={placeholder}
           />
         </div>
@@ -30,6 +31,41 @@ const SearchFilter = ({ control, name, label, placeholder }: any) => (
     }}
   />
 )
+
+const DropWrapper = ({
+  placeholder,
+  dropData,
+  control,
+  name,
+  label,
+}: {
+  placeholder: string
+  dropData?: { value: string; label: string }[]
+  control: Control
+  name: string
+  label: string
+}) => {
+  return (
+    <div className="flex h-[64px] flex-col rounded border border-[#DEE2E6] bg-white py-[18px] md:py-[10px]">
+      <div className="px-[16px] text-[14px] font-bold md:text-[12px]">
+        {label}
+      </div>
+      <Controller
+        control={control}
+        name={name}
+        render={({ field }) => (
+          <DropDown.Content
+            fieldValue={field.value}
+            fieldOnChange={field.onChange}
+            id={name}
+            dropData={dropData}
+            placeholder={placeholder}
+          />
+        )}
+      />
+    </div>
+  )
+}
 
 // 필드 설정을 포함한 배열 정의
 const crewInfofields = [
@@ -58,15 +94,23 @@ const crewInfofields = [
     name: 'emer-code',
     label: '응급코드',
     placeholder: '==선택==',
-    component: SearchFilter,
+    component: DropWrapper,
     width: 129,
+    dropData: [
+      { value: '0', label: 'SOS' },
+      { value: '1', label: '낙상감지' },
+    ],
   },
   {
     name: 'status',
     label: '처리현황',
     placeholder: '==선택==',
-    component: SearchFilter,
+    component: DropWrapper,
     width: 129,
+    dropData: [
+      { value: '0', label: '처리완료' },
+      { value: '1', label: '미완료' },
+    ],
   },
 ]
 
@@ -212,7 +256,7 @@ const SosRows = [
 ]
 
 export default function SosPage() {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
 
   const { control, handleSubmit } = useForm()
 
@@ -268,7 +312,7 @@ export default function SosPage() {
 }
 
 const SosInfo = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
   return (
     <div className="flex-1">
       {isMobile ? (

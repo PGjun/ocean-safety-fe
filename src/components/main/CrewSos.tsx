@@ -28,7 +28,7 @@ const SosRows = [
 ]
 
 export const CrewSos = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
   return (
     <div>
       <div className="text-[20px] font-bold">SOS 내역</div>

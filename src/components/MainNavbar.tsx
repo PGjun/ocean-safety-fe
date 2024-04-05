@@ -66,7 +66,7 @@ export const MainNavbar = () => {
     }
   }
 
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
 
   useEffect(() => {
     if (isMobile) {

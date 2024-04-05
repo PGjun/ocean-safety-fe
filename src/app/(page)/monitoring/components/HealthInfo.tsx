@@ -65,7 +65,7 @@ const HealthRows = [
 ]
 
 export const HealthInfo = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
   return (
     <div className="mt-[20px] ">
       {isMobile ? (

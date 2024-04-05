@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Fragment } from 'react'
 import { CrewDetailTab } from './components/CrewDetailTab'
 import { CommonIcon } from '@/components/SvgIcons'
+import { DataTable } from '@/components/common/DataTable.temp'
 
 const COLTITLES = [
   { name: 'No' },
@@ -33,7 +34,7 @@ const CrewRows = [
 ]
 
 export default function CrewInfoPage() {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
   return (
     <div className="md:mx-[40px]">
       <div>
@@ -109,6 +110,7 @@ export default function CrewInfoPage() {
           })}
         </div>
       )}
+
       <div className="mt-[20px] flex w-full justify-center">
         <Pagination
           path={() => {

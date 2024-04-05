@@ -1,20 +1,9 @@
 import { useState } from 'react'
 import { CommonIcon } from '../SvgIcons'
+import DropDown from './DropDown'
+import useDropdownStore from '@/stores/dropdownStore'
 
-const dropDataInit = [
-  [
-    { value: '0', label: '강원호' },
-    { value: '1', label: '무궁화호' },
-  ],
-  [
-    { value: '0', label: '강원호2' },
-    { value: '1', label: '무궁화호2' },
-  ],
-  [
-    { value: '0', label: '강원호3' },
-    { value: '1', label: '무궁화호3' },
-  ],
-]
+const dropDataInit = [[{ value: '0', label: '선택' }]]
 
 interface DropDataItem {
   value: string
@@ -22,41 +11,57 @@ interface DropDataItem {
 }
 interface DropDownProps {
   dropData?: DropDataItem[][]
+  id: string
+  fieldValue?: DropDataItem
+  fieldOnChange?: ({ value, label }: DropDataItem) => void
 }
 
-export const SlideDropDown = ({ dropData = dropDataInit }: DropDownProps) => {
-  const [selectedGroupIndex, setSelectedGroupIndex] = useState(0)
-  const [openDropBox, setOpenDropBox] = useState(false)
-  const [dropObj, setDropObj] = useState({ value: '', label: '' })
+export const SlideDropDown = ({
+  dropData = dropDataInit,
+  id,
+  fieldValue,
+  fieldOnChange,
+}: DropDownProps) => {
+  const groupIndex = dropData.findIndex((group) =>
+    group.some((item) => item.value === fieldValue?.value),
+  )
+
+  const [selectedGroupIndex, setSelectedGroupIndex] = useState(
+    groupIndex !== -1 ? groupIndex : 0,
+  )
+  const { setSelectedValue } = useDropdownStore()
 
   const handlePrev = () => {
-    setDropObj({ value: '', label: '' })
     setSelectedGroupIndex((prevIndex) =>
       prevIndex > 0 ? prevIndex - 1 : dropData.length - 1,
     )
+    setSelectedValue(id, { value: '', label: '' })
+    fieldOnChange && fieldOnChange({ value: '', label: '' })
   }
 
   const handleNext = () => {
-    setDropObj({ value: '', label: '' })
     setSelectedGroupIndex((prevIndex) =>
       prevIndex < dropData.length - 1 ? prevIndex + 1 : 0,
     )
+    setSelectedValue(id, { value: '', label: '' })
+    fieldOnChange && fieldOnChange({ value: '', label: '' })
   }
 
-  const handleOnClick = (e: any) => {
-    setOpenDropBox(false)
-    setDropObj({ value: e.target.id, label: e.target.innerText })
-  }
+  // const handleOnClick = (e: any) => {
+  //   setOpenDropBox(false)
+  //   setDropObj({ value: e.target.id, label: e.target.innerText })
+  // }
 
   return (
-    <div className="flex min-w-[310px] rounded border border-[#C4C4C4]">
+    <div className="flex min-w-[310px] rounded border border-[#C4C4C4] ">
       <button
+        type="button"
         className=" border-r border-[#C4C4C4] px-[13px]"
         onClick={handlePrev}
       >
         <CommonIcon.SlideArrow />
       </button>
-      <div className="relative flex-1">
+      {/* <div className="relative flex-1">
         <button
           onClick={() => setOpenDropBox(!openDropBox)}
           className="w-full py-[10px] text-center text-[12px] md:text-[14px]"
@@ -83,9 +88,18 @@ export const SlideDropDown = ({ dropData = dropDataInit }: DropDownProps) => {
             ))}
           </div>
         )}
+      </div> */}
+      <div className="w-full py-[10px]">
+        <DropDown.Content
+          id={id}
+          dropData={dropData[selectedGroupIndex]}
+          fieldValue={fieldValue}
+          fieldOnChange={fieldOnChange}
+          type="center"
+        />
       </div>
-
       <button
+        type="button"
         className="border-l border-[#C4C4C4] px-[13px]"
         onClick={handleNext}
       >

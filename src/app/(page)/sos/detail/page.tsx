@@ -1,10 +1,9 @@
 'use client'
 
-import GoogleMapWrapper from '@/app/test/GoogleMapWrapper'
+import GoogleMapWrapper from '@/components/common/GoogleMapWrapper'
 import { CommonIcon } from '@/components/SvgIcons'
 import DropDown from '@/components/common/DropDown'
 import { PATHS } from '@/constants/paths'
-import { useDropDown } from '@/hooks/useDropDown'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import Link from 'next/link'
 import { Fragment } from 'react'
@@ -52,7 +51,7 @@ const SosRows = [
 ]
 
 export default function SosDetailPage() {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
   return (
     <div className="md:mx-[40px]">
       <div className="text-[26px] font-bold">SOS 상세내역</div>
@@ -125,10 +124,17 @@ export default function SosDetailPage() {
 
       <div className="mt-[16px] flex flex-col gap-[4px] md:max-w-[332px] md:flex-row">
         <DropDown.Container>
-          <DropDown.Content />
+          <DropDown.Content
+            id="sos_detail_type"
+            dropData={[
+              { value: '0', label: 'SOS' },
+              { value: '1', label: '낙상감지' },
+            ]}
+          />
         </DropDown.Container>
         <DropDown.Container>
           <DropDown.Content
+            id="sos_detail_status"
             dropData={[
               { value: '0', label: '처리완료' },
               { value: '1', label: '이상보고' },
@@ -139,11 +145,11 @@ export default function SosDetailPage() {
       <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
         <Link href={PATHS.SOS}>
           <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
-            취소
+            이전
           </button>
         </Link>
         <button className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]">
-          추가
+          완료
         </button>
       </div>
     </div>

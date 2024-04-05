@@ -14,7 +14,7 @@ const Emergencies = ({
   modalData = { type: '', message: '' },
   closeModal = () => {},
 }) => {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
 
   let size = '156'
   if (isMobile) {

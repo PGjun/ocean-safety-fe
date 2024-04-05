@@ -87,7 +87,13 @@ export default function MonitoringPage() {
       </div>
       <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
         <span className="text-[14px] md:text-[16px]">선박 선택</span>
-        <SlideDropDown />
+        <SlideDropDown
+          id="monitoring_ship"
+          dropData={[
+            [{ value: '0', label: '강원호1' }],
+            [{ value: '1', label: '강원호2' }],
+          ]}
+        />
       </div>
       <div className="mt-[10px]">
         <Image
@@ -105,6 +111,7 @@ export default function MonitoringPage() {
         <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
           <span className="text-[14px] md:text-[16px]">승선원 선택</span>
           <SlideDropDown
+            id="monitoring_crew"
             dropData={[
               [{ value: '0', label: '김김김' }],
               [{ value: '1', label: '박박박' }],

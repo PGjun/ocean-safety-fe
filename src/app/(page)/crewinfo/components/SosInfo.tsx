@@ -27,7 +27,7 @@ const SosRows = [
 ]
 
 export const SosInfo = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
   return (
     <div className="mt-[20px] ">
       {isMobile ? (

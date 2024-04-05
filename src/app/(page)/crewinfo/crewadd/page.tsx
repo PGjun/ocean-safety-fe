@@ -6,6 +6,7 @@ import { useForm, Controller, Control } from 'react-hook-form'
 import Image from 'next/image'
 import { DatePickerSingle } from '@/components/common/DatePicker'
 import { SlideDropDown } from '@/components/common/SlideDropDown'
+import useDropdownStore from '@/stores/dropdownStore'
 
 interface Field {
   control: Control<any>
@@ -106,7 +107,7 @@ const RadioField = ({ control, name, label }: Field) => {
 }
 
 // 필드 설정을 포함한 배열 정의
-const crewInfofields = [
+const crewInfoInit = [
   {
     name: 'name',
     label: '이름',
@@ -221,149 +222,50 @@ const crewInfofields = [
   },
 ]
 
-const CrewInfoForm = () => {
-  // useForm에서 defaultValues를 동적으로 생성
-  const defaultValues = crewInfofields.reduce(
-    (acc: { [key: string]: any }, field) => {
-      acc[field.name] = field.defaultValue
-      return acc
-    },
-    {},
-  )
-
-  const { control, handleSubmit, watch } = useForm({ defaultValues })
-
-  const onSubmit = (data: any) => {
-    console.log(data)
-  }
-
+const CrewInfoForm = ({ control }: { control: Control<any> }) => {
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="mt-[10px] grid gap-[16px] md:grid-cols-3 md:gap-[32px]"
-    >
-      {crewInfofields.map((field, index) => {
-        const currentValue = watch(field.name)
-        return (
-          <field.component
-            key={index}
-            control={control}
-            currentValue={currentValue}
-            {...field}
-          />
-        )
+    <div className="mt-[10px] grid gap-[16px] md:grid-cols-3 md:gap-[32px]">
+      {crewInfoInit.map((field, index) => {
+        return <field.component key={index} control={control} {...field} />
       })}
-    </form>
+    </div>
   )
 }
 
-// 필드 설정을 포함한 배열 정의
-const wearableFields = [
-  {
-    name: 'name',
-    label: '이름',
-    placeholder: '이름을 입력하세요.',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'userId',
-    label: '사용자 ID',
-    placeholder: '사용자 ID를 입력하세요.',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'phone',
-    label: '연락처',
-    placeholder: '연락처를 입력하세요.',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'birth',
-    label: '생년월일',
-    defaultValue: '',
-    component: DatePickerSingle,
-  },
-  {
-    name: 'age',
-    label: '나이',
-    placeholder: '나이를 입력하세요',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'gender',
-    label: '성별',
-    defaultValue: 'M',
-    component: RadioField,
-  },
-  {
-    name: 'zip-code',
-    label: '우편번호',
-    placeholder: '우편번호를 입력하세요',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'road-name',
-    label: '도로명 주소',
-    placeholder: '도로명 주소를 입력하세요',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'address',
-    label: '상세 주소',
-    placeholder: '상세 주소를 입력하세요',
-    defaultValue: '',
-    component: Field,
-  },
+const areaSettingInit = [
+  { name: 'crew_add_ship', defaultValue: { value: '', label: '' } },
+  { name: 'crew_add_ship_group', defaultValue: { value: '', label: '' } },
 ]
 
-const WearableForm = () => {
-  // useForm에서 defaultValues를 동적으로 생성
-  const defaultValues = wearableFields.reduce(
-    (acc: { [key: string]: any }, field) => {
-      acc[field.name] = field.defaultValue
-      return acc
-    },
-    {},
-  )
-
-  const { control, handleSubmit, watch } = useForm({ defaultValues })
-
-  const onSubmit = (data: any) => {
-    console.log(data)
-  }
-
-  return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="mt-[10px] grid gap-[16px] md:grid-cols-3 md:gap-[32px]"
-    >
-      {wearableFields.map((field, index) => {
-        const currentValue = watch(field.name)
-        return (
-          <field.component
-            key={index}
-            control={control}
-            currentValue={currentValue}
-            {...field}
-          />
-        )
-      })}
-    </form>
-  )
-}
-
-const AreaSettings = () => {
+const AreaSettings = ({ control }: { control: Control<any> }) => {
   return (
     <div className="mt-[10px]">
       <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
         <span className="text-[14px] md:text-[16px]">선박 선택</span>
-        <SlideDropDown />
+        <Controller
+          name="crew_add_ship"
+          control={control}
+          render={({ field }) => {
+            const dropData = [
+              [
+                { value: '0', label: '강원호1' },
+                { value: '1', label: '강원호11' },
+              ],
+              [
+                { value: '2', label: '강원호2' },
+                { value: '3', label: '강원호22' },
+              ],
+            ]
+            return (
+              <SlideDropDown
+                id="crew_add_ship"
+                fieldValue={field.value}
+                fieldOnChange={field.onChange}
+                dropData={dropData}
+              />
+            )
+          }}
+        />
       </div>
       <div className="mt-[10px]">
         <Image
@@ -396,11 +298,30 @@ const AreaSettings = () => {
       <div className="mt-[32px] font-bold">소속 그룹</div>
       <div className="mt-[15px] text-[14px]">그룹 선택</div>
       <div className="mt-[5px]">
-        <SlideDropDown
-          dropData={[
-            [{ value: '0', label: '유에스티21' }],
-            [{ value: '1', label: '유에스티32' }],
-          ]}
+        <Controller
+          name="crew_add_ship_group"
+          control={control}
+          render={({ field }) => {
+            const dropData = [
+              [
+                { value: '0', label: '유에스티1' },
+                { value: '1', label: '유에스티11' },
+              ],
+              [
+                { value: '2', label: '유에스티2' },
+                { value: '3', label: '유에스티22' },
+              ],
+            ]
+
+            return (
+              <SlideDropDown
+                id="crew_add_ship_group"
+                fieldValue={field.value}
+                fieldOnChange={field.onChange}
+                dropData={dropData}
+              />
+            )
+          }}
         />
       </div>
     </div>
@@ -408,27 +329,50 @@ const AreaSettings = () => {
 }
 
 export default function CrewAdd() {
+  // useForm에서 defaultValues를 동적으로 생성
+  const defaultValues1 = crewInfoInit.reduce(
+    (acc: { [key: string]: any }, field) => {
+      acc[field.name] = field.defaultValue
+      return acc
+    },
+    {},
+  )
+
+  const defaultValues2 = areaSettingInit.reduce(
+    (acc: { [key: string]: any }, field) => {
+      acc[field.name] = field.defaultValue
+      return acc
+    },
+    {},
+  )
+
+  const { control, handleSubmit } = useForm({
+    defaultValues: { ...defaultValues1, ...defaultValues2 },
+  })
+
+  const onSubmit = (data: any) => {
+    console.log('!!!!!!!!!!!!!!!!', data)
+  }
   return (
     <div className="md:mx-[40px]">
-      <div className="text-[22px] font-bold">승선원 추가</div>
-      <div className="mt-[20px] font-bold">승선원 내역</div>
-      <CrewInfoForm />
-      <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
-      <div className="mt-[20px] font-bold">웨어러블 정보</div>
-      <WearableForm />
-      <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
-      <div className="mt-[20px] font-bold">제한 구역 설정</div>
-      <AreaSettings />
-      <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
-        <Link href={PATHS.CREW_INFO}>
-          <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
-            취소
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="text-[22px] font-bold">승선원 추가</div>
+        <div className="mt-[20px] font-bold">승선원 내역</div>
+        <CrewInfoForm control={control} />
+        <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
+        <div className="mt-[20px] font-bold">제한 구역 설정</div>
+        <AreaSettings control={control} />
+        <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
+          <Link href={PATHS.CREW_INFO}>
+            <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
+              취소
+            </button>
+          </Link>
+          <button className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]">
+            추가
           </button>
-        </Link>
-        <button className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]">
-          추가
-        </button>
-      </div>
+        </div>
+      </form>
     </div>
   )
 }

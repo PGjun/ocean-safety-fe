@@ -74,7 +74,7 @@ const HealthRows = [
 ]
 
 export const CrewHealthInfo = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
 
   return (
     <div>

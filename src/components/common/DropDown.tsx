@@ -1,5 +1,6 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import { CommonIcon } from '../SvgIcons'
+import useDropdownStore from '@/stores/dropdownStore'
 
 const dropDataInit = [
   { value: '0', label: 'SOS' },
@@ -11,51 +12,108 @@ interface DropDataItem {
   label: string
 }
 interface DropDownProps {
+  type?: 'center' | 'between'
   dropData?: DropDataItem[]
+  id: string
+  fieldValue?: DropDataItem
+  fieldOnChange?: ({ value, label }: DropDataItem) => void
+  placeholder?: string
 }
 
 // Container 컴포넌트
 const Container = ({ type, children }: any) => {
   // 여기서 'type'과 'children'을 사용하여 컴포넌트를 커스터마이징할 수 있습니다.
   return (
-    <div className="flex w-full rounded border border-[#C4C4C4]">
+    <div className="flex w-full rounded border border-[#C4C4C4] py-[10px]">
       {children}
     </div>
   )
 }
 
 // Content 컴포넌트
-const Content = ({ dropData = dropDataInit }: DropDownProps) => {
-  const [openDropBox, setOpenDropBox] = useState(false)
-  const [dropObj, setDropObj] = useState({ value: '', label: '' })
+const Content = ({
+  type = 'between',
+  dropData = dropDataInit,
+  id,
+  fieldValue,
+  fieldOnChange,
+  placeholder,
+}: DropDownProps) => {
+  const {
+    activeDropdown,
+    setActiveDropdown,
+    setSelectedValue,
+    selectedValues,
+  } = useDropdownStore()
+  const dropdownRef: any = useRef(null) // 드롭다운 ref
 
-  const handleOnClick = (e: any) => {
-    setOpenDropBox(false)
-    setDropObj({ value: e.target.id, label: e.target.innerText })
+  // 드롭다운 외부 클릭 감지용
+  useEffect(() => {
+    function handleClickOutside(event: any) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setActiveDropdown('')
+      }
+    }
+    document.addEventListener('mouseup', handleClickOutside)
+    return () => document.removeEventListener('mouseup', handleClickOutside)
+  }, [setActiveDropdown])
+
+  const handleOnClick = (value: string, label: string) => {
+    setActiveDropdown('') // 드롭다운을 닫습니다.
+    setSelectedValue(id, { value, label })
+    fieldOnChange && fieldOnChange({ value, label })
+  }
+
+  const toggleDropdown = () => {
+    setActiveDropdown(activeDropdown === id ? '' : id) // 드롭다운을 열거나 닫습니다.
   }
 
   return (
-    <div className="relative flex-1">
+    <div className="relative flex-1 px-[16px]">
       <button
-        onClick={() => setOpenDropBox(!openDropBox)}
-        className="w-full px-[16px] py-[10px] text-center text-[12px] md:text-[14px]"
+        type="button"
+        onClick={toggleDropdown}
+        className="w-full text-center text-[12px] md:text-[14px]"
       >
-        <div className="flex w-full items-center justify-between gap-1">
-          {dropObj.value !== '' ? dropObj.label : dropData[0].label}
+        <div
+          className={
+            type === 'between'
+              ? `flex w-full items-center justify-between gap-1`
+              : `flex w-full items-center justify-center gap-1`
+          }
+        >
+          <span
+            className={
+              placeholder && selectedValues[id] === undefined
+                ? 'text-[18px] text-[#C4C4C4] md:text-[14px]'
+                : ''
+            }
+          >
+            {selectedValues[id] !== undefined && selectedValues[id].value !== ''
+              ? selectedValues[id].label
+              : fieldValue?.label
+                ? fieldValue?.label
+                : placeholder
+                  ? placeholder
+                  : dropData[0].label}
+          </span>
           <CommonIcon.BLACK_DROPDOWN />
         </div>
       </button>
 
-      {openDropBox && (
-        <div className="absolute top-[42px] z-10 w-full rounded border bg-white py-[10px]">
-          {dropData.map((ship) => (
+      {activeDropdown === id && (
+        <div
+          className="absolute left-0 top-[35px] z-10 w-full rounded border bg-white py-[10px]"
+          ref={dropdownRef}
+        >
+          {dropData.map((item) => (
             <div
-              key={ship.value}
-              id={ship.value}
+              key={item.value}
+              id={item.value}
               className="cursor-pointer p-[7px] text-[14px] hover:bg-[#F3F5FF]"
-              onClick={(e) => handleOnClick(e)}
+              onClick={() => handleOnClick(item.value, item.label)}
             >
-              {ship.label}
+              {item.label}
             </div>
           ))}
         </div>

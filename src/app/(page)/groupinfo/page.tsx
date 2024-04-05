@@ -65,7 +65,7 @@ const ShipRows = [
 ]
 
 export default function GroupInfoPage() {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
   return (
     <div className="md:mx-[40px]">
       <div>

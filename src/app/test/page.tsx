@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Canvas from './Canvas'
 import CanvasComponent from './Canvas2'
-import GoogleMapWrapper from './GoogleMapWrapper'
+import GoogleMapWrapper from '../../components/common/GoogleMapWrapper'
 // import QrScanner from './QrScanner'
 
 export default function TestPage() {

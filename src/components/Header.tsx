@@ -11,7 +11,7 @@ export const Header = () => {
   const currentPath = usePathname()
   const isLoginPage = currentPath === '/login'
 
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
 
   return isLoginPage ? null : (
     <header className="sticky top-0 z-40 bg-white">

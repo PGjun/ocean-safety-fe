@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react'
 
 // 미디어 쿼리를 인자로 받아 해당 쿼리에 맞는지 여부를 반환하는 훅
-export function useMediaQuery(query: string) {
+export function useMediaQuery(px: '768') {
+  let query = ''
+
+  if (px === '768') query = '(max-width: 768px)'
+
   const [matches, setMatches] = useState(false)
 
   useEffect(() => {

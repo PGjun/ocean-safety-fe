@@ -28,7 +28,7 @@ const FallRows = [
 ]
 
 export const CrewFall = () => {
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useMediaQuery('768')
   return (
     <div>
       <div className="text-[20px] font-bold">낙상 감지 내역</div>
