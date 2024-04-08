@@ -8,5 +8,6 @@ export const PATHS = {
   SOS_DETAIL: '/sos/detail',
   FALL_DETECTION: '/falldetection',
   HEALTH_INFO: '/healthinfo',
+  SOS_SETTINGS: '/healthinfo/sos-settings',
   NOTICE: '/notice',
 }

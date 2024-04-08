@@ -9,28 +9,7 @@ import Link from 'next/link'
 import { Fragment } from 'react'
 import { Control, Controller, useForm } from 'react-hook-form'
 import DropDown from '@/components/common/DropDown'
-
-const SearchFilter = ({ control, name, label, placeholder }: any) => (
-  <Controller
-    control={control}
-    name={name}
-    render={({ field }) => {
-      return (
-        <div className="flex h-[64px] flex-col rounded border border-[#DEE2E6] bg-white px-[20px] py-[18px] md:py-[10px]">
-          <div className="text-[14px] font-bold md:text-[12px]">{label}</div>
-          <input
-            id={name}
-            type="text"
-            value={field.value || ''}
-            onChange={(e) => field.onChange(e.target.value)}
-            className="w-full bg-white placeholder:text-[#C4C4C4] md:text-[14px]"
-            placeholder={placeholder}
-          />
-        </div>
-      )
-    }}
-  />
-)
+import { SearchBox } from '@/components/common/SearchBox'
 
 const DropWrapper = ({
   placeholder,
@@ -46,7 +25,7 @@ const DropWrapper = ({
   label: string
 }) => {
   return (
-    <div className="flex h-[64px] flex-col rounded border border-[#DEE2E6] bg-white py-[18px] md:py-[10px]">
+    <div className="flex flex-col rounded border border-[#DEE2E6] bg-white py-[16px]">
       <div className="px-[16px] text-[14px] font-bold md:text-[12px]">
         {label}
       </div>
@@ -68,26 +47,26 @@ const DropWrapper = ({
 }
 
 // 필드 설정을 포함한 배열 정의
-const crewInfofields = [
+const Searhfields = [
   {
     name: 'ship',
     label: '선박명',
     placeholder: '선박명을 입력해 주세요.',
-    component: SearchFilter,
+    component: SearchBox,
     width: 176,
   },
   {
     name: 'reg-date',
     label: '기록일',
     placeholder: 'YY.MM.DD ~ YY.MM.DD',
-    component: SearchFilter,
+    component: SearchBox,
     width: 245,
   },
   {
     name: 'name',
     label: '이름',
     placeholder: '이름을 입력해 주세요.',
-    component: SearchFilter,
+    component: SearchBox,
     width: 166,
   },
   {
@@ -255,62 +234,6 @@ const SosRows = [
   },
 ]
 
-export default function SosPage() {
-  const isMobile = useMediaQuery('768')
-
-  const { control, handleSubmit } = useForm()
-
-  const onSubmit = (data: any) => {
-    console.log(data)
-  }
-  return (
-    <div className="flex justify-center">
-      <div className="w-[310px] gap-[32px] md:w-[1100px]">
-        <div className="text-[22px] font-bold md:text-[26px]">SOS 내역</div>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mt-[10px] flex flex-col gap-[8px] border border-[#E9ECEF] bg-[#F8F9FA] p-[28px] md:flex-row">
-            <div className="grid gap-[8px] md:grid-cols-[repeat(6,auto)]">
-              {crewInfofields.map((field, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="w-full"
-                    style={{ width: isMobile ? '100%' : field.width }}
-                  >
-                    <field.component control={control} {...field} />
-                  </div>
-                )
-              })}
-              <button className="flex items-center justify-center gap-[3px] rounded bg-[#333333] px-[28px] py-[10px] text-white">
-                <CommonIcon.Search /> 검색
-              </button>
-            </div>
-          </div>
-        </form>
-        <div className="mt-[20px] text-[18px]">
-          검색결과 <span className="font-bold">{22}</span>건
-        </div>
-        <div className="flex gap-[20px]">
-          <SosInfo />
-          {!isMobile && (
-            <div className="mt-[10px] flex flex-col gap-[8px]">
-              <div className="h-[410px] w-[259px]">
-                <GoogleMapWrapper />
-              </div>
-
-              <Link href={PATHS.SOS_DETAIL}>
-                <button className="w-full rounded border border-[#888888] py-[5px] font-bold">
-                  상세보기
-                </button>
-              </Link>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
 const SosInfo = () => {
   const isMobile = useMediaQuery('768')
   return (
@@ -374,6 +297,60 @@ const SosInfo = () => {
             return '/'
           }}
         />
+      </div>
+    </div>
+  )
+}
+
+export default function SosPage() {
+  const isMobile = useMediaQuery('768')
+
+  const { control, handleSubmit } = useForm()
+
+  const onSubmit = (data: any) => {
+    console.log(data)
+  }
+  return (
+    <div className="md:mx-[40px]">
+      <div className="text-[22px] font-bold md:text-[26px]">SOS 내역</div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="mt-[10px] flex flex-col gap-[8px] border border-[#E9ECEF] bg-[#F8F9FA] p-[28px] md:flex-row">
+          <div className="grid gap-[8px] md:grid-cols-[repeat(6,auto)]">
+            {Searhfields.map((field, index) => {
+              return (
+                <div
+                  key={index}
+                  className="w-full"
+                  style={{ width: isMobile ? '100%' : field.width }}
+                >
+                  <field.component control={control} {...field} />
+                </div>
+              )
+            })}
+            <button className="flex items-center justify-center gap-[3px] rounded bg-[#333333] px-[28px] py-[10px] text-white">
+              <CommonIcon.Search /> 검색
+            </button>
+          </div>
+        </div>
+      </form>
+      <div className="mt-[20px] text-[18px]">
+        검색결과 <span className="font-bold">{22}</span>건
+      </div>
+      <div className="flex gap-[20px]">
+        <SosInfo />
+        {!isMobile && (
+          <div className="mt-[10px] flex flex-col gap-[8px]">
+            <div className="h-[410px] w-[259px]">
+              <GoogleMapWrapper />
+            </div>
+
+            <Link href={PATHS.SOS_DETAIL}>
+              <button className="w-full rounded border border-[#888888] py-[5px] font-bold">
+                상세보기
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   )
