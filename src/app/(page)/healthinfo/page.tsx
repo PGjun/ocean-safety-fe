@@ -5,6 +5,9 @@ import { SearchBox } from '@/components/common/SearchBox'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useForm } from 'react-hook-form'
 import { HealthSearchTable } from './components/HealthSearchTable'
+import Link from 'next/link'
+import { PATHS } from '@/constants/paths'
+import LineChart from './components/Chart'
 
 // 필드 설정을 포함한 배열 정의
 const Searhfields = [
@@ -67,12 +70,18 @@ export default function HealthInfoPage() {
           <span className="text-[18px] font-bold leading-[18px]">{` 22`}</span>
           건
         </div>
-        <div className="rounded border border-[#888888] px-[12px] py-[8px] text-[12px] font-bold leading-[14.32px] md:px-[16px] md:text-[12px] md:leading-[16.71px]">
-          SOS 설정
-        </div>
+        <Link href={PATHS.SOS_SETTINGS}>
+          <button className="rounded border border-[#888888] px-[12px] py-[8px] text-[12px] font-bold leading-[14.32px] md:px-[16px] md:text-[12px] md:leading-[16.71px]">
+            SOS 설정
+          </button>
+        </Link>
       </div>
       <div className="flex gap-[20px]">
         <HealthSearchTable />
+      </div>
+      <div className="mt-[20px] text-[18px] font-bold">건강정보 상세</div>
+      <div className="mt-[6px] h-[150px] border px-[5px] pb-[5px] pt-[10px] md:h-[340px] md:px-[30px] md:pt-[40px]">
+        <LineChart />
       </div>
     </div>
   )

@@ -21,7 +21,7 @@ const Emergencies = ({
     size = '96'
   }
 
-  const EmerImg = EmerType[modalData.type].IconComponent
+  const EmerImg = EmerType['SOS'].IconComponent
   return (
     <div className="relative flex flex-col items-center rounded-[12px] bg-white p-[15px] md:p-[56px]">
       <EmerImg size={size} />
