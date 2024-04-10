@@ -2,8 +2,10 @@
 
 import { DatePickerSingle } from '@/components/common/DatePicker'
 import { PATHS } from '@/constants/paths'
+import { postAddShip } from '@/services/api/user'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { ChangeEvent, useRef, useState } from 'react'
 import { Control, Controller, useForm } from 'react-hook-form'
 
@@ -21,6 +23,7 @@ const Field = ({ control, name, label, placeholder }: Field) => (
   <Controller
     control={control}
     name={name}
+    rules={{ required: true }}
     render={({ field }) => (
       <div>
         <label htmlFor={name} className="text-[12px] font-bold">
@@ -43,124 +46,108 @@ const Field = ({ control, name, label, placeholder }: Field) => (
 // 필드 설정을 포함한 배열 정의
 const groupFields = [
   {
-    name: 'ship-number',
+    name: 'ship_number',
     label: '선박번호',
     placeholder: '선박번호를 입력하세요.',
     defaultValue: '',
     component: Field,
   },
   {
-    name: 'ship-name',
+    name: 'ship_name',
     label: '선박명',
     placeholder: '선박명을 입력하세요.',
     defaultValue: '',
     component: Field,
   },
   {
-    name: 'port-of-loading',
+    name: 'nationality',
     label: '선적항(국적)',
     placeholder: '선적항(국적)을 입력하세요.',
     defaultValue: '',
     component: Field,
   },
   {
-    name: 'inter-gross-ton',
+    name: 'inter_tonnage',
     label: '국제총톤수',
     placeholder: '국제총톤수를 입력하세요.',
     defaultValue: '',
     component: Field,
   },
   {
-    name: 'dead-weight-ton',
+    name: 'weight_tonnage',
     label: '재화중량톤수',
     placeholder: '재화중량톤수를 입력하세요',
     defaultValue: '',
     component: Field,
   },
   {
-    name: 'reg-class-name',
+    name: 'reg_classname',
     label: '등록선급명',
     placeholder: '등록선급명을 입력하세요',
     defaultValue: '',
     component: Field,
   },
   {
-    name: 'launch-date',
+    name: 'launch_date',
     label: '진수일',
     placeholder: '진수일을 입력하세요',
     defaultValue: '',
     component: DatePickerSingle,
   },
   {
-    name: 'dockyard',
+    name: 'shipyard',
     label: '조선소',
     placeholder: '조선소를 입력하세요',
     defaultValue: '',
     component: Field,
   },
   {
-    name: 'ship-owner',
+    name: 'ship_owner',
     label: '선박소유자',
     placeholder: '선박소유자를 입력하세요',
     defaultValue: '',
     component: Field,
   },
   {
-    name: 'business-name',
+    name: 'business_name',
     label: '사업자명',
     placeholder: '사업자명을 입력하세요',
     defaultValue: '',
     component: Field,
   },
   {
-    name: 'ship-lessee',
+    name: 'ship_lessee',
     label: '선박임차인',
     placeholder: '선박임차인을 입력하세요',
     defaultValue: '',
     component: Field,
   },
   {
-    name: 'rental-period',
+    name: 'rental_period',
     label: '임차기간',
     placeholder: '임차기간을 입력하세요',
     defaultValue: '',
-    component: Field,
+    component: DatePickerSingle,
   },
 ]
 
-const GroupInfoForm = () => {
-  // useForm에서 defaultValues를 동적으로 생성
-  const defaultValues = groupFields.reduce(
-    (acc: { [key: string]: any }, field) => {
-      acc[field.name] = field.defaultValue
-      return acc
-    },
-    {},
-  )
-
-  const { control, handleSubmit, watch } = useForm({ defaultValues })
-
-  const onSubmit = (data: any) => {
-    console.log(data)
-  }
-
+const GroupInfoForm = ({ watch, control }: any) => {
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="mt-[10px] grid gap-[16px] md:grid-cols-3 md:gap-[32px]"
-    >
-      {groupFields.map((field, index) => {
-        const currentValue = watch(field.name)
-        return (
-          <field.component
-            key={index}
-            control={control}
-            currentValue={currentValue}
-            {...field}
-          />
-        )
-      })}
-    </form>
+    <div className="mt-[10px] grid gap-[16px] md:grid-cols-3 md:gap-[32px]">
+      <>
+        {groupFields.map((field, index) => {
+          const currentValue = watch(field.name)
+          return (
+            <field.component
+              key={index}
+              control={control}
+              currentValue={currentValue}
+              {...field}
+            />
+          )
+        })}
+      </>
+    </div>
   )
 }
 
@@ -213,10 +200,52 @@ const ShipDrawing = () => {
 }
 
 export default function GroupAdd() {
+  const router = useRouter()
+  // useForm에서 defaultValues를 동적으로 생성
+  const defaultValues = groupFields.reduce(
+    (acc: { [key: string]: any }, field) => {
+      acc[field.name] = field.defaultValue
+      return acc
+    },
+    {},
+  )
+
+  const { control, handleSubmit, watch } = useForm({ defaultValues })
+
+  const onSubmit = async (data: any) => {
+    const addData = { ...data, group_id: 1 }
+
+    // 변환하고 싶은 필드 이름들
+    const integerFields = ['ship_number', 'inter_tonnage', 'weight_tonnage']
+
+    // 특정 필드들에 대해서만 parseInt를 적용
+    const parseIntData = Object.entries(addData).reduce(
+      (acc: any, [key, value]: any) => {
+        if (integerFields.includes(key)) {
+          acc[key] = parseInt(value)
+        } else {
+          acc[key] = value
+        }
+        return acc
+      },
+      {},
+    )
+
+    const res = await postAddShip(parseIntData)
+    if (res?.status === 201) {
+      alert('생성 완료')
+      router.push(PATHS.GROUP_INFO)
+    }
+    console.log('🚀 ~ parseIntData ~ parseIntData:', parseIntData)
+  }
   return (
-    <div className="md:mx-[40px]">
+    <form onSubmit={handleSubmit(onSubmit)} className="md:mx-[40px]">
       <div className="text-[22px] font-bold">그룹(선박) 추가</div>
-      <GroupInfoForm />
+      <GroupInfoForm
+        control={control}
+        handleSubmit={handleSubmit(onSubmit)}
+        watch={watch}
+      />
       <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
       <ShipDrawing />
       <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
@@ -225,10 +254,13 @@ export default function GroupAdd() {
             취소
           </button>
         </Link>
-        <button className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]">
+        <button
+          type="submit"
+          className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]"
+        >
           추가
         </button>
       </div>
-    </div>
+    </form>
   )
 }

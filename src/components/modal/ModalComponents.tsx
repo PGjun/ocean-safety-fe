@@ -2,6 +2,8 @@
 
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { CommonIcon } from '../SvgIcons'
+import Link from 'next/link'
+import { PATHS } from '@/constants/paths'
 
 export type ModalType = 'EMERGENCIES' | 'ALERT2'
 
@@ -32,13 +34,18 @@ const Emergencies = ({
       <div className="mt-[28px] flex justify-center gap-[5px]">
         <button
           onClick={closeModal}
-          className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[22px] py-[10px] text-[14px] font-bold md:px-[36px] md:py-[15px]"
+          className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[22px] py-[15px] text-[14px] font-bold md:px-[36px] md:py-[15px]"
         >
           취소
         </button>
-        <button className="flex-1 rounded border border-[#333333] bg-[#333333] px-[60px] py-[10px] text-[14px] font-bold text-white md:px-[80px]">
-          상세보기
-        </button>
+        <Link href={PATHS.SOS_DETAIL}>
+          <button
+            onClick={closeModal}
+            className="flex-1 rounded border border-[#333333] bg-[#333333] px-[60px] py-[15px] text-[14px] font-bold text-white md:px-[80px]"
+          >
+            상세보기
+          </button>
+        </Link>
       </div>
     </div>
   )

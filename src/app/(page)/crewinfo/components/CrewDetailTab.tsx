@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { CrewDetail } from './CrewDetail'
 import { WearableInfo } from './WearableInfo'
 import { AreaSettings } from './AreaSettings'
@@ -28,7 +28,7 @@ const TabGroup = [
   },
 ]
 
-export const CrewDetailTab = () => {
+export const CrewDetailTab = ({ userId }: { userId: number | null }) => {
   const [activeTab, setActiveTab] = useState('tab1')
 
   return (
@@ -51,7 +51,7 @@ export const CrewDetailTab = () => {
         })}
       </div>
 
-      {activeTab === 'tab1' && <CrewDetail />}
+      {activeTab === 'tab1' && <CrewDetail userId={userId} />}
       {activeTab === 'tab2' && <WearableInfo />}
       {activeTab === 'tab3' && <AreaSettings />}
       {activeTab === 'tab4' && <GroupInfo />}

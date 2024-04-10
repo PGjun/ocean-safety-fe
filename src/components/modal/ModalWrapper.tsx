@@ -2,7 +2,7 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { useEffect } from 'react'
+import { Fragment, useEffect } from 'react'
 import modalComponents from './ModalComponents'
 import useModalStore from '@/stores/modalStore'
 
@@ -22,23 +22,24 @@ const ModalWrapper = () => {
       {modals.map(({ id, modalType, modalProps, isOpen, bgClickEnabled }) => {
         const ModalComponent = modalComponents[modalType]
         return (
-          <div
-            key={id}
-            className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-gray-700 bg-opacity-50`}
-            onClick={() => bgClickEnabled && closeModal(id)}
-          >
+          <Fragment key={id}>
             {isOpen && (
               <div
-                className="modal-content"
-                onClick={(e) => e.stopPropagation()}
+                className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-gray-700 bg-opacity-50`}
+                onClick={() => bgClickEnabled && closeModal(id)}
               >
-                <ModalComponent
-                  {...modalProps}
-                  closeModal={() => closeModal(id)}
-                />
+                <div
+                  className="modal-content"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ModalComponent
+                    {...modalProps}
+                    closeModal={() => closeModal(id)}
+                  />
+                </div>
               </div>
             )}
-          </div>
+          </Fragment>
         )
       })}
     </>
