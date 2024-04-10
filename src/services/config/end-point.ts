@@ -10,8 +10,11 @@ export const END_POINT = {
     `${BASE}/getShipList?group_id=${group_id}`,
   GET_USER_INFO: (user_id: number) => `${BASE}/getUserInfo?user_id=${user_id}`,
   GET_USER_LIST: (ship_id: number) => `${BASE}/getUserList?ship_id=${ship_id}`,
+  GET_USER_HEALTH_LIST: (ship_id: number) =>
+    `${BASE}/getUserHealthList?ship_id=${ship_id}`,
+  GET_USER_LOCATION_LIST: (ship_id: number) =>
+    `${BASE}/getUserLocationList?ship_id=${ship_id}`,
 }
-
 // const PATH = {
 //   BASE: "/api/v1/web",
 //   AUTH: "/api/v1/auth/web",

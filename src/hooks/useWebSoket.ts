@@ -13,7 +13,9 @@ const useWebSocket = () => {
   )
 
   useEffect(() => {
-    const socket = io('http://jdi-global.com:27777', {
+    const socket = io('ws://jdi-global.com:27777/', {
+      path: '/socket_emergency/socket.io',
+      transports: ['websocket', 'polling'],
       reconnectionAttempts: 5, //최대 재연결 시도 횟수
       reconnectionDelay: 10000, //재연결 시도 간격
     })

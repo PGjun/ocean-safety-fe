@@ -94,7 +94,7 @@ export const fetchShipList = async (groupId: string) => {
   })
 }
 
-export interface User {
+export interface User extends ShipInfoParams {
   id: number
   name: string
   company_id: number
@@ -112,19 +112,6 @@ export interface User {
   ship_id: number
   crewlevel: number
   user_id: string
-  group_id: number
-  ship_name: string
-  ship_number?: string
-  nationality?: string
-  inter_tonnage?: number
-  weight_tonnage?: number
-  reg_classname?: string
-  launch_date?: string
-  shipyard?: string
-  ship_owner?: string
-  business_name?: string
-  ship_lessee?: string
-  rental_period?: string
 }
 
 export const fetchUserInfo = async (userId: number) => {
@@ -138,5 +125,33 @@ export const fetchUserList = async (shipId: number) => {
   return httpClient({
     method: 'get',
     endPoint: END_POINT.GET_USER_LIST(shipId),
+  })
+}
+
+export interface UserHealth extends User {
+  blood_pressure: string
+  health_date: string
+  health_rate: number
+  oxygen_saturation: number
+  temperature: number
+}
+
+export const fetchUserHealthList = async (shipId: number) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.GET_USER_HEALTH_LIST(shipId),
+  })
+}
+
+export interface Location extends User {
+  rssi: number
+  scan_time: string
+  beacon_uuid: string //Mac address?
+}
+
+export const fetchUserLocationList = async (shipId: number) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.GET_USER_LOCATION_LIST(shipId),
   })
 }
