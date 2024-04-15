@@ -5,7 +5,7 @@ import { CrewStatus } from '@/components/main/CrewStatus'
 
 export default function Home() {
   return (
-    <main className="grid gap-[32px] md:mx-[40px] md:grid-cols-2">
+    <main className="grid gap-[56px] md:mx-[40px] md:grid-cols-2">
       <CrewStatus />
       <CrewHealthInfo />
       <CrewSos />

@@ -69,9 +69,9 @@ const options = {
     },
   },
   elements: {
-    line: {
-      tension: 0.4, // 선의 곡률 조정
-    },
+    // line: {
+    //   tension: 0.4, // 선의 곡률 조정
+    // },
     point: {
       radius: 5, // 데이터 포인트의 크기 조정
     },
@@ -85,9 +85,9 @@ const options = {
   },
 }
 
-const LineChartExample = () => (
+const LineChartExample = ({ chartData }: { chartData: any }) => (
   <div className="h-full w-full">
-    <Line data={data} options={options} />
+    <Line data={chartData} options={options} />
   </div>
 )
 

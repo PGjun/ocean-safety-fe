@@ -143,7 +143,7 @@ export default function SosDetailPage() {
         </DropDown.Container>
       </div>
       <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
-        <Link href={PATHS.SOS}>
+        <Link href={PATHS.SOS()}>
           <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
             이전
           </button>

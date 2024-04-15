@@ -3,46 +3,41 @@
 import { useRouter } from 'next/navigation'
 import { Arrow } from '../SvgIcons'
 
+export interface SearchParams {
+  [key: string]: string | object | undefined // 모든 추가적인 문자열 키는 string 값을 가질 수 있음
+  page_num: string // 필수 속성
+}
+
 /**
  * 쿼리 파라미터를 이용한 페이지네이션
  * @param path - 리스트를 표시할 페이지 path
  * @param page - 현재 페이지
- * @param totalSize - 리스트 전체 데이터 개수
- * @param pageSize - 리스트에 표시할 데이터 개수
- * @param searchWord - 검색어가 필요할 때만 추가
+ * @param totalPage - 리스트 전체 데이터 개수
+ * @param searchParams - 검색 파라미터 page_num은 오버라이딩
  */
 export const Pagination = ({
   path,
-  page = 1,
-  totalSize = 50,
-  pageSize = 8,
-  searchWord = '',
+  totalPage = 1,
+  searchParams = { page_num: '1' },
 }: {
-  path: (page: string, q?: string) => string
-  page?: number
-  totalSize?: number
-  pageSize?: number
-  searchWord?: string
+  path: (params: SearchParams) => string
+  totalPage?: number
+  searchParams?: SearchParams
 }) => {
   const router = useRouter()
-  // const [page, setPage] = useState(1)
 
   const selected = `rounded-lg bg-[#F3F5FF] font-bold text-[#2262C6] text-[10px] md:text-[16px]`
   const hover = `hover:font-bold hover:text-[#2262C6] text-[10px] md:text-[16px]`
   const btnSize = `h-[20px] md:h-[40px] w-[20px] md:w-[40px]`
 
+  const page = parseInt(searchParams.page_num)
   // 전체 페이지 수 계산
-  const total = Math.ceil(totalSize / pageSize)
+  const total = Math.floor(totalPage)
 
   const handlePageClick = (number: number) => {
     const nextPage = number.toString()
-    router.push(path(nextPage, searchWord ? searchWord : ''))
-    // if (searchWord !== "") {
-    //   router.push(`${path}?page=${number}&q=${searchWord}`)
-    // } else {
-    //   router.push(`${path}?page=${number}`)
-    // }
-    // setPage(number)
+    //searchParams를 앞에 둬서 page_num 오버라이딩,
+    router.push(path({ ...searchParams, page_num: nextPage }))
   }
 
   // 페이지네이션 로직
@@ -133,7 +128,9 @@ export const Pagination = ({
         className={`${page === 1 ? 'text-#A3A3A3' : 'text-#333333'} flex items-center gap-3 text-[10px] md:text-[16px]`}
       >
         <Arrow color={page === 1 ? '#A3A3A3' : '#333333'} />
-        <span>이전</span>
+        <span className={page === 1 ? 'text-[#A3A3A3]' : 'text-[#333333]'}>
+          이전
+        </span>
       </button>
       {renderPagination()}
       <button
@@ -141,7 +138,9 @@ export const Pagination = ({
         disabled={page === total}
         className={`${page === total ? 'text-#A3A3A3' : 'text-#333333'} flex items-center gap-3 text-[10px] md:text-[16px]`}
       >
-        <span>다음</span>
+        <span className={page === total ? 'text-[#A3A3A3]' : 'text-[#333333]'}>
+          다음
+        </span>
         <Arrow color={page === total ? '#A3A3A3' : '#333333'} rotate />
       </button>
     </div>

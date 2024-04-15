@@ -1,20 +1,79 @@
 /**규칙 : 엔드 포인트와 Key값의 이름이 동일해야됨 부모 Key값에 알맞게 입력(BASE, AUTH, COMMON) */
 
-const BASE = '/api/user'
+import { getQueryString } from '@/utils/getQueryString'
+import {
+  FetchShipListParams,
+  FetchUserListParams,
+  NoticeListParams,
+  UserEmergencyListParams,
+  UserHealthListParams,
+  UserSpecificHealthParams,
+} from '../api/user'
 
-export const END_POINT = {
-  LOGIN: `${BASE}/login`,
-  ADD_SHIP: `${BASE}/addShip`,
-  GET_SHIP_INFO: (ship_id: number) => `${BASE}/getShipInfo?ship_id=${ship_id}`,
-  GET_SHIP_LIST: (group_id: string) =>
-    `${BASE}/getShipList?group_id=${group_id}`,
-  GET_USER_INFO: (user_id: number) => `${BASE}/getUserInfo?user_id=${user_id}`,
-  GET_USER_LIST: (ship_id: number) => `${BASE}/getUserList?ship_id=${ship_id}`,
-  GET_USER_HEALTH_LIST: (ship_id: number) =>
-    `${BASE}/getUserHealthList?ship_id=${ship_id}`,
+const API_USER = '/api/user'
+const API_ADMIN = '/api/admin'
+
+const USER = {
+  LOGIN: `${API_USER}/login`,
+  ADD_SHIP: `${API_USER}/addShip`,
+  GET_SHIP_INFO: (ship_id: number) =>
+    `${API_USER}/getShipInfo?ship_id=${ship_id}`,
+  GET_SHIP_LIST: (params: FetchShipListParams) => {
+    const query = getQueryString(params)
+    return `${API_USER}/getShipList?${query}`
+  },
+  GET_USER_INFO: (user_id: number) =>
+    `${API_USER}/getUserInfo?user_id=${user_id}`,
+  GET_USER_LIST: (params: FetchUserListParams) => {
+    const query = getQueryString(params)
+    return `${API_USER}/getUserList?${query}`
+  },
+  GET_USER_HEALTH_LIST: (params: UserHealthListParams) => {
+    const query = getQueryString(params)
+    return `${API_USER}/getUserHealthList?${query}`
+  },
   GET_USER_LOCATION_LIST: (ship_id: number) =>
-    `${BASE}/getUserLocationList?ship_id=${ship_id}`,
+    `${API_USER}/getUserLocationList?ship_id=${ship_id}`,
+  GET_USER_EMERGENCY_LIST: (params: UserEmergencyListParams) => {
+    const query = getQueryString(params)
+    return `${API_USER}/getUserEmergencyList?${query}`
+  },
+  GET_NOTICE_LIST: (params: NoticeListParams) => {
+    const query = getQueryString(params)
+    return `${API_USER}/getNoticeList?${query}`
+  },
+  GET_USER_SPECIFIC_HEALTH: (params: UserSpecificHealthParams) => {
+    const query = getQueryString(params)
+    return `${API_USER}/getUserSpecificHealth?${query}`
+  },
 }
+
+export const END_POINT = { USER }
+
+// export const END_POINT = {
+//   LOGIN: `${USER}/login`,
+//   ADD_SHIP: `${USER}/addShip`,
+//   GET_SHIP_INFO: (ship_id: number) => `${USER}/getShipInfo?ship_id=${ship_id}`,
+//   GET_SHIP_LIST: (group_id: string) =>
+//     `${USER}/getShipList?group_id=${group_id}`,
+//   GET_USER_INFO: (user_id: number) => `${USER}/getUserInfo?user_id=${user_id}`,
+//   GET_USER_LIST: ({
+//     group_id,
+//     ship_id,
+//     page_num,
+//     item_count,
+//   }: {
+//     group_id: number
+//     ship_id: number
+//     page_num: number
+//     item_count: number
+//   }) =>
+//     `${USER}/getUserList?group_id=${group_id}&ship_id=${ship_id}&page_num=${page_num}&item_count=${item_count}`,
+//   GET_USER_HEALTH_LIST: (ship_id: number) =>
+//     `${USER}/getUserHealthList?ship_id=${ship_id}`,
+//   GET_USER_LOCATION_LIST: (ship_id: number) =>
+//     `${USER}/getUserLocationList?ship_id=${ship_id}`,
+// }
 // const PATH = {
 //   BASE: "/api/v1/web",
 //   AUTH: "/api/v1/auth/web",

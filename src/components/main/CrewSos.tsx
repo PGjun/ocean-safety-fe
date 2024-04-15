@@ -1,7 +1,9 @@
 'use client'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery'
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
+import { GenericTable } from './GenericTable'
+import { UserEmergencyList, fetchUserEmergencyList } from '@/services/api/user'
 
 const COLTITLES = [
   { name: 'No' },
@@ -29,8 +31,29 @@ const SosRows = [
 
 export const CrewSos = () => {
   const isMobile = useMediaQuery('768')
+
+  const [sosList, setSosList] = useState([])
+  const [sosId, setSosId] = useState<number | null>()
+
+  const pageSize = '10'
+
+  useEffect(() => {
+    const fetcEmergencyListData = async () => {
+      const res = await fetchUserEmergencyList({
+        group_id: '1',
+        item_count: pageSize,
+        page_num: '1',
+      })
+      if (res?.status === 200) {
+        setSosList(res.data.data)
+      }
+    }
+
+    fetcEmergencyListData()
+  }, [])
+
   return (
-    <div>
+    <div className="max-w-[636px]">
       <div className="text-[20px] font-bold">SOS 내역</div>
       {isMobile ? (
         <div className="border-t border-[#c4c4c4]">
@@ -46,33 +69,31 @@ export const CrewSos = () => {
           ))}
         </div>
       ) : (
-        <>
-          <div className="grid grid-cols-[repeat(5,auto)] border-t border-[#c4c4c4] text-center">
-            {COLTITLES.map((item, idx) => {
-              return (
-                <div key={idx}>
-                  <div className="border-b border-[#c4c4c4] py-[10px] text-[14px] font-bold">
-                    {item.name}
-                  </div>
-                </div>
-              )
-            })}
-            {SosRows.map((item, idx) => {
-              return (
-                <Fragment key={idx}>
-                  <div className="border-b py-[16px]">{item.a}</div>
-                  <div className="border-b py-[16px]">{item.b}</div>
-                  <div className="border-b py-[16px]">{item.c}</div>
-                  <div className="border-b py-[16px]">{item.d}</div>
-                  <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
+        <GenericTable
+          columns={[
+            { field: 'id', title: 'No', width: '1fr' },
+            { field: 'name', title: '이름', width: '1fr' },
+            { field: 'emergency_code', title: '응답코드', width: '1fr' },
+            { field: 'sos_date', title: '기록 일시', width: '2fr' },
+            {
+              field: 'emergency_status_code',
+              title: '처리현황',
+              width: '1fr',
+              render: (code) => {
+                return (
+                  <div className="flex items-center justify-center gap-2">
                     <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                    {item.e}
+                    {code}
                   </div>
-                </Fragment>
-              )
-            })}
-          </div>
-        </>
+                )
+              },
+            },
+          ]}
+          data={sosList}
+          onRowClick={(item: UserEmergencyList) => {
+            setSosId(item.id)
+          }}
+        />
       )}
     </div>
   )

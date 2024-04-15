@@ -38,15 +38,13 @@ export const CrewDetailTab = ({ userId }: { userId: number | null }) => {
           const Default = 'bg-[#F3F5FF] text-[#2262C6]'
           const Active = 'bg-[#2262C6] text-white'
           return (
-            <Fragment key={idx}>
-              <button
-                key={idx}
-                className={`${activeTab === tab.tabId ? Active : Default} cursor-pointer rounded-t-[8px] px-[26px] py-[10px]`}
-                onClick={() => setActiveTab(tab.tabId)}
-              >
-                {tab.tabName}
-              </button>
-            </Fragment>
+            <button
+              key={idx}
+              className={`${activeTab === tab.tabId ? Active : Default} cursor-pointer rounded-t-[8px] px-[26px] py-[10px]`}
+              onClick={() => setActiveTab(tab.tabId)}
+            >
+              {tab.tabName}
+            </button>
           )
         })}
       </div>

@@ -14,12 +14,12 @@ const navMenuList = [
   {
     IconComponent: NavIcon.CrewInfo,
     name: '승선원 정보',
-    path: PATHS.CREW_INFO,
+    path: PATHS.CREW_INFO(),
   },
   {
     IconComponent: NavIcon.GroupInfo,
     name: '그룹(선박) 정보',
-    path: PATHS.GROUP_INFO,
+    path: PATHS.GROUP_INFO(),
   },
   {
     IconComponent: NavIcon.Monitoring,
@@ -29,7 +29,7 @@ const navMenuList = [
   {
     IconComponent: NavIcon.Sos,
     name: 'SOS 발생',
-    path: PATHS.SOS,
+    path: PATHS.SOS(),
   },
   {
     IconComponent: NavIcon.FallDetection,
@@ -39,12 +39,12 @@ const navMenuList = [
   {
     IconComponent: NavIcon.HealthInfo,
     name: '건강 정보',
-    path: PATHS.HEALTH_INFO,
+    path: PATHS.HEALTH_INFO(),
   },
   {
     IconComponent: NavIcon.Notice,
     name: '공지사항',
-    path: PATHS.NOTICE,
+    path: PATHS.NOTICE(),
   },
   {
     IconComponent: NavIcon.Notice,
@@ -104,7 +104,12 @@ export const MainNavbar = () => {
         </div>
         <nav className="flex h-full w-[293px] flex-col gap-[24px] rounded-tr-[68px] bg-sidebarback-gradient py-[40px] pl-[24px] pr-[40px]">
           {navMenuList.map((item, idx) => {
-            const isSelected = currentPath === item.path
+            const basePath = item.path.split('?')[0]
+            const isSelected =
+              basePath === '/'
+                ? currentPath === '/'
+                : currentPath.startsWith(basePath)
+
             const selected = 'bg-white font-bold text-[#2262C6]'
             const normal = 'text-white hover:bg-[#2262C5]'
             return (
@@ -113,9 +118,6 @@ export const MainNavbar = () => {
                   onClick={() => (isMobile ? setOpenNav(!openNav) : null)}
                   className={`flex w-full items-center gap-[8px] rounded-full px-[18px] py-[8px] text-[22px] ${isSelected ? selected : normal}`}
                 >
-                  {/* <HomeIcon
-                    color={isSelected ? '#2262C6' : '#ffffff'}
-                  /> */}
                   <item.IconComponent
                     color={isSelected ? '#2262C6' : '#ffffff'}
                   />

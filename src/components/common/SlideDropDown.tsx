@@ -108,3 +108,63 @@ export const SlideDropDown = ({
     </div>
   )
 }
+
+export const SmallSlideDropDown = ({
+  dropData = dropDataInit,
+  id,
+  fieldValue,
+  fieldOnChange,
+}: DropDownProps) => {
+  const groupIndex = dropData.findIndex((group) =>
+    group.some((item) => item.value === fieldValue?.value),
+  )
+
+  const [selectedGroupIndex, setSelectedGroupIndex] = useState(
+    groupIndex !== -1 ? groupIndex : 0,
+  )
+  const { setSelectedValue } = useDropdownStore()
+
+  const handlePrev = () => {
+    setSelectedGroupIndex((prevIndex) =>
+      prevIndex > 0 ? prevIndex - 1 : dropData.length - 1,
+    )
+    setSelectedValue(id, { value: '', label: '' })
+    fieldOnChange && fieldOnChange({ value: '', label: '' })
+  }
+
+  const handleNext = () => {
+    setSelectedGroupIndex((prevIndex) =>
+      prevIndex < dropData.length - 1 ? prevIndex + 1 : 0,
+    )
+    setSelectedValue(id, { value: '', label: '' })
+    fieldOnChange && fieldOnChange({ value: '', label: '' })
+  }
+
+  return (
+    <div className="flex w-full min-w-[234px] rounded border border-[#C4C4C4] font-normal md:max-w-[234px]">
+      <button
+        type="button"
+        className=" border-r border-[#C4C4C4] px-[13px]"
+        onClick={handlePrev}
+      >
+        <CommonIcon.SlideArrow />
+      </button>
+      <div className="w-full py-[7px]">
+        <DropDown.Content
+          id={id}
+          dropData={dropData[selectedGroupIndex]}
+          fieldValue={fieldValue}
+          fieldOnChange={fieldOnChange}
+          type="center"
+        />
+      </div>
+      <button
+        type="button"
+        className="border-l border-[#C4C4C4] px-[13px]"
+        onClick={handleNext}
+      >
+        <CommonIcon.SlideArrow className="rotate-180" />
+      </button>
+    </div>
+  )
+}

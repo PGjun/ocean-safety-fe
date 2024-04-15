@@ -363,7 +363,7 @@ export default function CrewAdd() {
         <div className="mt-[20px] font-bold">제한 구역 설정</div>
         <AreaSettings control={control} />
         <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
-          <Link href={PATHS.CREW_INFO}>
+          <Link href={PATHS.CREW_INFO()}>
             <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
               취소
             </button>

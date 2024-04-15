@@ -1,7 +1,8 @@
+import { Pagination } from '@/components/common/Pagination'
 import { GenericTable } from '@/components/main/GenericTable'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 
-export const WearableInfo = () => {
+export const WearableList = () => {
   const isMobile = useMediaQuery('768')
   return (
     <div className="mt-[20px]">
@@ -50,10 +51,46 @@ export const WearableInfo = () => {
               reg_date: '2024-03-01 16:00:00',
               wearer: '박기철',
             },
+            {
+              id: '1',
+              device_name: 'Galaxy Watch6 Classic (1NZW)',
+              device_model: 'SM-R930',
+              reg_date: '2024-03-01 16:00:00',
+              wearer: '박기철',
+            },
+            {
+              id: '1',
+              device_name: 'Galaxy Watch6 Classic (1NZW)',
+              device_model: 'SM-R930',
+              reg_date: '2024-03-01 16:00:00',
+              wearer: '박기철',
+            },
+            {
+              id: '1',
+              device_name: 'Galaxy Watch6 Classic (1NZW)',
+              device_model: 'SM-R930',
+              reg_date: '2024-03-01 16:00:00',
+              wearer: '박기철',
+            },
+            {
+              id: '1',
+              device_name: 'Galaxy Watch6 Classic (1NZW)',
+              device_model: 'SM-R930',
+              reg_date: '2024-03-01 16:00:00',
+              wearer: '박기철',
+            },
           ]}
           onRowClick={(item) => {}}
         />
       )}
+
+      <div className="mt-[20px] flex w-full justify-center">
+        <Pagination
+          path={() => {
+            return '/'
+          }}
+        />
+      </div>
     </div>
   )
 }

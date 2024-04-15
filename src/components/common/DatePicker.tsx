@@ -4,6 +4,7 @@ import { ko } from 'date-fns/locale'
 import moment from 'moment'
 import { Control, Controller } from 'react-hook-form'
 import { CommonIcon } from '../SvgIcons'
+import { ReactNode, useState } from 'react'
 
 interface DatePickerSingle {
   name: string
@@ -51,4 +52,99 @@ export const DatePickerSingle = ({
       )}
     ></Controller>
   )
+}
+
+const CustomInput2 = (props: any, _: any) => {
+  return (
+    <input
+      {...props}
+      type="text"
+      className="w-full text-[14px] outline-none placeholder:text-[#C4C4C4]"
+    />
+  )
+}
+
+interface DatePickerProps {
+  control?: Control
+  name?: string
+  label?: string
+  placeholder?: string
+  children?: ReactNode
+  value?: string | object
+  field?: any
+}
+
+export const DatePickerRange = ({
+  name,
+  placeholder,
+  field,
+}: DatePickerProps) => {
+  const onChange = (dates: any) => {
+    const [start, end] = dates
+    field.onChange({ start, end })
+  }
+  return (
+    <DatePicker
+      customInput={<CustomInput2 id={name} />}
+      selected={field.value.start}
+      locale={ko}
+      placeholderText={placeholder}
+      dateFormat={'yy.MM.dd'}
+      startDate={field.value.start}
+      endDate={field.value.end}
+      onChange={onChange}
+      selectsRange
+    />
+  )
+}
+
+export const DatePickerWrapper = ({
+  name,
+  label,
+  children,
+}: DatePickerProps) => {
+  return (
+    <label
+      htmlFor={name}
+      className="flex flex-col rounded border border-[#DEE2E6] bg-white py-[15px] pl-[24px] pr-[16px]"
+    >
+      <div className="text-[14px] font-bold md:text-[12px]">{label}</div>
+      <div className="flex">
+        {children}
+        <CommonIcon.SearchDate />
+      </div>
+    </label>
+  )
+}
+
+export const DatePickerController = ({
+  control,
+  name,
+  label,
+  placeholder,
+}: DatePickerProps) => {
+  return (
+    <Controller
+      control={control}
+      name={name ? name : ''}
+      defaultValue={{ start: '', end: '' }}
+      render={({ field }) => {
+        return (
+          <DatePickerWrapper label={label}>
+            <DatePickerRange
+              name={name}
+              placeholder={placeholder}
+              field={field}
+            />
+          </DatePickerWrapper>
+        )
+      }}
+    />
+  )
+}
+
+export const DateComponent = {
+  DatePickerSingle,
+  DatePickerRange,
+  DatePickerController,
 }

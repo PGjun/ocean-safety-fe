@@ -1,23 +1,6 @@
 import { httpClient } from '../config/api-conf'
 import { END_POINT } from '../config/end-point'
 
-// export const fetchUserInfo = async () => {
-//   return httpClient({
-//     method: 'get',
-//     endPoint: END_POINT.BASE.USER,
-//     clientType: 'auth',
-//   })
-// }
-
-// export const updateUserInfo = async (idUsr: string, data: object) => {
-//   return httpClient({
-//     method: 'put',
-//     endPoint: END_POINT.BASE.USER_EDIT(idUsr),
-//     clientType: 'auth',
-//     data,
-//   })
-// }
-
 export interface LoginParams {
   id: string
   password: string
@@ -26,7 +9,7 @@ export interface LoginParams {
 export const postUserLogin = async (params: LoginParams) => {
   return httpClient({
     method: 'post',
-    endPoint: END_POINT.LOGIN,
+    endPoint: END_POINT.USER.LOGIN,
     data: params,
   })
 }
@@ -71,26 +54,36 @@ export const postAddShip = async (params: addShipParams) => {
 
   return httpClient({
     method: 'post',
-    endPoint: END_POINT.ADD_SHIP,
+    endPoint: END_POINT.USER.ADD_SHIP,
     data: formData, // FormData 인스턴스를 data로 설정
   })
 }
 
 export interface ShipInfoParams extends addShipParams {
   id: number
+  group_name: string
 }
 
 export const fetchShipInfo = async (shipId: number) => {
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.GET_SHIP_INFO(shipId),
+    endPoint: END_POINT.USER.GET_SHIP_INFO(shipId),
   })
 }
 
-export const fetchShipList = async (groupId: string) => {
+export interface FetchShipListParams {
+  group_id: string
+  page_num: string
+  item_count: string
+  search_group?: string
+  search_ship?: string
+  ship_id?: number
+}
+
+export const fetchShipList = async (params: FetchShipListParams) => {
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.GET_SHIP_LIST(groupId),
+    endPoint: END_POINT.USER.GET_SHIP_LIST(params),
   })
 }
 
@@ -110,21 +103,31 @@ export interface User extends ShipInfoParams {
   password: string
   created_at: string
   ship_id: number
-  crewlevel: number
+  crew_level: number
   user_id: string
+  user_index: number
 }
 
 export const fetchUserInfo = async (userId: number) => {
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.GET_USER_INFO(userId),
+    endPoint: END_POINT.USER.GET_USER_INFO(userId),
   })
 }
 
-export const fetchUserList = async (shipId: number) => {
+export interface FetchUserListParams {
+  group_id: number
+  ship_id: number
+  page_num: number
+  item_count: number
+  search_name?: string
+  search_phone?: string
+}
+
+export const fetchUserList = async (params: FetchUserListParams) => {
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.GET_USER_LIST(shipId),
+    endPoint: END_POINT.USER.GET_USER_LIST(params),
   })
 }
 
@@ -136,10 +139,22 @@ export interface UserHealth extends User {
   temperature: number
 }
 
-export const fetchUserHealthList = async (shipId: number) => {
+export interface UserHealthListParams {
+  group_id: string
+  page_num: string
+  item_count: string
+  ship_id?: string
+  search_group?: string
+  search_ship?: string
+  search_name?: string
+  search_start_date?: string
+  search_end_date?: string
+}
+
+export const fetchUserHealthList = async (params: UserHealthListParams) => {
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.GET_USER_HEALTH_LIST(shipId),
+    endPoint: END_POINT.USER.GET_USER_HEALTH_LIST(params),
   })
 }
 
@@ -152,6 +167,68 @@ export interface Location extends User {
 export const fetchUserLocationList = async (shipId: number) => {
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.GET_USER_LOCATION_LIST(shipId),
+    endPoint: END_POINT.USER.GET_USER_LOCATION_LIST(shipId),
+  })
+}
+
+export interface UserEmergencyListParams {
+  group_id: string
+  page_num: string
+  item_count: string
+  ship_id?: string
+  search_name?: string
+  search_code?: string
+  search_status?: string
+  search_start_date?: string
+  search_end_date?: string
+}
+
+export interface UserEmergencyList {
+  id: number
+  longitude: number
+  latitude: number
+  sos_date: string
+  emergency_code: string
+  emergency_status_code: string
+  phone: string
+  name: string
+  user_id: string
+}
+
+export const fetchUserEmergencyList = async (
+  params: UserEmergencyListParams,
+) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_USER_EMERGENCY_LIST(params),
+  })
+}
+
+export interface NoticeListParams {
+  group_id: string
+  page_num: string
+  item_count: string
+  ship_id?: string
+}
+
+export const fetchNoticeList = async (params: NoticeListParams) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_NOTICE_LIST(params),
+  })
+}
+
+export interface UserSpecificHealthParams {
+  user_id: number //user_index
+  search_start_datetime: string
+  search_end_datetime: string
+}
+
+export const fetchUserSpecificHealth = async (
+  params: UserSpecificHealthParams,
+) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_USER_SPECIFIC_HEALTH(params),
   })
 }

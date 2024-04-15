@@ -234,7 +234,7 @@ export default function GroupAdd() {
     const res = await postAddShip(parseIntData)
     if (res?.status === 201) {
       alert('생성 완료')
-      router.push(PATHS.GROUP_INFO)
+      router.push(PATHS.GROUP_INFO())
     }
     console.log('🚀 ~ parseIntData ~ parseIntData:', parseIntData)
   }
@@ -249,7 +249,7 @@ export default function GroupAdd() {
       <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
       <ShipDrawing />
       <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
-        <Link href={PATHS.GROUP_INFO}>
+        <Link href={PATHS.GROUP_INFO()}>
           <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
             취소
           </button>

@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import battery from '/public/icons/board-battery.svg'
 import heart from '/public/icons/board-heart.svg'
@@ -5,6 +7,8 @@ import leave from '/public/icons/board-leave.svg'
 import personnel from '/public/icons/board-personnel.svg'
 import sos from '/public/icons/board-sos.svg'
 import warnning from '/public/icons/board-warnning.svg'
+import { SlideDropDown, SmallSlideDropDown } from '../common/SlideDropDown'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 const dashBoardList = [
   { iconSrc: personnel, name: '충원' },
@@ -31,11 +35,22 @@ const dashBoardList = [
 ]
 
 export const CrewStatus = () => {
+  const isMobile = useMediaQuery('768')
+
   return (
-    <div>
-      <div className="text-[20px] font-bold">
-        승선원 현황
-        <span className="text-[14px] font-normal"> 2024년 03월 01일</span>
+    <div className="flex max-w-[636px] flex-col gap-[12px]">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-[8px]">
+          <div className="text-[20px] font-bold">승선원 현황</div>
+          <div className="text-[14px] font-normal"> 2024년 03월 01일</div>
+        </div>
+        <div className="flex items-center gap-[10px]">
+          {isMobile ? null : <div>선박 선택</div>}
+          <SmallSlideDropDown
+            id="main_ship_dropdown"
+            dropData={[[{ value: '1', label: '강원호' }]]}
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-3 gap-[8px] md:w-[636px] md:gap-[16px]">

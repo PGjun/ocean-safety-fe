@@ -20,22 +20,24 @@ export default function SosSettingsPage() {
           </div>
         </div>
         <div className="rounded-[8px] border-[#E9ECEF] md:border md:p-[28px]">
-          <div className="text-[18px] font-bold">체온 SOS 설정</div>
+          <div className="text-[18px] font-bold">피부온도 SOS 설정</div>
           <div className="grid md:grid-cols-2 md:gap-[48px] md:p-[8px]">
-            <Slider title="최저 체온" min={30} max={35} />
-            <Slider title="최대 체온" min={35} max={45} />
+            <Slider title="최저 피부온도" min={30} max={35} />
+            <Slider title="최대 피부온도" min={35} max={45} />
           </div>
         </div>
-        <div className="rounded-[8px] border-[#E9ECEF] md:border md:p-[28px]">
-          <div className="text-[18px] font-bold">배터리 SOS 설정</div>
-          <div className="grid md:p-[8px]">
-            <Slider title="배터리량" min={1} max={100} />
+        <div className="flex flex-col gap-[20px] md:flex-row">
+          <div className="w-full rounded-[8px] border-[#E9ECEF] md:border md:p-[28px]">
+            <div className="text-[18px] font-bold">배터리 SOS 설정</div>
+            <div className="grid md:p-[8px]">
+              <Slider title="배터리량" min={1} max={100} />
+            </div>
           </div>
-        </div>
-        <div className="rounded-[8px] border-[#E9ECEF] md:border md:p-[28px]">
-          <div className="text-[18px] font-bold">산소포화도 SOS 설정</div>
-          <div className="grid md:p-[8px]">
-            <Slider title="산소포화도량" min={1} max={100} />
+          <div className="w-full rounded-[8px] border-[#E9ECEF] md:border md:p-[28px]">
+            <div className="text-[18px] font-bold">산소포화도 SOS 설정</div>
+            <div className="grid md:p-[8px]">
+              <Slider title="산소포화도량" min={1} max={100} />
+            </div>
           </div>
         </div>
       </div>
