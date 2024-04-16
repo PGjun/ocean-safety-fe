@@ -1,13 +1,10 @@
 'use client'
 
-import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { UserHealth, fetchUserHealthList } from '@/services/api/user'
 import { useEffect, useState } from 'react'
-import { GenericTable } from './GenericTable'
+import { GenericTable } from '../common/GenericTable'
 
 export const CrewHealthInfo = () => {
-  const isMobile = useMediaQuery('768')
-
   const [healthList, setHealthList] = useState([])
   const [shipId, setShipId] = useState<number | null>(null)
 
@@ -28,39 +25,34 @@ export const CrewHealthInfo = () => {
     <div>
       <div className="text-[20px] font-bold">승선원 건강정보</div>
 
-      {isMobile ? (
-        <div className="border-t border-[#c4c4c4]">
-          {healthList &&
-            healthList.map((item: UserHealth, idx) => (
-              <div key={idx} className="border-b p-[16px] text-[12px]">
-                <div>
-                  No. {idx + 1} 이름 : {item.name}
-                </div>
-                <div>
-                  심박수 : {item.health_rate} 혈압 : {item.blood_pressure} 체온
-                  : {item.temperature} 산소포화도 : {item.oxygen_saturation}
-                </div>
-                <div>기록일시 : {item.health_date}</div>
-              </div>
-            ))}
-        </div>
-      ) : (
-        <GenericTable
-          columns={[
-            { field: 'id', title: 'No', width: '50px' },
-            { field: 'name', title: '이름', width: '2fr' },
-            { field: 'health_rate', title: '심박수', width: '2fr' },
-            { field: 'blood_pressure', title: '혈압', width: '2fr' },
-            { field: 'temperature', title: '체온', width: '2fr' },
-            { field: 'oxygen_saturation', title: '산소포화도', width: '3fr' },
-            { field: 'health_date', title: '기록 일시', width: '5fr' },
-          ]}
-          data={healthList}
-          onRowClick={(item: UserHealth) => {
-            setShipId(item.id)
-          }}
-        />
-      )}
+      <GenericTable
+        mobileContents={(item: UserHealth, idx) => (
+          <>
+            <div>
+              No. {idx + 1} &nbsp; {item.name}
+            </div>
+            <div>
+              심박수 : {item.health_rate} 혈압 : {item.blood_pressure} 체온 :{' '}
+              {item.temperature} 산소포화도 : {item.oxygen_saturation}
+            </div>
+            <div>기록일시 : {item.health_date}</div>
+          </>
+        )}
+        columns={[
+          { field: 'id', title: 'No', width: '50px' },
+          { field: 'name', title: '이름', width: '2fr' },
+          { field: 'health_rate', title: '심박수', width: '2fr' },
+          { field: 'blood_pressure', title: '혈압', width: '2fr' },
+          { field: 'temperature', title: '체온', width: '2fr' },
+          { field: 'oxygen_saturation', title: '산소포화도', width: '3fr' },
+          { field: 'health_date', title: '기록 일시', width: '5fr' },
+        ]}
+        hover={false}
+        data={healthList}
+        onRowClick={(item: UserHealth) => {
+          setShipId(item.id)
+        }}
+      />
     </div>
   )
 }

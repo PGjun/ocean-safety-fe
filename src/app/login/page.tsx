@@ -1,7 +1,6 @@
 'use client'
 
-import { LoginParams, postUserLogin } from '@/services/api/user'
-import Link from 'next/link'
+import { postUserLogin } from '@/services/api/user'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 

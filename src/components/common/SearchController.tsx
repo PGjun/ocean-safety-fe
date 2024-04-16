@@ -1,6 +1,6 @@
 import { Controller } from 'react-hook-form'
 
-export const SearchBox = ({
+export const SearchController = ({
   control,
   name,
   label,

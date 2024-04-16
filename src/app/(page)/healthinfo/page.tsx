@@ -1,27 +1,26 @@
 'use client'
 
-import { CommonIcon } from '@/components/SvgIcons'
-import { SearchBox } from '@/components/common/SearchBox'
-import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { SearchController } from '@/components/common/SearchController'
 import { useForm } from 'react-hook-form'
 import { HealthSearchTable } from './components/HealthSearchTable'
 import Link from 'next/link'
 import { PATHS } from '@/constants/paths'
-import LineChart from './components/Chart'
 import { SearchParams } from '@/components/common/Pagination'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { DatePickerController } from '@/components/common/DatePicker'
 import moment from 'moment'
 import { HealthChartDetailTab } from './components/HealthChartDetailTab'
+import { GenericSearchForm } from '@/components/common/GenericSearchForm'
+import { SearchFields } from '@/types/common'
 
 // 필드 설정을 포함한 배열 정의
-const Searhfields = [
+const searchFields: SearchFields = [
   {
     name: 'search_ship',
     label: '선박명',
     placeholder: '선박명을 입력해 주세요.',
-    component: SearchBox,
+    component: SearchController,
     width: 176,
   },
   {
@@ -35,7 +34,7 @@ const Searhfields = [
     name: 'search_name',
     label: '이름',
     placeholder: '이름을 입력해 주세요.',
-    component: SearchBox,
+    component: SearchController,
     width: 166,
   },
 ]
@@ -47,8 +46,6 @@ export default function HealthInfoPage(pageProps: {
   const searchParams = pageProps.searchParams
 
   const router = useRouter()
-
-  const isMobile = useMediaQuery('768')
 
   const [userIndex, setUserIndex] = useState<number | null>(null)
 
@@ -87,28 +84,14 @@ export default function HealthInfoPage(pageProps: {
   return (
     <div className="md:mx-[40px]">
       <div className="text-[22px] font-bold md:text-[26px]">건강정보 기록</div>
+      <GenericSearchForm
+        control={control}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        searchFields={searchFields}
+        searchParams={searchParams}
+      />
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mt-[10px] flex flex-col gap-[8px] border border-[#E9ECEF] bg-[#F8F9FA] p-[28px] md:flex-row">
-          <div className="grid gap-[8px] md:grid-cols-[repeat(6,auto)]">
-            {Searhfields.map((field, index) => {
-              const value = searchParams[field.name]
-              return (
-                <div
-                  key={index}
-                  className="w-full"
-                  style={{ width: isMobile ? '100%' : field.width }}
-                >
-                  <field.component control={control} {...field} value={value} />
-                </div>
-              )
-            })}
-            <button className="flex items-center justify-center gap-[8px] rounded bg-[#333333] px-[28px] py-[10px] text-[16px] text-white md:text-[18px]">
-              <CommonIcon.Search /> 검색
-            </button>
-          </div>
-        </div>
-      </form>
       <div className="mt-[20px] flex items-end justify-between">
         <div>
           검색결과
@@ -130,9 +113,6 @@ export default function HealthInfoPage(pageProps: {
         />
       </div>
       <div className="mt-[20px] text-[18px] font-bold">건강정보 상세</div>
-      {/* <div className="mt-[6px] h-[150px] border px-[5px] pb-[5px] pt-[10px] md:h-[340px] md:px-[30px] md:pt-[40px]">
-        <LineChart userIndex={userIndex} />
-      </div> */}
       <HealthChartDetailTab userIndex={userIndex} />
     </div>
   )

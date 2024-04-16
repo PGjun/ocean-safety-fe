@@ -1,5 +1,6 @@
 'use client'
 
+import { CreateDataTable } from '@/components/common/CreateDataTable'
 import { DatePickerSingle } from '@/components/common/DatePicker'
 import { PATHS } from '@/constants/paths'
 import { postAddShip } from '@/services/api/user'
@@ -248,6 +249,17 @@ export default function GroupAdd() {
       />
       <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
       <ShipDrawing />
+      <div className="my-[20px]">
+        <CreateDataTable
+          columns={[
+            { field: 'no', title: 'No', width: '50px' },
+            { field: '1', title: '기기명', width: '1fr' },
+            { field: '2', title: '기종', width: '1fr' },
+            { field: '3', title: '등록 일시', width: '1fr' },
+            { field: '4', title: '기기번호', width: '1fr' },
+          ]}
+        />
+      </div>
       <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
         <Link href={PATHS.GROUP_INFO()}>
           <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">

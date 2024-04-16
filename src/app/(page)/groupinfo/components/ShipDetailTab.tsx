@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { ShipDetail } from './ShipDetail'
 import { WearableList } from './WearableList'
 
-const TabGroup = [
+const tabGroup = [
   {
     tabId: 'tab1',
     tabName: '선박 정보',
@@ -20,7 +20,7 @@ export const ShipDetailTab = ({ shipId }: { shipId: number | null }) => {
     <>
       <>
         <div className="mt-[10px] flex gap-1 overflow-x-auto whitespace-nowrap border-b-[2px] border-[#2262C6] font-bold">
-          {TabGroup.map((tab, idx) => {
+          {tabGroup.map((tab, idx) => {
             const Default = 'bg-[#F3F5FF] text-[#2262C6]'
             const Active = 'bg-[#2262C6] text-white'
             return (

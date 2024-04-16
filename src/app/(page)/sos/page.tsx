@@ -1,7 +1,6 @@
 'use client'
 
 import GoogleMapWrapper from '@/components/common/GoogleMapWrapper'
-import { CommonIcon } from '@/components/SvgIcons'
 import { SearchParams } from '@/components/common/Pagination'
 import { PATHS } from '@/constants/paths'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
@@ -9,37 +8,39 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { Control, Controller, useForm } from 'react-hook-form'
 import DropDown from '@/components/common/DropDown'
-import { SearchBox } from '@/components/common/SearchBox'
+import { SearchController } from '@/components/common/SearchController'
 import { SosListTable } from './components/SosListTable'
 import { DatePickerController } from '@/components/common/DatePicker'
 import { useRouter } from 'next/navigation'
 import moment from 'moment'
+import { GenericSearchForm } from '@/components/common/GenericSearchForm'
+import { SearchFields } from '@/types/common'
 
-const DropWrapper = ({
+const DropController = ({
   placeholder,
   dropData,
   control,
   name,
   label,
 }: {
-  placeholder: string
+  placeholder?: string
   dropData?: { value: string; label: string }[]
   control: Control
   name: string
-  label: string
+  label?: string
 }) => {
   return (
-    <label
-      htmlFor={name}
-      className="flex flex-col rounded border border-[#DEE2E6] bg-white py-[16px]"
-    >
-      <div className="px-[16px] text-[14px] font-bold md:text-[12px]">
-        {label}
-      </div>
-      <Controller
-        control={control}
-        name={name}
-        render={({ field }) => (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <label
+          htmlFor={name}
+          className="flex flex-col rounded border border-[#DEE2E6] bg-white py-[16px]"
+        >
+          <div className="px-[16px] text-[14px] font-bold md:text-[12px]">
+            {label}
+          </div>
           <DropDown.Content
             fieldValue={field.value}
             fieldOnChange={field.onChange}
@@ -47,19 +48,19 @@ const DropWrapper = ({
             dropData={dropData}
             placeholder={placeholder}
           />
-        )}
-      />
-    </label>
+        </label>
+      )}
+    />
   )
 }
 
 // 필드 설정을 포함한 배열 정의
-const Searhfields = [
+const searchFields: SearchFields = [
   {
     name: 'search_ship',
     label: '선박명',
     placeholder: '선박명을 입력해 주세요.',
-    component: SearchBox,
+    component: SearchController,
     width: 176,
   },
   {
@@ -73,14 +74,14 @@ const Searhfields = [
     name: 'search_name',
     label: '이름',
     placeholder: '이름을 입력해 주세요.',
-    component: SearchBox,
+    component: SearchController,
     width: 166,
   },
   {
     name: 'search_code',
     label: '응급코드',
     placeholder: '==선택==',
-    component: DropWrapper,
+    component: DropController,
     width: 129,
     dropData: [
       { value: '0', label: 'SOS' },
@@ -91,7 +92,7 @@ const Searhfields = [
     name: 'search_status',
     label: '처리현황',
     placeholder: '==선택==',
-    component: DropWrapper,
+    component: DropController,
     width: 129,
     dropData: [
       { value: '0', label: '처리완료' },
@@ -160,26 +161,14 @@ export default function SosPage(pageProps: {
   return (
     <div className="md:mx-[40px]">
       <div className="text-[22px] font-bold md:text-[26px]">SOS 내역</div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mt-[10px] flex flex-col gap-[8px] border border-[#E9ECEF] bg-[#F8F9FA] p-[28px] md:flex-row">
-          <div className="grid gap-[8px] md:grid-cols-[repeat(6,auto)]">
-            {Searhfields.map((field, index) => {
-              return (
-                <div
-                  key={index}
-                  className="w-full"
-                  style={{ width: isMobile ? '100%' : field.width }}
-                >
-                  <field.component control={control} {...field} />
-                </div>
-              )
-            })}
-            <button className="flex items-center justify-center gap-[3px] rounded bg-[#333333] px-[28px] py-[10px] text-white">
-              <CommonIcon.Search /> 검색
-            </button>
-          </div>
-        </div>
-      </form>
+      <GenericSearchForm
+        control={control}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        searchFields={searchFields}
+        searchParams={searchParams}
+      />
+
       <div className="mt-[20px] text-[18px]">
         검색결과 <span className="font-bold">{22}</span>건
       </div>

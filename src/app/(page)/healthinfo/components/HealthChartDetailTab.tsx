@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import LineChartExample from './Chart'
 import { fetchUserSpecificHealth } from '@/services/api/user'
 import moment from 'moment'
+import LineChart from './Chart'
 
-const TabGroup = [
+const tabGroup = [
   {
     tabId: 'tab1',
     tabName: '전체',
@@ -107,10 +107,25 @@ export const HealthChartDetailTab = ({
     getUserSpecificHealthList()
   }, [userIndex])
 
+  const filteredChartData = () => {
+    if (activeTab === 'tab1') {
+      return chartData
+    }
+    const dataset = chartData.datasets.find(
+      (dataset) =>
+        dataset.label ===
+        tabGroup.find((tab) => tab.tabId === activeTab)?.tabName,
+    )
+    return {
+      labels: chartData.labels,
+      datasets: dataset ? [dataset] : [],
+    }
+  }
+
   return (
     <>
       <div className="mt-[10px] flex gap-1 overflow-x-auto whitespace-nowrap border-b-[2px] border-[#2262C6] font-bold">
-        {TabGroup.map((tab, idx) => {
+        {tabGroup.map((tab, idx) => {
           const Default = 'bg-[#F3F5FF] text-[#2262C6]'
           const Active = 'bg-[#2262C6] text-white'
           return (
@@ -125,12 +140,9 @@ export const HealthChartDetailTab = ({
         })}
       </div>
 
-      {activeTab === 'tab1' && (
-        <div className="mt-[6px] h-[150px] border px-[5px] pb-[5px] pt-[10px] md:h-[340px] md:px-[30px] md:pt-[40px]">
-          <LineChartExample chartData={chartData} />
-        </div>
-      )}
-      {activeTab === 'tab2' && null}
+      <div className="mt-[6px] h-[150px] border px-[5px] pb-[5px] pt-[10px] md:h-[340px] md:px-[30px] md:pt-[40px]">
+        <LineChart chartData={filteredChartData()} />
+      </div>
     </>
   )
 }

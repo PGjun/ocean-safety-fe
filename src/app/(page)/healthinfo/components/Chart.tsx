@@ -85,10 +85,10 @@ const options = {
   },
 }
 
-const LineChartExample = ({ chartData }: { chartData: any }) => (
+const LineChart = ({ chartData }: { chartData: any }) => (
   <div className="h-full w-full">
     <Line data={chartData} options={options} />
   </div>
 )
 
-export default LineChartExample
+export default LineChart

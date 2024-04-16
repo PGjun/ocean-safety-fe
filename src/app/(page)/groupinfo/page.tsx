@@ -1,6 +1,5 @@
 'use client'
 
-import { CommonIcon } from '@/components/SvgIcons'
 import { SearchParams } from '@/components/common/Pagination'
 import { PATHS } from '@/constants/paths'
 import Link from 'next/link'
@@ -9,6 +8,26 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { ShipListTable } from './components/ShipListTable'
 import { ShipDetailTab } from './components/ShipDetailTab'
+import { GenericSearchForm } from '@/components/common/GenericSearchForm'
+import { SearchFields } from '@/types/common'
+import { SearchController } from '@/components/common/SearchController'
+
+const searchFields: SearchFields = [
+  {
+    name: 'search_group',
+    label: '그룹명',
+    placeholder: '그룹명을 입력해 주세요.',
+    component: SearchController,
+    width: 312,
+  },
+  {
+    name: 'search_ship',
+    label: '선박명',
+    placeholder: '선박명을 입력해 주세요.',
+    component: SearchController,
+    width: 312,
+  },
+]
 
 export default function GroupInfoPage(pageProps: {
   params: {}
@@ -18,7 +37,9 @@ export default function GroupInfoPage(pageProps: {
 
   const router = useRouter()
 
-  const { register, handleSubmit } = useForm()
+  const { handleSubmit, control } = useForm()
+
+  const [query, setQuery] = useState<any>()
 
   const [shipId, setShipId] = useState<number | null>(null)
 
@@ -28,43 +49,21 @@ export default function GroupInfoPage(pageProps: {
   }
 
   const onSubmit = (data: SearchData) => {
-    router.push(PATHS.GROUP_INFO({ ...data, page_num: '1' }))
+    setQuery(data)
+
+    router.push(PATHS.GROUP_INFO({ page_num: '1' }))
   }
 
   return (
     <div className="md:mx-[40px]">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="text-[26px] font-bold">그룹(선박) 정보</div>
-        <div className="mt-[10px] flex flex-col gap-[8px] border border-[#E9ECEF] bg-[#F8F9FA] p-[28px] md:flex-row">
-          <div className="grid gap-[8px] md:w-[650px] md:grid-cols-2">
-            <div className="w-full rounded border border-[#DEE2E6] bg-white px-[24px] py-[18px] md:w-[313px] md:py-[10px]">
-              <div className="text-[14px] font-bold md:text-[12px]">그룹명</div>
-              <input
-                {...register('search_group', {
-                  value: searchParams.search_group,
-                })}
-                type="text"
-                className="w-full bg-white md:text-[14px]"
-                placeholder="그룹명을 입력해 주세요."
-              />
-            </div>
-            <div className="w-full rounded border border-[#DEE2E6] bg-white px-[24px] py-[18px] md:w-[313px] md:py-[10px]">
-              <div className="text-[14px] font-bold md:text-[12px]">선박명</div>
-              <input
-                {...register('search_ship', {
-                  value: searchParams.search_ship,
-                })}
-                type="text"
-                className="w-full bg-white md:text-[14px]"
-                placeholder="선박명을 입력해 주세요."
-              />
-            </div>
-          </div>
-          <button className="flex items-center gap-[3px] rounded bg-[#333333] px-[28px] py-[10px] text-white">
-            <CommonIcon.Search /> 검색
-          </button>
-        </div>
-      </form>
+      <div className="text-[26px] font-bold">그룹(선박) 정보</div>
+      <GenericSearchForm
+        control={control}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        searchFields={searchFields}
+        searchParams={searchParams}
+      />
 
       <div className="mt-[40px] flex items-center justify-between">
         <div className="text-[18px] font-bold">선박 정보</div>
@@ -75,7 +74,11 @@ export default function GroupInfoPage(pageProps: {
         </Link>
       </div>
 
-      <ShipListTable searchParams={searchParams} setShipId={setShipId} />
+      <ShipListTable
+        searchParams={searchParams}
+        setShipId={setShipId}
+        query={query}
+      />
       {shipId && (
         <div className="relative">
           <div className="mt-[40px] flex items-center justify-between">

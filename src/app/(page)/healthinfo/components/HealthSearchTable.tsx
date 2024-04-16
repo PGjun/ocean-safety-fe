@@ -1,9 +1,7 @@
 import { Pagination, SearchParams } from '@/components/common/Pagination'
-import { GenericTable } from '@/components/main/GenericTable'
+import { GenericTable } from '@/components/common/GenericTable'
 import { PATHS } from '@/constants/paths'
-import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { UserHealth, fetchUserHealthList } from '@/services/api/user'
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 export const HealthSearchTable = ({
@@ -15,8 +13,6 @@ export const HealthSearchTable = ({
   query: any
   setUserIndex: (useIndex: number) => void
 }) => {
-  const isMobile = useMediaQuery('768')
-
   const [healthList, setHealthList] = useState([])
 
   const pageSize = '5'
@@ -46,41 +42,36 @@ export const HealthSearchTable = ({
 
   return (
     <div className="flex-1">
-      {isMobile ? (
-        <div className="mt-[10px] border-t border-[#c4c4c4]">
-          {healthList &&
-            healthList.map((item: UserHealth, idx) => (
-              <Link key={idx} href={PATHS.SOS_DETAIL}>
-                <div className="border-b p-[8px] text-[12px]">
-                  <div>{`No. ${idx + 1} 이름 : ${item.name}`}</div>
-                  <div>
-                    {`심박수 : ${item.health_rate} 혈압 : ${item.blood_pressure}`}
-                  </div>
-                  <div>
-                    {`체온 : ${item.temperature} 산소포화도 : ${item.oxygen_saturation}`}
-                  </div>
-                  <div>{`기록일시 : ${item.health_date}`}</div>
-                </div>
-              </Link>
-            ))}
-        </div>
-      ) : (
-        <GenericTable
-          columns={[
-            { field: 'id', title: 'No', width: '1fr' },
-            { field: 'name', title: '이름', width: '2fr' },
-            { field: 'health_rate', title: '심박수', width: '2fr' },
-            { field: 'blood_pressure', title: '혈압', width: '2fr' },
-            { field: 'temperature', title: '체온', width: '2fr' },
-            { field: 'oxygen_saturation', title: '산소포화도', width: '3fr' },
-            { field: 'health_date', title: '기록 일시', width: '5fr' },
-          ]}
-          data={healthList}
-          onRowClick={(item: UserHealth) => {
-            setUserIndex(item.user_index)
-          }}
-        />
-      )}
+      <GenericTable
+        mobileContents={(item: UserHealth, idx) => (
+          <>
+            <div className="space-x-1">
+              <span>No. {idx + 1}</span>
+              <span>{item.name}</span>
+            </div>
+            <div className="space-x-1">
+              <span>심박수 : {item.health_rate}</span>
+              <span>혈압 : {item.blood_pressure}</span>
+              <span>피부온도 : {item.temperature}</span>
+              <span>산소포화도 : {item.oxygen_saturation}</span>
+            </div>
+            <div>기록일시 : {item.health_date}</div>
+          </>
+        )}
+        columns={[
+          { field: 'id', title: 'No', width: '1fr' },
+          { field: 'name', title: '이름', width: '2fr' },
+          { field: 'health_rate', title: '심박수', width: '2fr' },
+          { field: 'blood_pressure', title: '혈압', width: '2fr' },
+          { field: 'temperature', title: '피부온도', width: '2fr' },
+          { field: 'oxygen_saturation', title: '산소포화도', width: '3fr' },
+          { field: 'health_date', title: '기록 일시', width: '5fr' },
+        ]}
+        data={healthList}
+        onRowClick={(item: UserHealth) => {
+          setUserIndex(item.user_index)
+        }}
+      />
       <div className="mt-[20px] flex w-full justify-center">
         <Pagination
           path={PATHS.HEALTH_INFO}

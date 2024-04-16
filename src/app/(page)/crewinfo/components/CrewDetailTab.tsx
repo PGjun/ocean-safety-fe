@@ -1,11 +1,11 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { CrewDetail } from './CrewDetail'
 import { WearableInfo } from './WearableInfo'
 import { AreaSettings } from './AreaSettings'
 import { GroupInfo } from './GroupInfo'
 import { SosInfo } from './SosInfo'
 
-const TabGroup = [
+const tabGroup = [
   {
     tabId: 'tab1',
     tabName: '승선원내역',
@@ -34,7 +34,7 @@ export const CrewDetailTab = ({ userId }: { userId: number | null }) => {
   return (
     <>
       <div className="mt-[10px] flex gap-1 overflow-x-auto whitespace-nowrap border-b-[2px] border-[#2262C6] font-bold">
-        {TabGroup.map((tab, idx) => {
+        {tabGroup.map((tab, idx) => {
           const Default = 'bg-[#F3F5FF] text-[#2262C6]'
           const Active = 'bg-[#2262C6] text-white'
           return (

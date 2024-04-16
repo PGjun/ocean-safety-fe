@@ -1,4 +1,4 @@
-import { GenericTable } from '@/components/main/GenericTable'
+import { GenericTable } from '@/components/common/GenericTable'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 export const WearableInfo = () => {
