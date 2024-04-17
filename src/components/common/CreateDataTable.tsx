@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
-import { ReactNode } from 'react'
 import { CommonIcon } from '@/icons/common'
 
 export interface ColProps {
@@ -66,42 +65,72 @@ export const CreateDataTable = ({
     </div>
   )
 
+  const renderMobile = (item: any, idx: number) => (
+    <div key={idx} className="border-b p-[16px] text-[12px] hover:bg-slate-50">
+      {columns.map((col, colIdx) => {
+        // if (colIdx === 0) return <div key={idx}>{idx + 1}</div>
+        return (
+          <div key={idx} className="mb-[5px] flex items-center">
+            <label htmlFor="" className="w-[60px]">
+              {col.title}
+            </label>
+            {colIdx === 0 ? (
+              <div>{idx + 1}</div>
+            ) : (
+              <input
+                type="text"
+                value={item[col.field] || ''}
+                onChange={(e) =>
+                  handleInputChange(e.target.value, idx, col.field)
+                }
+                className="flex-1 border p-[4px]"
+              />
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+
   return (
     <div>
-      {isMobile ? (
-        // 모바일 뷰는 간단한 텍스트 입력으로 대체될 수 있습니다.
-        <div>Mobile view is not fully implemented yet.</div>
-      ) : (
-        <>
-          <div className="flex justify-end gap-1">
-            <button
-              type="button"
-              onClick={addRow}
-              className="mt-[10px] flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#888888] hover:bg-gray-50"
-            >
-              <CommonIcon.Plus />
-            </button>
-            <button
-              type="button"
-              onClick={() => removeRow(data.length - 1)}
-              className="mt-[10px] flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#888888] hover:bg-gray-50"
-            >
-              <CommonIcon.Minus />
-            </button>
+      <div className="flex justify-end gap-1">
+        <button
+          type="button"
+          onClick={addRow}
+          className="mt-[10px] flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#888888] hover:bg-gray-50"
+        >
+          <CommonIcon.Plus />
+        </button>
+        <button
+          type="button"
+          onClick={() => removeRow(data.length - 1)}
+          className="mt-[10px] flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#888888] hover:bg-gray-50"
+        >
+          <CommonIcon.Minus />
+        </button>
+      </div>
+      <div className="mt-[10px]">
+        {isMobile ? (
+          <div className="border-t border-[#c4c4c4]">
+            {data.map(renderMobile)}
           </div>
-          <div
-            className="mt-[10px] grid border-y border-[#c4c4c4] px-[20px] text-center"
-            style={{ gridTemplateColumns: `${gridTemplateColumns}` }}
-          >
-            {columns.map((col, idx) => (
-              <div key={idx} className="py-[10px] text-[14px] font-bold">
-                {col.title}
-              </div>
-            ))}
-          </div>
-          {data.map(renderRow)}
-        </>
-      )}
+        ) : (
+          <>
+            <div
+              className="grid border-y border-[#c4c4c4] px-[20px] text-center"
+              style={{ gridTemplateColumns: `${gridTemplateColumns}` }}
+            >
+              {columns.map((col, idx) => (
+                <div key={idx} className="py-[10px] text-[14px] font-bold">
+                  {col.title}
+                </div>
+              ))}
+            </div>
+            {data.map(renderRow)}
+          </>
+        )}
+      </div>
     </div>
   )
 }
