@@ -16,7 +16,10 @@ export const PATHS = {
     const query = getQueryString(params)
     return `/sos?${query}`
   },
-  SOS_DETAIL: '/sos/detail',
+  SOS_DETAIL: (params = { sos_id: '1' }) => {
+    const query = getQueryString(params)
+    return `/sos/detail?${query}`
+  },
   FALL_DETECTION: '/falldetection',
   HEALTH_INFO: (params = { page_num: '1' }) => {
     const query = getQueryString(params)
@@ -27,4 +30,9 @@ export const PATHS = {
     const query = getQueryString(params)
     return `/notice?${query}`
   },
+  NOTICE_DETAIL: (params = { notice_id: '1' }) => {
+    const query = getQueryString(params)
+    return `/notice/detail?${query}`
+  },
+  NOTICE_ADD: `/notice/add`,
 }

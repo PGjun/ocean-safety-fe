@@ -1,3 +1,5 @@
+import { SearchParams } from '@/components/common/Pagination'
+import { UserEmergencyData } from '@/services/api/user'
 import { ReactNode } from 'react'
 import { Control } from 'react-hook-form'
 
@@ -19,3 +21,8 @@ export interface SearchField {
 }
 
 export type SearchFields = SearchField[]
+
+export interface PageProps<T> {
+  params: {}
+  searchParams: T
+}

@@ -20,6 +20,15 @@ const useWebSocket = () => {
       reconnectionDelay: 10000, //재연결 시도 간격
     })
 
+    socket.on('enter_room', () => {
+      socket.emit('enter_room', {
+        group_id: 1012303120,
+        ship_id: 123,
+        user_id: 123,
+        is_admin: true,
+      })
+    })
+
     socket.on('emergencyCall', (modalData: ModalData) => {
       const modalId = useModalStore
         .getState()

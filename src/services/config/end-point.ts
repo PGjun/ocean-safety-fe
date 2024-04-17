@@ -42,6 +42,10 @@ const USER = {
     const query = getQueryString(params)
     return `${API_USER}/getNoticeList?${query}`
   },
+  GET_SPECIFIC_NOTICE: (notice_id: string) => {
+    return `${API_USER}/getSpecificNotice?notice_id=${notice_id}`
+  },
+  ADD_NOTICE: `${API_USER}/addNotice`,
   GET_USER_SPECIFIC_HEALTH: (params: UserSpecificHealthParams) => {
     const query = getQueryString(params)
     return `${API_USER}/getUserSpecificHealth?${query}`

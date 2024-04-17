@@ -38,7 +38,7 @@ const Emergencies = ({
         >
           취소
         </button>
-        <Link href={PATHS.SOS_DETAIL}>
+        <Link href={PATHS.SOS_DETAIL()}>
           <button
             onClick={closeModal}
             className="flex-1 rounded border border-[#333333] bg-[#333333] px-[60px] py-[15px] text-[14px] font-bold text-white md:px-[80px]"

@@ -92,7 +92,7 @@ export default function HealthInfoPage(pageProps: {
         searchParams={searchParams}
       />
 
-      <div className="mt-[20px] flex items-end justify-between">
+      <div className="mb-[10px] mt-[20px] flex items-end justify-between">
         <div>
           검색결과
           <span className="text-[18px] font-bold leading-[18px]">{` 22`}</span>
@@ -105,13 +105,12 @@ export default function HealthInfoPage(pageProps: {
           </button>
         </Link>
       </div>
-      <div className="flex gap-[20px]">
-        <HealthSearchTable
-          searchParams={searchParams}
-          query={query}
-          setUserIndex={setUserIndex}
-        />
-      </div>
+
+      <HealthSearchTable
+        searchParams={searchParams}
+        query={query}
+        setUserIndex={setUserIndex}
+      />
       <div className="mt-[20px] text-[18px] font-bold">건강정보 상세</div>
       <HealthChartDetailTab userIndex={userIndex} />
     </div>

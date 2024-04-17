@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation'
 import moment from 'moment'
 import { GenericSearchForm } from '@/components/common/GenericSearchForm'
 import { SearchFields } from '@/types/common'
+import { UserEmergencyData } from '@/services/api/user'
 
 const DropController = ({
   placeholder,
@@ -111,7 +112,7 @@ export default function SosPage(pageProps: {
 
   const isMobile = useMediaQuery('768')
 
-  const [sosId, setSosId] = useState<number | null>(null)
+  const [sosData, setSosData] = useState<UserEmergencyData | null>(null)
   const [location, setLocation] = useState<
     { lng: number; lat: number } | undefined
   >()
@@ -175,8 +176,7 @@ export default function SosPage(pageProps: {
       <div className="flex gap-[20px]">
         <SosListTable
           searchParams={searchParams}
-          sosId={sosId}
-          setSosId={setSosId}
+          setSosData={setSosData}
           setLocation={setLocation}
           query={query}
         />
@@ -186,7 +186,12 @@ export default function SosPage(pageProps: {
               <GoogleMapWrapper location={location} />
             </div>
 
-            <Link href={PATHS.SOS_DETAIL}>
+            <Link
+              href={PATHS.SOS_DETAIL({
+                sos_id: sosData?.id?.toString() ?? '1',
+                ...sosData,
+              })}
+            >
               <button className="w-full rounded border border-[#888888] py-[5px] font-bold">
                 상세보기
               </button>

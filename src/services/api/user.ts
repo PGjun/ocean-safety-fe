@@ -1,3 +1,4 @@
+import { convertFormData } from '@/utils/convertFormData'
 import { httpClient } from '../config/api-conf'
 import { END_POINT } from '../config/end-point'
 
@@ -143,6 +144,7 @@ export interface UserHealthListParams {
   group_id: string
   page_num: string
   item_count: string
+  user_id?: string
   ship_id?: string
   search_group?: string
   search_ship?: string
@@ -183,7 +185,7 @@ export interface UserEmergencyListParams {
   search_end_date?: string
 }
 
-export interface UserEmergencyList {
+export interface UserEmergencyData {
   id: number
   longitude: number
   latitude: number
@@ -218,10 +220,45 @@ export const fetchNoticeList = async (params: NoticeListParams) => {
   })
 }
 
+export const fetchSpecificNotice = async (notice_id: string) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_SPECIFIC_NOTICE(notice_id),
+  })
+}
+
 export interface UserSpecificHealthParams {
   user_id: number //user_index
   search_start_datetime: string
   search_end_datetime: string
+}
+
+export interface AddNoticeParams {
+  group_id: number
+  ship_id?: number
+  user_id: number
+  title: string
+  content: string
+  upload_files?: File[]
+  upload_file_names?: string[]
+}
+
+export const postAddNotice = async (params: AddNoticeParams) => {
+  // const formData = new FormData()
+  const formData = convertFormData({ params, excludeKeys: ['upload_files'] })
+
+  if (params.upload_files) {
+    params.upload_files.forEach((file) => {
+      formData.append('upload_files', file, file.name) // 파일 객체의 name 속성 사용
+      formData.append('upload_file_names', file.name) // 파일 객체의 name 속성 사용
+    })
+  }
+
+  return httpClient({
+    method: 'post',
+    endPoint: END_POINT.USER.ADD_NOTICE,
+    data: formData, // FormData 인스턴스를 data로 설정
+  })
 }
 
 export const fetchUserSpecificHealth = async (

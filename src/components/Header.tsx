@@ -1,14 +1,12 @@
 'use client'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery'
-import useWebSocket from '@/hooks/useWebSoket'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 export const Header = () => {
-  const { sendMessage } = useWebSocket()
-
   const currentPath = usePathname()
+
   const isLoginPage = currentPath === '/login'
 
   const isMobile = useMediaQuery('768')
@@ -38,14 +36,6 @@ export const Header = () => {
           </div>
         </div>
       )}
-      {/* <div className="flex gap-2">
-        <button onClick={() => sendMessage('SOS')} className="border">
-          SOS
-        </button>
-        <button onClick={() => sendMessage('FALL')} className="border">
-          FALL
-        </button>
-      </div> */}
     </header>
   )
 }

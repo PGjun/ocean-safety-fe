@@ -19,6 +19,7 @@ const shipDetails = [
 
 export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
   const [detail, setDetail] = useState([{ name: '', title: '', content: '' }])
+  const [shipImg, setShipImg] = useState('')
 
   useEffect(() => {
     const fetchShipDetail = async () => {
@@ -35,6 +36,7 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
           }
         })
         setDetail(updatedShipDetails)
+        setShipImg(res.data.ship_drawings_url)
       }
     }
     fetchShipDetail()
@@ -59,14 +61,17 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
       </div>
       <div className="mt-[50px] text-[18px] font-bold">선박 도면</div>
 
-      <div className="mt-[10px]">
-        <Image
-          src="/temp-ship.png"
-          alt="tempship"
-          width={1100}
-          height={200}
-          style={{ objectFit: 'fill' }}
-        />
+      <div className="mt-[5px] rounded bg-[#F3F2F8] p-[20px] md:p-[40px]">
+        <div className="relative h-[92px] md:h-[248px]">
+          {shipImg !== '' && shipImg !== 'None' && (
+            <Image
+              src={process.env.NEXT_PUBLIC_API_URL + '/' + shipImg}
+              alt="선박 도면 미리보기"
+              layout="fill"
+              objectFit="contain"
+            />
+          )}
+        </div>
       </div>
     </>
   )

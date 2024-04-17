@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { GenericTable } from '../common/GenericTable'
-import { UserEmergencyList, fetchUserEmergencyList } from '@/services/api/user'
+import { UserEmergencyData, fetchUserEmergencyList } from '@/services/api/user'
 import { useRouter } from 'next/navigation'
 import { PATHS } from '@/constants/paths'
 
@@ -34,7 +34,7 @@ export const CrewSos = () => {
       <div className="text-[20px] font-bold">SOS 내역</div>
 
       <GenericTable
-        mobileContents={(item: UserEmergencyList, idx) => (
+        mobileContents={(item: UserEmergencyData, idx) => (
           <>
             <div>
               No. {idx + 1} &nbsp; {item.name}
@@ -68,8 +68,8 @@ export const CrewSos = () => {
           },
         ]}
         data={sosList}
-        onRowClick={(item: UserEmergencyList) => {
-          router.push(PATHS.SOS_DETAIL)
+        onRowClick={(item: UserEmergencyData) => {
+          router.push(PATHS.SOS_DETAIL())
         }}
       />
     </div>

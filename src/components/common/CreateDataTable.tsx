@@ -54,7 +54,7 @@ export const CreateDataTable = ({
         if (colIdx === 0) return <div key={idx}>{idx + 1}</div>
         return (
           <input
-            key={idx}
+            key={'col' + colIdx}
             type="text"
             value={item[col.field] || ''}
             onChange={(e) => handleInputChange(e.target.value, idx, col.field)}
@@ -70,7 +70,7 @@ export const CreateDataTable = ({
       {columns.map((col, colIdx) => {
         // if (colIdx === 0) return <div key={idx}>{idx + 1}</div>
         return (
-          <div key={idx} className="mb-[5px] flex items-center">
+          <div key={'col' + colIdx} className="mb-[5px] flex items-center">
             <label htmlFor="" className="w-[60px]">
               {col.title}
             </label>

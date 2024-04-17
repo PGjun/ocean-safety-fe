@@ -1,20 +1,18 @@
 import { Pagination, SearchParams } from '@/components/common/Pagination'
 import { GenericTable } from '@/components/common/GenericTable'
 import { PATHS } from '@/constants/paths'
-import { UserEmergencyList, fetchUserEmergencyList } from '@/services/api/user'
+import { UserEmergencyData, fetchUserEmergencyList } from '@/services/api/user'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 export const SosListTable = ({
   searchParams,
-  sosId,
-  setSosId,
+  setSosData,
   setLocation,
   query,
 }: {
   searchParams: SearchParams
-  sosId: number | null
-  setSosId: (sos_id: number) => void
+  setSosData: (data: UserEmergencyData) => void
   setLocation: ({ lng, lat }: { lng: number; lat: number }) => void
   query: any
 }) => {
@@ -43,8 +41,8 @@ export const SosListTable = ({
   return (
     <div className="flex-1">
       <GenericTable
-        mobileContents={(item: UserEmergencyList, idx) => (
-          <Link key={idx} href={PATHS.SOS_DETAIL}>
+        mobileContents={(item: UserEmergencyData, idx) => (
+          <Link key={idx} href={PATHS.SOS_DETAIL()}>
             <div className="space-x-1">
               <span>No. {idx + 1}</span>
               <span>이름 : {item.name}</span>
@@ -101,8 +99,8 @@ export const SosListTable = ({
           },
         ]}
         data={sosList}
-        onRowClick={(item: UserEmergencyList) => {
-          setSosId(item.id)
+        onRowClick={(item: UserEmergencyData) => {
+          setSosData(item)
           setLocation({ lng: item.longitude, lat: item.latitude })
         }}
       />

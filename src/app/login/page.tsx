@@ -1,11 +1,16 @@
 'use client'
 
+import { CommonIcon } from '@/icons/common'
 import { postUserLogin } from '@/services/api/user'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 export default function LoginPage() {
   const { register, handleSubmit } = useForm()
+
+  const [showPw, setShowPw] = useState(false)
+  const [keepLogin, setKeepLogin] = useState(false)
 
   const router = useRouter()
 
@@ -13,9 +18,16 @@ export default function LoginPage() {
     console.log(data)
     const res = await postUserLogin(data)
     if (res?.status === 200) {
-      console.log(res)
+      localStorage.setItem('userInfo', JSON.stringify(res.data))
+
       //todo 임시 로그인 변경
-      document.cookie = 'loggedIn=true; path=/'
+      // 로그인 유지 선택
+      if (keepLogin) {
+        const expiresIn = new Date(Date.now() + 86400 * 1000 * 7) // 예: 7일 후 만료
+        document.cookie = `loggedIn=true; path=/; expires=${expiresIn.toUTCString()}`
+      } else {
+        document.cookie = 'loggedIn=true; path=/'
+      }
 
       router.push('/')
     }
@@ -59,16 +71,39 @@ export default function LoginPage() {
           </label>
           <input
             {...register('password')}
-            type="text"
+            type={showPw ? 'text' : 'password'}
             id="password"
             className="flex-1 bg-transparent py-[20px] outline-none placeholder:text-[#888888] md:py-[28px]"
             placeholder="비밀번호를 입력하세요."
           />
+          <button
+            type="button"
+            onClick={() => setShowPw(!showPw)}
+            className="h-[19px] w-[25px] md:h-[24px] md:w-[30px]"
+          >
+            {showPw ? <CommonIcon.PwShow /> : <CommonIcon.PwHidden />}
+          </button>
         </div>
 
-        <div className="mt-[12px] flex items-center gap-[5px]">
-          <input type="checkbox" id="keep-login" />
-          <label htmlFor="keep-login" className="text-[14px] md:text-[18px]">
+        <div className="mt-[12px] flex items-center gap-[8px]">
+          <button
+            id="keep-login"
+            type="button"
+            onClick={() => setKeepLogin(!keepLogin)}
+          >
+            {keepLogin ? (
+              <div className="h-[18px] w-[18px]">
+                <CommonIcon.CheckOn />
+              </div>
+            ) : (
+              <div className="h-[18px] w-[18px] rounded-sm border border-[#888888] hover:border-blue-500 hover:bg-blue-50" />
+            )}
+          </button>
+
+          <label
+            htmlFor="keep-login"
+            className="text-[14px] leading-[21.6px] text-[#666666] md:text-[18px]"
+          >
             로그인 유지
           </label>
         </div>

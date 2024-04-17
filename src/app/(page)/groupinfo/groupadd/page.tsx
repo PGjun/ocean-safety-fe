@@ -3,7 +3,7 @@
 import { CreateDataTable } from '@/components/common/CreateDataTable'
 import { DatePickerSingle } from '@/components/common/DatePicker'
 import { PATHS } from '@/constants/paths'
-import { postAddShip } from '@/services/api/user'
+import { addShipParams, postAddShip } from '@/services/api/user'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -152,9 +152,35 @@ const GroupInfoForm = ({ watch, control }: any) => {
   )
 }
 
-const ShipDrawing = () => {
-  const [file, setFile] = useState({ name: '' })
+const ShipDrawing = ({
+  file,
+  setFile,
+}: {
+  file: File | null
+  setFile: (file: File) => void
+}) => {
+  // const [file, setFile] = useState<File | null>(null)
+  const [preview, setPreview] = useState<string>('')
   const fileRef = useRef<HTMLInputElement>(null)
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : null
+    console.log('🚀 ~ handleFileChange ~ file:', file)
+    if (file) {
+      // 파일이 선택되었을 때만 타입 검사 진행
+      if (file.type === 'image/png' || file.type === 'image/jpeg') {
+        setFile(file)
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          setPreview(reader.result as string)
+        }
+        reader.readAsDataURL(file)
+      } else {
+        alert('PNG, JPG, JPEG 파일만 업로드 가능합니다.')
+      }
+    }
+  }
+
   return (
     <div>
       <div className="text-[18px] font-bold">선박 도면</div>
@@ -163,13 +189,11 @@ const ShipDrawing = () => {
           type="text"
           className="flex-1 bg-white"
           placeholder="선박 도면을 등록해 주세요."
-          value={file.name}
+          value={file ? file.name : ''}
           disabled
         />
         <button
-          onClick={() => {
-            if (fileRef.current !== null) fileRef.current.click()
-          }}
+          onClick={() => fileRef.current?.click()}
           className="rounded border border-[#C4C4C4] px-[12px] py-[2px] text-[12px]"
         >
           파일 업로드
@@ -177,9 +201,8 @@ const ShipDrawing = () => {
         <input
           ref={fileRef}
           type="file"
-          onChange={(e) => {
-            if (e.target.files?.[0]) setFile(e.target.files[0])
-          }}
+          accept="image/png, image/jpeg" // PNG, JPG, JPEG만 선택 가능
+          onChange={handleFileChange}
           className="hidden"
         />
       </div>
@@ -188,19 +211,22 @@ const ShipDrawing = () => {
         선박 도면 미리보기
       </div>
       <div className="mt-[5px] rounded bg-[#F3F2F8] p-[20px] md:p-[40px]">
-        <Image
-          src="/temp-ship.png"
-          alt="tempship"
-          width={1100}
-          height={200}
-          style={{ objectFit: 'fill' }}
-        />
+        <div className="relative h-[92px] md:h-[248px]">
+          {preview && (
+            <Image
+              src={preview}
+              alt="선박 도면 미리보기"
+              layout="fill"
+              objectFit="contain"
+            />
+          )}
+        </div>
       </div>
     </div>
   )
 }
 
-export default function GroupAdd() {
+export default function GroupAddPage() {
   const router = useRouter()
   // useForm에서 defaultValues를 동적으로 생성
   const defaultValues = groupFields.reduce(
@@ -211,16 +237,18 @@ export default function GroupAdd() {
     {},
   )
 
+  const [file, setFile] = useState<File | null>(null)
+
   const { control, handleSubmit, watch } = useForm({ defaultValues })
 
   const onSubmit = async (data: any) => {
     const addData = { ...data, group_id: 1 }
 
-    // 변환하고 싶은 필드 이름들
+    // 숫자로 변환하고 싶은 필드 이름들
     const integerFields = ['ship_number', 'inter_tonnage', 'weight_tonnage']
 
     // 특정 필드들에 대해서만 parseInt를 적용
-    const parseIntData = Object.entries(addData).reduce(
+    const parseIntData: addShipParams = Object.entries(addData).reduce(
       (acc: any, [key, value]: any) => {
         if (integerFields.includes(key)) {
           acc[key] = parseInt(value)
@@ -232,12 +260,22 @@ export default function GroupAdd() {
       {},
     )
 
-    const res = await postAddShip(parseIntData)
+    let updateData = parseIntData
+
+    //파일이 존재하면 파일 필드 추가
+    if (file) {
+      updateData = {
+        ...parseIntData,
+        ship_drawing_img: file,
+        ship_drawing_img_name: file.name,
+      }
+    }
+
+    const res = await postAddShip(updateData)
     if (res?.status === 201) {
       alert('생성 완료')
       router.push(PATHS.GROUP_INFO())
     }
-    console.log('🚀 ~ parseIntData ~ parseIntData:', parseIntData)
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="md:mx-[40px]">
@@ -248,7 +286,7 @@ export default function GroupAdd() {
         watch={watch}
       />
       <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
-      <ShipDrawing />
+      <ShipDrawing file={file} setFile={setFile} />
       <div className="my-[20px]">
         <CreateDataTable
           columns={[

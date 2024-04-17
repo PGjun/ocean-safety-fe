@@ -65,7 +65,7 @@ export default function GroupInfoPage(pageProps: {
         searchParams={searchParams}
       />
 
-      <div className="mt-[40px] flex items-center justify-between">
+      <div className="mb-[10px] mt-[40px] flex items-center justify-between">
         <div className="text-[18px] font-bold">선박 정보</div>
         <Link href={PATHS.GROUP_ADD}>
           <button className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold">

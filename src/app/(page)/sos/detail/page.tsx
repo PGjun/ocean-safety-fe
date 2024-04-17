@@ -4,111 +4,81 @@ import GoogleMapWrapper from '@/components/common/GoogleMapWrapper'
 import { CommonIcon } from '@/components/SvgIcons'
 import DropDown from '@/components/common/DropDown'
 import { PATHS } from '@/constants/paths'
-import { useMediaQuery } from '@/hooks/useMediaQuery'
 import Link from 'next/link'
-import { Fragment } from 'react'
+import { GenericTable } from '@/components/common/GenericTable'
+import { UserEmergencyData } from '@/services/api/user'
+import { PageProps } from '@/types/common'
 
-const COLTITLES = [
-  { name: 'No' },
-  {
-    name: '이름',
-  },
-  {
-    name: '아이디',
-  },
-  {
-    name: 'X좌표',
-  },
-  {
-    name: 'Y좌표',
-  },
-  {
-    name: '응답코드',
-  },
-  {
-    name: '비상연락처',
-  },
-  {
-    name: '기록 일시',
-  },
-  {
-    name: '처리현황',
-  },
-]
+export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
+  const searchParams = pageProps.searchParams
+  console.log(searchParams)
 
-const SosRows = [
-  {
-    a: '1',
-    b: '이름',
-    c: 'ID',
-    d: '22.22',
-    e: '22.22',
-    f: 'SOS',
-    g: '010-1234-1234',
-    h: '2024-03-01 16:00:00',
-    i: '이상보고',
-  },
-]
-
-export default function SosDetailPage() {
-  const isMobile = useMediaQuery('768')
   return (
     <div className="md:mx-[40px]">
       <div className="text-[26px] font-bold">SOS 상세내역</div>
-      {isMobile ? (
-        <div className="mt-[10px] border-t border-[#c4c4c4]">
-          {SosRows.map((item, idx) => (
-            <div key={idx} className="border-b p-[8px] text-[12px]">
-              <div>
-                No. {item.a} 이름 : {item.b} 아이디 : {item.c}
-              </div>
-              <div>
-                좌표X : {item.d} 좌표Y : {item.e} 응급코드 : {item.f}
-              </div>
-              <div>
-                비상연락처 : {item.g} 기록일시 : {item.h}
-              </div>
-              <div className="inline-flex items-center gap-[4px] rounded bg-[#FFF0F0] px-[20px] py-[2px]">
-                <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                {item.i}
-              </div>
+      <GenericTable
+        mobileContents={(item: UserEmergencyData, idx) => (
+          <Link key={idx} href={PATHS.SOS_DETAIL()}>
+            <div className="space-x-1">
+              <span>No. {idx + 1}</span>
+              <span>이름 : {item.name}</span>
+              <span>아이디 : {item.user_id}</span>
             </div>
-          ))}
-        </div>
-      ) : (
-        <div className="mt-[10px] grid grid-cols-[repeat(9,auto)] border-t border-[#c4c4c4] text-center text-[12px]">
-          {COLTITLES.map((item, idx) => {
-            return (
-              <div key={idx}>
-                <div className="border-b border-[#c4c4c4] py-[10px] font-bold">
-                  {item.name}
+            <div className="space-x-1">
+              <span>좌표X : {item.longitude.toFixed(2)} </span>
+              <span>좌표Y : {item.latitude.toFixed(2)} </span>
+              <span>응급코드 : {item.emergency_code}</span>
+            </div>
+            <div>비상연락처 : {item.phone}</div>
+            <div>기록일시 : {item.sos_date}</div>
+            <div className="inline-flex items-center gap-[4px] rounded bg-[#FFF0F0] px-[20px] py-[2px]">
+              <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]" />
+              {item.emergency_status_code}
+            </div>
+          </Link>
+        )}
+        columns={[
+          { field: 'id', title: 'No', width: '50px' },
+          { field: 'name', title: '이름', width: '1fr' },
+          { field: 'user_id', title: '아이디', width: '1fr' },
+          {
+            field: 'longitude',
+            title: 'X좌표',
+            width: '2fr',
+          },
+          {
+            field: 'latitude',
+            title: 'Y좌표',
+            width: '2fr',
+          },
+          { field: 'emergency_code', title: '응답코드', width: '1fr' },
+          { field: 'phone', title: '비상연락처', width: '2fr' },
+          { field: 'sos_date', title: '기록 일시', width: '3fr' },
+          {
+            field: 'emergency_status_code',
+            title: '처리현황',
+            width: '1fr',
+            render: (code) => {
+              return (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]" />
+                  {code}
                 </div>
-              </div>
-            )
-          })}
-          {SosRows.map((item, idx) => {
-            return (
-              <Fragment key={idx}>
-                <div className="border-b py-[16px]">{item.a}</div>
-                <div className="border-b py-[16px]">{item.b}</div>
-                <div className="border-b py-[16px]">{item.c}</div>
-                <div className="border-b py-[16px]">{item.d}</div>
-                <div className="border-b py-[16px]">{item.e}</div>
-                <div className="border-b py-[16px]">{item.f}</div>
-                <div className="border-b py-[16px]">{item.g}</div>
-                <div className="border-b py-[16px]">{item.h}</div>
-                <div className="py-[16px1 flex items-center justify-center gap-2 border-b">
-                  <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]"></div>
-                  {item.i}
-                </div>
-              </Fragment>
-            )
-          })}
-        </div>
-      )}
+              )
+            },
+          },
+        ]}
+        data={[searchParams]}
+        onRowClick={() => {}}
+      />
 
       <div className="mt-[28px] h-[410px]">
-        <GoogleMapWrapper />
+        <GoogleMapWrapper
+          location={{
+            lng: Number(searchParams.longitude),
+            lat: Number(searchParams.latitude),
+          }}
+        />
       </div>
 
       <div className="mt-[28px] text-[18px] font-bold">처리 내용</div>
