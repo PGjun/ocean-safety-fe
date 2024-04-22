@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import io from 'socket.io-client'
 import useModalStore from '@/stores/modalStore'
 
-interface ModalData {
-  type: string
+export interface sosData {
+  sos_id: number
   message: string
 }
 
@@ -22,17 +22,17 @@ const useWebSocket = () => {
 
     socket.on('enter_room', () => {
       socket.emit('enter_room', {
-        group_id: 1012303120,
-        ship_id: 123,
-        user_id: 123,
-        is_admin: true,
+        group_id: 1,
+        ship_id: 2,
+        user_id: 2,
+        is_admin: false,
       })
     })
 
-    socket.on('emergencyCall', (modalData: ModalData) => {
+    socket.on('emergencyCall', (sosData: sosData) => {
       const modalId = useModalStore
         .getState()
-        .openModal('EMERGENCIES', { modalData }, false)
+        .openModal('EMERGENCIES', { sosData }, false)
       console.log('알림 열림', modalId)
 
       //   setTimeout(() => {

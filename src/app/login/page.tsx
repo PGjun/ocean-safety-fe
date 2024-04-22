@@ -1,5 +1,6 @@
 'use client'
 
+import { roles } from '@/constants/roles'
 import { CommonIcon } from '@/icons/common'
 import { postUserLogin } from '@/services/api/user'
 import { useRouter } from 'next/navigation'
@@ -15,21 +16,23 @@ export default function LoginPage() {
   const router = useRouter()
 
   const onSubmit = async (data: any) => {
-    console.log(data)
+    // console.log(data)
     const res = await postUserLogin(data)
     if (res?.status === 200) {
       localStorage.setItem('userInfo', JSON.stringify(res.data))
 
-      //todo 임시 로그인 변경
+      //todo 임시 로그인, 변경 필요
       // 로그인 유지 선택
       if (keepLogin) {
         const expiresIn = new Date(Date.now() + 86400 * 1000 * 7) // 예: 7일 후 만료
         document.cookie = `loggedIn=true; path=/; expires=${expiresIn.toUTCString()}`
+        document.cookie = `role=${roles[res.data.crew_level]}; path=/; expires=${expiresIn.toUTCString()}`
       } else {
         document.cookie = 'loggedIn=true; path=/'
+        document.cookie = `role=${roles[res.data.crew_level]}; path=/`
       }
 
-      router.push('/')
+      router.replace('/')
     }
   }
 

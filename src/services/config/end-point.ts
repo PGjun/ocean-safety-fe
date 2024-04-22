@@ -38,6 +38,8 @@ const USER = {
     const query = getQueryString(params)
     return `${API_USER}/getUserEmergencyList?${query}`
   },
+  GET_USER_SPECIFIC_EMERGENCY: (sos_id: number) =>
+    `${API_USER}/getUserSpecificEmergency?sos_id=${sos_id}`,
   GET_NOTICE_LIST: (params: NoticeListParams) => {
     const query = getQueryString(params)
     return `${API_USER}/getNoticeList?${query}`

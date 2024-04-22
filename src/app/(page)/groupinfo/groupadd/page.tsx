@@ -291,10 +291,9 @@ export default function GroupAddPage() {
         <CreateDataTable
           columns={[
             { field: 'no', title: 'No', width: '50px' },
-            { field: '1', title: '기기명', width: '1fr' },
+            { field: '1', title: '기기명 (디바이스 ID)', width: '1fr' },
             { field: '2', title: '기종', width: '1fr' },
             { field: '3', title: '등록 일시', width: '1fr' },
-            { field: '4', title: '기기번호', width: '1fr' },
           ]}
         />
       </div>

@@ -37,18 +37,20 @@ const DropController = ({
       render={({ field }) => (
         <label
           htmlFor={name}
-          className="flex flex-col rounded border border-[#DEE2E6] bg-white py-[16px]"
+          className="flex flex-col rounded border border-[#DEE2E6] bg-white py-[0.7rem]"
         >
           <div className="px-[16px] text-[14px] font-bold md:text-[12px]">
             {label}
           </div>
-          <DropDown.Content
-            fieldValue={field.value}
-            fieldOnChange={field.onChange}
-            id={name}
-            dropData={dropData}
-            placeholder={placeholder}
-          />
+          <div className="h-[21px]">
+            <DropDown.Content
+              fieldValue={field.value}
+              fieldOnChange={field.onChange}
+              id={name}
+              dropData={dropData}
+              placeholder={placeholder}
+            />
+          </div>
         </label>
       )}
     />
@@ -78,17 +80,17 @@ const searchFields: SearchFields = [
     component: SearchController,
     width: 166,
   },
-  {
-    name: 'search_code',
-    label: '응급코드',
-    placeholder: '==선택==',
-    component: DropController,
-    width: 129,
-    dropData: [
-      { value: '0', label: 'SOS' },
-      { value: '1', label: '낙상감지' },
-    ],
-  },
+  // {
+  //   name: 'search_code',
+  //   label: '응급코드',
+  //   placeholder: '==선택==',
+  //   component: DropController,
+  //   width: 129,
+  //   dropData: [
+  //     { value: '0', label: 'SOS' },
+  //     { value: '1', label: '낙상감지' },
+  //   ],
+  // },
   {
     name: 'search_status',
     label: '처리현황',
@@ -96,8 +98,8 @@ const searchFields: SearchFields = [
     component: DropController,
     width: 129,
     dropData: [
-      { value: '0', label: '처리완료' },
-      { value: '1', label: '미완료' },
+      { value: '0', label: '이상보고' },
+      { value: '1', label: '처리완료' },
     ],
   },
 ]
@@ -170,7 +172,7 @@ export default function SosPage(pageProps: {
         searchParams={searchParams}
       />
 
-      <div className="mt-[20px] text-[18px]">
+      <div className="mt-[20px] text-[18px] text-[#333333]">
         검색결과 <span className="font-bold">{22}</span>건
       </div>
       <div className="flex gap-[20px]">
@@ -181,15 +183,14 @@ export default function SosPage(pageProps: {
           query={query}
         />
         {!isMobile && (
-          <div className="mt-[10px] flex flex-col gap-[8px]">
-            <div className="h-[410px] w-[259px]">
+          <div className=" flex flex-col gap-[8px]">
+            <div className="h-[330px] w-[259px]">
               <GoogleMapWrapper location={location} />
             </div>
 
             <Link
               href={PATHS.SOS_DETAIL({
                 sos_id: sosData?.id?.toString() ?? '1',
-                ...sosData,
               })}
             >
               <button className="w-full rounded border border-[#888888] py-[5px] font-bold">

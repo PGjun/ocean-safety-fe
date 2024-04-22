@@ -14,7 +14,7 @@ export const SearchController = ({
       return (
         <label
           htmlFor={name}
-          className="flex flex-col rounded border border-[#DEE2E6] bg-white py-[16px] pl-[24px] pr-[16px]"
+          className="flex flex-col rounded border border-[#DEE2E6] bg-white px-[1rem] py-[0.7rem]"
         >
           <div className="text-[14px] font-bold md:text-[12px]">{label}</div>
           <input

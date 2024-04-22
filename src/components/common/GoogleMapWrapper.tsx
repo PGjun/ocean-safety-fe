@@ -20,8 +20,10 @@ const center = {
 
 function GoogleMapWrapper({
   location,
+  info,
 }: {
   location?: { lng: number; lat: number }
+  info?: { name: string; sos_date: string }
 }) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -86,9 +88,11 @@ function GoogleMapWrapper({
             ) : (
               <div className="absolute -left-[130px] -top-[135px] flex w-[257px] flex-col items-center rounded-[10px] bg-[#FF3819] py-[8px] text-[18px] font-bold text-white">
                 SOS Location Tracking
-                <div className="mt-[8px] text-[16px] font-normal">이정희</div>
+                <div className="mt-[8px] text-[16px] font-normal">
+                  {info?.name}
+                </div>
                 <div className="text-[12px] font-normal">
-                  TIME : 2024-03-01 16:00:00
+                  TIME : {info?.sos_date}
                 </div>
               </div>
             )}

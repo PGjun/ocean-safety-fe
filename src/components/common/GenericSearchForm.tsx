@@ -35,7 +35,7 @@ export const GenericSearchForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="mt-[10px] flex flex-col gap-[8px] border border-[#E9ECEF] bg-[#F8F9FA] p-[28px] md:flex-row">
+      <div className="mt-[10px] flex flex-col gap-[8px] border border-[#E9ECEF] bg-[#F8F9FA] p-[20px] md:flex-row">
         <div className="grid gap-[8px] md:grid-cols-[repeat(6,auto)]">
           {searchFields.map((field, index) => {
             const value = searchParams[field.name]

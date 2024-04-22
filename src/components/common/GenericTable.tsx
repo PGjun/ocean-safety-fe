@@ -17,7 +17,6 @@ interface GenericTableProps {
   data: any
   onRowClick: onRowClick
   hover?: boolean
-  hideNo?: boolean
   mobileContents: (item: any, idx: number) => ReactNode
 }
 
@@ -26,7 +25,6 @@ export const GenericTable = ({
   data,
   onRowClick,
   hover = true,
-  hideNo,
   mobileContents,
 }: GenericTableProps) => {
   const isMobile = useMediaQuery('768')
@@ -59,7 +57,6 @@ export const GenericTable = ({
       onClick={() => onRowClick(item)}
     >
       {columns.map((col, colIdx) => {
-        if (!hideNo && colIdx === 0) return <div key={colIdx}>{idx + 1}</div>
         return (
           <div key={colIdx}>
             {col.render ? col.render(item[col.field]) : item[col.field]}

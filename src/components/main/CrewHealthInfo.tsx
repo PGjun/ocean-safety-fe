@@ -29,7 +29,7 @@ export const CrewHealthInfo = () => {
         mobileContents={(item: UserHealth, idx) => (
           <>
             <div>
-              No. {idx + 1} &nbsp; {item.name}
+              No. {item.id} &nbsp; {item.name}
             </div>
             <div>
               심박수 : {item.health_rate} 혈압 : {item.blood_pressure} 체온 :{' '}
@@ -39,7 +39,7 @@ export const CrewHealthInfo = () => {
           </>
         )}
         columns={[
-          { field: 'id', title: 'No', width: '50px' },
+          { field: 'id', title: 'No', width: '2fr' },
           { field: 'name', title: '이름', width: '2fr' },
           { field: 'health_rate', title: '심박수', width: '2fr' },
           { field: 'blood_pressure', title: '혈압', width: '2fr' },

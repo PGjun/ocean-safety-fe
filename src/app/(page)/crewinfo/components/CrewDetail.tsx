@@ -25,8 +25,11 @@ const userDetails = [
 export const CrewDetail = ({ userId }: { userId: number | null }) => {
   const [detail, setDetail] = useState([{ name: '', title: '', content: '' }])
 
+  const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     const fetchUserDetail = async () => {
+      setLoading(true)
       if (userId === null) return
 
       const res = await fetchUserInfo(userId)
@@ -40,11 +43,13 @@ export const CrewDetail = ({ userId }: { userId: number | null }) => {
           }
         })
         setDetail(updatedUserDetails)
+        setLoading(false)
       }
     }
     fetchUserDetail()
   }, [userId])
 
+  if (loading) return null
   return (
     <div className="mt-[10px] p-[10px] md:grid md:grid-cols-3 md:gap-x-[32px] md:gap-y-[16px]">
       {detail &&

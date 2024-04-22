@@ -8,52 +8,68 @@ import MobileMenu from '/public/icons/mobile-menu.svg'
 import { NavIcon } from './SvgIcons'
 import { PATHS } from '@/constants/paths'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { useUser } from '@/hooks/useUser'
 
-const navMenuList = [
-  { IconComponent: NavIcon.Home, name: '홈', path: '/' },
+export const navMenuList = [
+  {
+    IconComponent: NavIcon.Home,
+    name: '홈',
+    path: '/',
+    role: ['A', 'B', 'C'],
+  },
   {
     IconComponent: NavIcon.CrewInfo,
     name: '승선원 정보',
     path: PATHS.CREW_INFO(),
+    role: ['A', 'B', 'C'],
   },
   {
     IconComponent: NavIcon.GroupInfo,
     name: '그룹(선박) 정보',
     path: PATHS.GROUP_INFO(),
+    role: ['A', 'B', 'C'],
   },
   {
     IconComponent: NavIcon.Monitoring,
     name: '선내 위치 모니터링',
     path: PATHS.MONITORING,
+    role: ['A', 'B', 'C'],
   },
   {
     IconComponent: NavIcon.Sos,
     name: 'SOS 발생',
     path: PATHS.SOS(),
+    role: ['A', 'B', 'C'],
   },
   {
     IconComponent: NavIcon.FallDetection,
     name: '낙상 감지',
     path: PATHS.FALL_DETECTION,
+    role: ['A', 'B', 'C'],
   },
   {
     IconComponent: NavIcon.HealthInfo,
     name: '건강 정보',
     path: PATHS.HEALTH_INFO(),
+    role: ['A', 'B', 'C', 'D'],
   },
   {
     IconComponent: NavIcon.Notice,
     name: '공지사항',
     path: PATHS.NOTICE(),
+    role: ['A', 'B', 'C', 'D'],
   },
   {
     IconComponent: NavIcon.Notice,
     name: 'test',
     path: '/test',
+    role: ['A', 'B', 'C'],
   },
 ]
 
 export const MainNavbar = () => {
+  const { role } = useUser()
+
   const currentPath = usePathname()
 
   const isLoginPage = currentPath === '/login'
@@ -76,7 +92,8 @@ export const MainNavbar = () => {
     }
   }, [isMobile])
 
-  return isLoginPage ? null : (
+  if (isLoginPage) return null
+  return (
     <div className={`${isMobile ? 'fixed' : 'relative'} z-50 min-w-[293px]`}>
       {isMobile && openNav && (
         <div
@@ -103,29 +120,32 @@ export const MainNavbar = () => {
           LOGO
         </div>
         <nav className="flex h-full w-[293px] flex-col gap-[24px] rounded-tr-[68px] bg-sidebarback-gradient py-[40px] pl-[24px] pr-[40px]">
-          {navMenuList.map((item, idx) => {
-            const basePath = item.path.split('?')[0]
-            const isSelected =
-              basePath === '/'
-                ? currentPath === '/'
-                : currentPath.startsWith(basePath)
+          {role &&
+            navMenuList
+              .filter((item) => item.role.includes(role))
+              .map((item, idx) => {
+                const basePath = item.path.split('?')[0]
+                const isSelected =
+                  basePath === '/'
+                    ? currentPath === '/'
+                    : currentPath.startsWith(basePath)
 
-            const selected = 'bg-white font-bold text-[#2262C6]'
-            const normal = 'text-white hover:bg-[#2262C5]'
-            return (
-              <Link key={idx} href={item.path}>
-                <button
-                  onClick={() => (isMobile ? setOpenNav(!openNav) : null)}
-                  className={`flex w-full items-center gap-[8px] rounded-full px-[18px] py-[8px] text-[22px] ${isSelected ? selected : normal}`}
-                >
-                  <item.IconComponent
-                    color={isSelected ? '#2262C6' : '#ffffff'}
-                  />
-                  {item.name}
-                </button>
-              </Link>
-            )
-          })}
+                const selected = 'bg-white font-bold text-[#2262C6]'
+                const normal = 'text-white hover:bg-[#2262C5]'
+                return (
+                  <Link key={idx} href={item.path}>
+                    <button
+                      onClick={() => (isMobile ? setOpenNav(!openNav) : null)}
+                      className={`flex w-full items-center gap-[8px] rounded-full px-[18px] py-[8px] text-[1.1rem] md:text-[1.3rem] ${isSelected ? selected : normal}`}
+                    >
+                      <item.IconComponent
+                        color={isSelected ? '#2262C6' : '#ffffff'}
+                      />
+                      {item.name}
+                    </button>
+                  </Link>
+                )
+              })}
         </nav>
       </div>
     </div>

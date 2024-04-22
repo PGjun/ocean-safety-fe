@@ -16,13 +16,13 @@ import { SearchFields } from '@/types/common'
 
 // 필드 설정을 포함한 배열 정의
 const searchFields: SearchFields = [
-  {
-    name: 'search_ship',
-    label: '선박명',
-    placeholder: '선박명을 입력해 주세요.',
-    component: SearchController,
-    width: 176,
-  },
+  // {
+  //   name: 'search_ship',
+  //   label: '선박명',
+  //   placeholder: '선박명을 입력해 주세요.',
+  //   component: SearchController,
+  //   width: 176,
+  // },
   {
     name: 'search_date',
     label: '기록일',

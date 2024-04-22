@@ -13,6 +13,7 @@ import { SearchFields } from '@/types/common'
 import { SearchController } from '@/components/common/SearchController'
 import { GenericSearchForm } from '@/components/common/GenericSearchForm'
 import { useRouter } from 'next/navigation'
+import { useUser } from '@/hooks/useUser'
 
 const searchFields: SearchFields = [
   {
@@ -37,6 +38,8 @@ export default function CrewInfoPage(pageProps: {
 }) {
   const router = useRouter()
 
+  const { user } = useUser()
+
   const searchParams = pageProps.searchParams
   const { handleSubmit, control } = useForm()
   const [query, setQuery] = useState<any>()
@@ -53,10 +56,11 @@ export default function CrewInfoPage(pageProps: {
   }
 
   useEffect(() => {
+    if (!user) return
     const fetchUserListData = async () => {
       const res = await fetchUserList({
-        group_id: 1,
-        ship_id: 2,
+        group_id: user.group_id,
+        ship_id: user.ship_id,
         item_count: pageSize,
         ...searchParams,
         ...query,
@@ -68,7 +72,7 @@ export default function CrewInfoPage(pageProps: {
     }
 
     fetchUserListData()
-  }, [query, searchParams])
+  }, [query, searchParams, user])
 
   const onSubmit = (data: SearchData) => {
     setQuery(data)
@@ -100,7 +104,7 @@ export default function CrewInfoPage(pageProps: {
         mobileContents={(item: User, idx) => (
           <>
             <div>
-              No. {idx + 1} &nbsp; {item.name ?? ''}
+              No. {item.id} &nbsp; {item.name ?? ''}
             </div>
             <div>
               <span>아이디 : {item.user_id ?? ''} &nbsp;</span>
@@ -122,7 +126,7 @@ export default function CrewInfoPage(pageProps: {
               moment(created_at).format('YYYY-mm-DD') ?? '',
           },
         ]}
-        data={userList.slice(-5)}
+        data={userList}
         onRowClick={(item: User) => {
           setUserId(item.id)
         }}

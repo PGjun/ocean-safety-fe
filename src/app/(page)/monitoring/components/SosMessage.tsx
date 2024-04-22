@@ -26,7 +26,7 @@ const SosRows = [
 export const SosMessage = () => {
   const isMobile = useMediaQuery('768')
   return (
-    <div className="mt-[20px] ">
+    <div className="mt-[20px]">
       {isMobile ? (
         <div className="mt-[10px] border-t border-[#c4c4c4]">
           {Array.from({ length: 5 }).map((_, idx) => (

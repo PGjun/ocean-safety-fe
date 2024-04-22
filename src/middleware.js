@@ -15,6 +15,11 @@ export function middleware(request) {
 
   const cookies = parseCookies(request)
   const isLoggedIn = cookies.loggedIn === 'true'
+  const role = cookies.role
+
+  if (pathname === '/' && role === 'D') {
+    return NextResponse.redirect(new URL('/healthinfo?page_num=1', request.url))
+  }
 
   // 로그인 페이지에 접근하려고 하고, 이미 로그인 상태인 경우 메인 페이지로 리다이렉트
   if (pathname.startsWith('/login') && isLoggedIn) {

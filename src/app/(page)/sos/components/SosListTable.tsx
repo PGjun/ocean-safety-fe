@@ -18,7 +18,7 @@ export const SosListTable = ({
 }) => {
   const [sosList, setSosList] = useState([])
 
-  const pageSize = '10'
+  const pageSize = '5'
   const [totalPage, setTotalPage] = useState(1)
 
   useEffect(() => {
@@ -44,14 +44,14 @@ export const SosListTable = ({
         mobileContents={(item: UserEmergencyData, idx) => (
           <Link key={idx} href={PATHS.SOS_DETAIL()}>
             <div className="space-x-1">
-              <span>No. {idx + 1}</span>
+              <span>No. {item.id}</span>
               <span>이름 : {item.name}</span>
               <span>아이디 : {item.user_id}</span>
             </div>
             <div className="space-x-1">
-              <span>좌표X : {item.longitude.toFixed(2)} </span>
-              <span>좌표Y : {item.latitude.toFixed(2)} </span>
-              <span>응급코드 : {item.emergency_code}</span>
+              <span>좌표X : {item.longitude.toFixed(3)} </span>
+              <span>좌표Y : {item.latitude.toFixed(3)} </span>
+              {/* <span>응급코드 : {item.emergency_code}</span> */}
             </div>
             <div>비상연락처 : {item.phone}</div>
             <div>기록일시 : {item.sos_date}</div>
@@ -63,31 +63,31 @@ export const SosListTable = ({
         )}
         columns={[
           { field: 'id', title: 'No', width: '40px' },
-          { field: 'name', title: '이름', width: '60px' },
-          { field: 'user_id', title: '아이디', width: '70px' },
+          { field: 'name', title: '이름', width: '2fr' },
+          { field: 'user_id', title: '아이디', width: '2fr' },
           {
             field: 'longitude',
             title: 'X좌표',
-            width: '80px',
+            width: '2fr',
             render: (x) => {
-              return parseFloat(x).toFixed(2)
+              return parseFloat(x).toFixed(3)
             },
           },
           {
             field: 'latitude',
             title: 'Y좌표',
-            width: '80px',
+            width: '2fr',
             render: (y) => {
-              return parseFloat(y).toFixed(2)
+              return parseFloat(y).toFixed(3)
             },
           },
-          { field: 'emergency_code', title: '응답코드', width: '60px' },
-          { field: 'phone', title: '비상연락처', width: '140px' },
-          { field: 'sos_date', title: '기록 일시', width: '180px' },
+          // { field: 'emergency_code', title: '응급코드', width: '60px' },
+          { field: 'phone', title: '비상연락처', width: '3fr' },
+          { field: 'sos_date', title: '기록 일시', width: '4fr' },
           {
             field: 'emergency_status_code',
             title: '처리현황',
-            width: '80px',
+            width: '2fr',
             render: (code) => {
               return (
                 <div className="flex items-center justify-center gap-2">

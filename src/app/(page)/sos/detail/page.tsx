@@ -1,26 +1,73 @@
 'use client'
 
 import GoogleMapWrapper from '@/components/common/GoogleMapWrapper'
-import { CommonIcon } from '@/components/SvgIcons'
 import DropDown from '@/components/common/DropDown'
 import { PATHS } from '@/constants/paths'
 import Link from 'next/link'
 import { GenericTable } from '@/components/common/GenericTable'
-import { UserEmergencyData } from '@/services/api/user'
+import {
+  UserEmergencyData,
+  fetchUserSpecificEmergency,
+} from '@/services/api/user'
 import { PageProps } from '@/types/common'
+import { useFetch } from '@/hooks/useFetchList'
+import { useRouter } from 'next/navigation'
 
 export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
   const searchParams = pageProps.searchParams
-  console.log(searchParams)
+
+  const router = useRouter()
+
+  const { data } = useFetch<{ data: UserEmergencyData[] }, number>({
+    apiFn: fetchUserSpecificEmergency,
+    params: Number(searchParams.sos_id),
+    defVal: {
+      data: [
+        {
+          emergency_code: 0,
+          emergency_code_name: '',
+          emergency_status_code_name: '',
+          id: 0,
+          latitude: 0,
+          longitude: 0,
+          sos_date: '',
+          status_code: 0,
+          user_id: 0,
+        },
+      ],
+    },
+  })
 
   return (
     <div className="md:mx-[40px]">
-      <div className="text-[26px] font-bold">SOS 상세내역</div>
+      <div className="text-[26px] font-bold">SOS/낙상감지 상세내역</div>
+      <div className="mb-[10px] flex justify-end">
+        <div className="mt-[16px] flex max-w-[332px] flex-1 flex-col gap-[4px] md:flex-row">
+          <DropDown.Container>
+            <DropDown.Content
+              id="sos_detail_type"
+              dropData={[
+                { value: '0', label: 'SOS' },
+                { value: '1', label: '낙상감지' },
+              ]}
+            />
+          </DropDown.Container>
+          <DropDown.Container>
+            <DropDown.Content
+              id="sos_detail_status"
+              dropData={[
+                { value: '0', label: '처리완료' },
+                { value: '1', label: '이상보고' },
+              ]}
+            />
+          </DropDown.Container>
+        </div>
+      </div>
       <GenericTable
         mobileContents={(item: UserEmergencyData, idx) => (
           <Link key={idx} href={PATHS.SOS_DETAIL()}>
             <div className="space-x-1">
-              <span>No. {idx + 1}</span>
+              <span>No. {item.id}</span>
               <span>이름 : {item.name}</span>
               <span>아이디 : {item.user_id}</span>
             </div>
@@ -51,7 +98,7 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
             title: 'Y좌표',
             width: '2fr',
           },
-          { field: 'emergency_code', title: '응답코드', width: '1fr' },
+          { field: 'emergency_code', title: '응급코드', width: '1fr' },
           { field: 'phone', title: '비상연락처', width: '2fr' },
           { field: 'sos_date', title: '기록 일시', width: '3fr' },
           {
@@ -68,21 +115,30 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
             },
           },
         ]}
-        data={[searchParams]}
+        hideNo={true}
+        data={[data.data[0]]}
         onRowClick={() => {}}
       />
-
       <div className="mt-[28px] h-[410px]">
         <GoogleMapWrapper
           location={{
-            lng: Number(searchParams.longitude),
-            lat: Number(searchParams.latitude),
+            lng: Number(data.data[0].longitude),
+            lat: Number(data.data[0].latitude),
+          }}
+          info={{
+            name: data.data[0].name,
+            sos_date: data.data[0].sos_date,
           }}
         />
       </div>
-
-      <div className="mt-[28px] text-[18px] font-bold">처리 내용</div>
-      <div className="mt-[8px] flex rounded bg-[#F3F5FF] p-[24px] text-[18px] leading-[21.6px] text-[#2262C6]">
+      <div className="mt-[28px] text-[18px] font-bold">처리 내용</div>{' '}
+      <textarea
+        name=""
+        id=""
+        rows={5}
+        className="w-full resize-none rounded border border-[#C4C4C4] p-[10px] text-[14px]"
+      ></textarea>
+      {/* <div className="mt-[8px] flex rounded bg-[#F3F5FF] p-[24px] text-[18px] leading-[21.6px] text-[#2262C6]">
         <div className="p-[3px]">
           <CommonIcon.BLUE_Exclamation />
         </div>
@@ -90,34 +146,14 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
           {`승선원으로부터 갤럭시워치를 통해 SOS 신호를 수신하였습니다. 즉시 관제 시스템을 통해 신속하고 효율적으로 대응 완료. 
           선원의 안전을 최우선으로 하여 해당 위치를 파악하고 구조 대상에게 신속한 지원`}
         </div>
-      </div>
-
-      <div className="mt-[16px] flex flex-col gap-[4px] md:max-w-[332px] md:flex-row">
-        <DropDown.Container>
-          <DropDown.Content
-            id="sos_detail_type"
-            dropData={[
-              { value: '0', label: 'SOS' },
-              { value: '1', label: '낙상감지' },
-            ]}
-          />
-        </DropDown.Container>
-        <DropDown.Container>
-          <DropDown.Content
-            id="sos_detail_status"
-            dropData={[
-              { value: '0', label: '처리완료' },
-              { value: '1', label: '이상보고' },
-            ]}
-          />
-        </DropDown.Container>
-      </div>
+      </div> */}
       <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
-        <Link href={PATHS.SOS()}>
-          <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
-            이전
-          </button>
-        </Link>
+        <button
+          onClick={() => router.back()}
+          className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]"
+        >
+          이전
+        </button>
         <button className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]">
           완료
         </button>

@@ -47,21 +47,21 @@ const MonitoringTab = () => {
 
       {activeTab === 'tab1' && (
         <div>
-          <div className="mt-[26px] border-t border-[#888888] text-[12px] md:text-[14px]">
+          <div className="mt-[20px] border-t border-[#c4c4c4] text-[14px] md:text-[16px]">
             <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 출근 완료
+              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
             </div>
             <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 출근 완료
+              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
             </div>
             <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 출근 완료
+              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
             </div>
             <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 출근 완료
+              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
             </div>
             <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 출근 완료
+              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
             </div>
           </div>
           <div className="mt-[20px] flex w-full justify-center">

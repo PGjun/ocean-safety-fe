@@ -186,15 +186,16 @@ export interface UserEmergencyListParams {
 }
 
 export interface UserEmergencyData {
+  sos_id: number
   id: number
-  longitude: number
-  latitude: number
-  sos_date: string
-  emergency_code: string
-  emergency_status_code: string
-  phone: string
   name: string
   user_id: string
+  phone: string
+  sos_date: string
+  longitude: number
+  latitude: number
+  emergency_code: string
+  emergency_status_code: string
 }
 
 export const fetchUserEmergencyList = async (
@@ -203,6 +204,13 @@ export const fetchUserEmergencyList = async (
   return httpClient({
     method: 'get',
     endPoint: END_POINT.USER.GET_USER_EMERGENCY_LIST(params),
+  })
+}
+
+export const fetchUserSpecificEmergency = async (sos_id: number) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_USER_SPECIFIC_EMERGENCY(sos_id),
   })
 }
 

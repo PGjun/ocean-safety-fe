@@ -15,9 +15,8 @@ export const WearableInfo = () => {
             </div>
           </>
         )}
-        hideNo
         columns={[
-          { field: 'device_name', title: '기기명', width: '1fr' },
+          { field: 'device_name', title: '기기명 (디바이스 ID)', width: '1fr' },
           { field: 'device_model', title: '기종', width: '1fr' },
           { field: 'reg_date', title: '등록 일시', width: '1fr' },
           {

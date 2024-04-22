@@ -21,8 +21,11 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
   const [detail, setDetail] = useState([{ name: '', title: '', content: '' }])
   const [shipImg, setShipImg] = useState('')
 
+  const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     const fetchShipDetail = async () => {
+      setLoading(true)
       if (shipId === null) return
 
       const res = await fetchShipInfo(shipId)
@@ -37,11 +40,13 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
         })
         setDetail(updatedShipDetails)
         setShipImg(res.data.ship_drawings_url)
+        setLoading(false)
       }
     }
     fetchShipDetail()
   }, [shipId])
 
+  if (loading) return null
   return (
     <>
       <div className="md:grid md:grid-cols-3 md:gap-x-[32px] md:gap-y-[16px]">

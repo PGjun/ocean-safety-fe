@@ -106,12 +106,14 @@ export const DatePickerWrapper = ({
   return (
     <label
       htmlFor={name}
-      className="flex flex-col rounded border border-[#DEE2E6] bg-white py-[15px] pl-[24px] pr-[16px]"
+      className="flex flex-col rounded border border-[#DEE2E6] bg-white px-[1rem] py-[0.7rem]"
     >
       <div className="text-[14px] font-bold md:text-[12px]">{label}</div>
-      <div className="flex">
+      <div className="flex h-[21px] items-center">
         {children}
-        <CommonIcon.SearchDate />
+        <div className="h-[21px]">
+          <CommonIcon.SearchDate />
+        </div>
       </div>
     </label>
   )

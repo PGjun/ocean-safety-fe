@@ -123,6 +123,13 @@ const crewInfoInit = [
     component: Field,
   },
   {
+    name: 'password',
+    label: '비밀번호',
+    placeholder: '비밀번호를 입력하세요.',
+    defaultValue: '',
+    component: Field,
+  },
+  {
     name: 'phone',
     label: '연락처',
     placeholder: '연락처를 입력하세요.',
@@ -224,11 +231,76 @@ const crewInfoInit = [
 
 const CrewInfoForm = ({ control }: { control: Control<any> }) => {
   return (
-    <div className="mt-[10px] grid gap-[16px] md:grid-cols-3 md:gap-[32px]">
+    <div className="mt-[10px] grid gap-[16px] md:mx-[10px] md:grid-cols-3 md:gap-[32px]">
       {crewInfoInit.map((field, index) => {
         return <field.component key={index} control={control} {...field} />
       })}
     </div>
+  )
+}
+
+const GroupDropBoxs = ({ control }: { control: Control<any> }) => {
+  return (
+    <>
+      <div className="mt-[32px] font-bold">소속 그룹</div>
+      <div className="mt-[15px] flex flex-col items-start gap-5 md:mx-[10px] md:flex-row md:items-center">
+        <div>
+          <div className="text-[14px] md:text-[16px]">그룹 선택</div>
+          <Controller
+            name="crew_add_ship_group"
+            control={control}
+            render={({ field }) => {
+              const dropData = [
+                [
+                  { value: '0', label: '유에스티1' },
+                  { value: '1', label: '유에스티11' },
+                ],
+                [
+                  { value: '2', label: '유에스티2' },
+                  { value: '3', label: '유에스티22' },
+                ],
+              ]
+
+              return (
+                <SlideDropDown
+                  id="crew_add_ship_group"
+                  fieldValue={field.value}
+                  fieldOnChange={field.onChange}
+                  dropData={dropData}
+                />
+              )
+            }}
+          />
+        </div>
+        <div>
+          <div className="text-[14px] md:text-[16px]">선박 선택</div>
+          <Controller
+            name="crew_add_ship"
+            control={control}
+            render={({ field }) => {
+              const dropData = [
+                [
+                  { value: '0', label: '강원호1' },
+                  { value: '1', label: '강원호11' },
+                ],
+                [
+                  { value: '2', label: '강원호2' },
+                  { value: '3', label: '강원호22' },
+                ],
+              ]
+              return (
+                <SlideDropDown
+                  id="crew_add_ship"
+                  fieldValue={field.value}
+                  fieldOnChange={field.onChange}
+                  dropData={dropData}
+                />
+              )
+            }}
+          />
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -240,34 +312,7 @@ const areaSettingInit = [
 const AreaSettings = ({ control }: { control: Control<any> }) => {
   return (
     <div className="mt-[10px]">
-      <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
-        <span className="text-[14px] md:text-[16px]">선박 선택</span>
-        <Controller
-          name="crew_add_ship"
-          control={control}
-          render={({ field }) => {
-            const dropData = [
-              [
-                { value: '0', label: '강원호1' },
-                { value: '1', label: '강원호11' },
-              ],
-              [
-                { value: '2', label: '강원호2' },
-                { value: '3', label: '강원호22' },
-              ],
-            ]
-            return (
-              <SlideDropDown
-                id="crew_add_ship"
-                fieldValue={field.value}
-                fieldOnChange={field.onChange}
-                dropData={dropData}
-              />
-            )
-          }}
-        />
-      </div>
-      <div className="mt-[10px]">
+      <div className="mt-[10px] md:mx-[10px]">
         <Image
           src="/temp-ship.png"
           alt="tempship"
@@ -278,7 +323,7 @@ const AreaSettings = ({ control }: { control: Control<any> }) => {
       </div>
       <div className="mt-[30px] flex flex-col gap-2">
         <span className="text-[14px] md:text-[16px]">선택 영역</span>
-        <div className="flex gap-2">
+        <div className="flex gap-2 md:mx-[10px]">
           <div className="flex items-center gap-[12px] rounded border border-[#C4C4C4] px-[16px] py-[10px]">
             <div className="text-[12px] md:text-[14px]">비콘 RSSI 값 2</div>
             <div className="relative h-[10px] w-[10px]">
@@ -294,35 +339,6 @@ const AreaSettings = ({ control }: { control: Control<any> }) => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="mt-[32px] font-bold">소속 그룹</div>
-      <div className="mt-[15px] text-[14px]">그룹 선택</div>
-      <div className="mt-[5px]">
-        <Controller
-          name="crew_add_ship_group"
-          control={control}
-          render={({ field }) => {
-            const dropData = [
-              [
-                { value: '0', label: '유에스티1' },
-                { value: '1', label: '유에스티11' },
-              ],
-              [
-                { value: '2', label: '유에스티2' },
-                { value: '3', label: '유에스티22' },
-              ],
-            ]
-
-            return (
-              <SlideDropDown
-                id="crew_add_ship_group"
-                fieldValue={field.value}
-                fieldOnChange={field.onChange}
-                dropData={dropData}
-              />
-            )
-          }}
-        />
       </div>
     </div>
   )
@@ -360,6 +376,7 @@ export default function CrewAdd() {
         <div className="mt-[20px] font-bold">승선원 내역</div>
         <CrewInfoForm control={control} />
         <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
+        <GroupDropBoxs control={control} />
         <div className="mt-[20px] font-bold">제한 구역 설정</div>
         <AreaSettings control={control} />
         <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">

@@ -60,7 +60,7 @@ export default function NoticePage(pageProps: {
                 <div className="group-hover:font-bold">
                   <div className="inline-block">
                     <div className="mr-3 inline-block group-hover:font-normal">
-                      {idx + 1}
+                      {item.id}
                     </div>
                     {item.title.slice(0, 27)}
                     {item.num_of_files !== 0 && (

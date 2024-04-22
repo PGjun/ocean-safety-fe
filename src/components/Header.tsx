@@ -1,10 +1,12 @@
 'use client'
 
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import useWebSocket from '@/hooks/useWebSocket'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 export const Header = () => {
+  useWebSocket()
   const currentPath = usePathname()
 
   const isLoginPage = currentPath === '/login'
