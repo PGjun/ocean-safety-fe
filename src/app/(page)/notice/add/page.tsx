@@ -14,7 +14,7 @@ interface NoticeValue {
 
 export default function NoticeAddPage() {
   const { register, handleSubmit } = useForm<NoticeValue>()
-  const user = useUser()
+  const { user } = useUser()
   const router = useRouter()
 
   const [files, setFiles] = useState<File[]>([])

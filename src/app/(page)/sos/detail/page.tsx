@@ -115,7 +115,6 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
             },
           },
         ]}
-        hideNo={true}
         data={[data.data[0]]}
         onRowClick={() => {}}
       />

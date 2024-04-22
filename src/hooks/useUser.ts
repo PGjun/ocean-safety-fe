@@ -10,6 +10,7 @@ export const useUser = () => {
   useEffect(() => {
     const userInfo: any = localStorage.getItem('userInfo')
     const parseUserInfo = JSON.parse(userInfo)
+
     if (userInfo) {
       setUser(parseUserInfo)
       setRole(roles[parseUserInfo.crew_level])

@@ -93,6 +93,7 @@ export const MainNavbar = () => {
   }, [isMobile])
 
   if (isLoginPage) return null
+  if (role === '') return null
   return (
     <div className={`${isMobile ? 'fixed' : 'relative'} z-50 min-w-[293px]`}>
       {isMobile && openNav && (
