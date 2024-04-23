@@ -1,21 +1,22 @@
 import { roles } from '@/constants/roles'
 import { User } from '@/types/user'
+import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 
 export const useUser = () => {
-  const [user, setUser] = useState<User | null>(null)
+  const { data } = useSession()
 
+  const [user, setUser] = useState<User | undefined>(undefined)
   const [role, setRole] = useState('')
 
   useEffect(() => {
-    const userInfo: any = localStorage.getItem('userInfo')
-    const parseUserInfo = JSON.parse(userInfo)
+    if (data) {
+      const userSession = data?.user as User
 
-    if (userInfo) {
-      setUser(parseUserInfo)
-      setRole(roles[parseUserInfo.crew_level])
+      setUser(userSession)
+      setRole(roles[roles[userSession.crew_level]])
     }
-  }, [])
+  }, [data])
 
   return { user, role }
 }

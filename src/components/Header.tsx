@@ -1,27 +1,38 @@
 'use client'
 
+import { PATHS } from '@/constants/paths'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import useWebSocket from '@/hooks/useWebSocket'
+import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect } from 'react'
 
 export const Header = () => {
   useWebSocket()
   const currentPath = usePathname()
 
-  const isLoginPage = currentPath === '/login'
+  const isLoginPage = currentPath === PATHS.API_AUTH_SIGNIN
 
   const isMobile = useMediaQuery('768')
 
   //todo 임시 로그인 변경
   const logout = () => {
-    document.cookie =
-      'loggedIn=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+    // document.cookie =
+    //   'loggedIn=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
 
-    localStorage.removeItem('userInfo')
+    // localStorage.removeItem('userInfo')
+    signOut()
   }
 
-  return isLoginPage ? null : (
+  // const { data } = useSession()
+
+  // useEffect(() => {
+  //   console.log('Header.tsx', data)
+  // }, [data])
+
+  if (isLoginPage) return null
+  return (
     <header className="sticky top-0 z-40 bg-white">
       {!isMobile && <div className="h-3 rounded-bl-full bg-slate-100"></div>}
       {isMobile ? (

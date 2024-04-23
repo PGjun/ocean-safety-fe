@@ -1,11 +1,8 @@
 'use client'
 
-import { roles } from '@/constants/roles'
 import { CommonIcon } from '@/icons/common'
-import { postUserLogin } from '@/services/api/user'
 import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 export default function LoginPage() {
@@ -14,31 +11,30 @@ export default function LoginPage() {
   const [showPw, setShowPw] = useState(false)
   const [keepLogin, setKeepLogin] = useState(false)
 
-  const router = useRouter()
+  useEffect(() => {
+    // 로컬 스토리지에서 로그인 유지 상태를 읽어와서 설정
+    const storedKeepLogin = localStorage.getItem('keepLogin')
+    if (storedKeepLogin) {
+      setKeepLogin(storedKeepLogin === 'true')
+    }
+  }, [])
 
   const onSubmit = async (data: any) => {
-    const username = data.id
-    const password = data.password
-    signIn('credentials', { username, password })
+    const { id: username, password } = data
+    const result = await signIn('credentials', {
+      username,
+      password,
+      keepLogin, // 로그인 유지 상태 전송
+      redirect: false, // 페이지 리디렉션 방지
+    })
 
-    // console.log(data)
-    // const res = await postUserLogin(data)
-    // if (res?.status === 200) {
-    //   localStorage.setItem('userInfo', JSON.stringify(res.data))
-
-    //   //todo 임시 로그인, 변경 필요
-    //   // 로그인 유지 선택
-    //   if (keepLogin) {
-    //     const expiresIn = new Date(Date.now() + 86400 * 1000 * 7) // 예: 7일 후 만료
-    //     document.cookie = `loggedIn=true; path=/; expires=${expiresIn.toUTCString()}`
-    //     document.cookie = `role=${roles[res.data.crew_level]}; path=/; expires=${expiresIn.toUTCString()}`
-    //   } else {
-    //     document.cookie = 'loggedIn=true; path=/'
-    //     document.cookie = `role=${roles[res.data.crew_level]}; path=/`
-    //   }
-
-    //   router.replace('/')
-    // }
+    if (result?.error) {
+      // 로그인 실패 처리
+      alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.')
+    } else {
+      localStorage.setItem('keepLogin', keepLogin.toString()) // 로그인 성공 시 로컬 스토리지에 상태 저장
+      window.location.href = '/' // 성공 시 메인 페이지로 이동
+    }
   }
 
   return (

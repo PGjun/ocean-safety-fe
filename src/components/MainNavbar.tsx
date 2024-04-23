@@ -9,6 +9,9 @@ import { NavIcon } from './SvgIcons'
 import { PATHS } from '@/constants/paths'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useUser } from '@/hooks/useUser'
+import { useSession } from 'next-auth/react'
+import { User } from '@/types/user'
+import { roles } from '@/constants/roles'
 
 export const navMenuList = [
   {
@@ -68,11 +71,16 @@ export const navMenuList = [
 ]
 
 export const MainNavbar = () => {
-  const { role } = useUser()
+  // const { role } = useUser()
+
+  const { data: session } = useSession()
+
+  const user = session?.user as User
+  const role = roles[user?.crew_level]
 
   const currentPath = usePathname()
 
-  const isLoginPage = currentPath === '/login'
+  const isLoginPage = currentPath === PATHS.API_AUTH_SIGNIN
 
   const [openNav, setOpenNav] = useState(false)
   const handleBackClick = (e: any) => {
@@ -93,7 +101,6 @@ export const MainNavbar = () => {
   }, [isMobile])
 
   if (isLoginPage) return null
-  if (role === '') return null
   return (
     <div className={`${isMobile ? 'fixed' : 'relative'} z-50 min-w-[293px]`}>
       {isMobile && openNav && (
@@ -121,7 +128,7 @@ export const MainNavbar = () => {
           LOGO
         </div>
         <nav className="flex h-full w-[293px] flex-col gap-[24px] rounded-tr-[68px] bg-sidebarback-gradient py-[40px] pl-[24px] pr-[40px]">
-          {role &&
+          {session?.user &&
             navMenuList
               .filter((item) => item.role.includes(role))
               .map((item, idx) => {
