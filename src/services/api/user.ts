@@ -156,12 +156,26 @@ export interface UserHealthListParams {
   search_end_date?: string
 }
 
-export const fetchUserHealthList = async (params: UserHealthListParams) => {
+export const fetchUserHealthList = async (
+  params: UserHealthListParams,
+  setParam?: UserHealthListParams,
+) => {
   const filteredParams = await filterParamsByRole({ params })
 
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_USER_HEALTH_LIST(filteredParams),
+    endPoint: END_POINT.USER.GET_USER_HEALTH_LIST(
+      setParam ? setParam : filteredParams,
+    ),
+  })
+}
+
+export const fetchUserSpecificHealth = async (
+  params: UserSpecificHealthParams,
+) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_USER_SPECIFIC_HEALTH(params),
   })
 }
 
@@ -276,11 +290,9 @@ export const postAddNotice = async (params: AddNoticeParams) => {
   })
 }
 
-export const fetchUserSpecificHealth = async (
-  params: UserSpecificHealthParams,
-) => {
+export const fetchShipNameList = async (params: { group_id: string }) => {
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_USER_SPECIFIC_HEALTH(params),
+    endPoint: END_POINT.USER.GET_SHIP_NAME_LIST(params),
   })
 }

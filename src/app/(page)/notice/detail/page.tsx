@@ -1,7 +1,7 @@
 'use client'
 
 import { SearchParams } from '@/components/common/Pagination'
-import { useFetch } from '@/hooks/useFetchList'
+import { useFetch } from '@/hooks/useFetch'
 import { fetchSpecificNotice } from '@/services/api/user'
 import { PageProps } from '@/types/common'
 import { downloadFile } from '@/utils/downloadFile'

@@ -37,7 +37,7 @@ export const useFetch = <Data, Params>({
     }
 
     fetchData()
-  }, [apiFn, params]) // JSON.stringify 사용하여 깊은 비교 수행
+  }, [apiFn, params])
 
   return { data, loading, error }
 }

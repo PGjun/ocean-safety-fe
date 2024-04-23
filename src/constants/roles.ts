@@ -5,3 +5,10 @@ export const roles: { [key: string]: string } = {
   선박관리자: 'C',
   승선원: 'D',
 }
+
+export const ROLES = {
+  ADMIN: 'A',
+  GROUP: 'B',
+  SHIP: 'C',
+  CREW: 'D',
+}

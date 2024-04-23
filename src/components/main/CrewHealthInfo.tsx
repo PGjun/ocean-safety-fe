@@ -5,28 +5,51 @@ import { useEffect, useState } from 'react'
 import { GenericTable } from '../common/GenericTable'
 import { useUser } from '@/hooks/useUser'
 
-export const CrewHealthInfo = () => {
+export const CrewHealthInfo = ({
+  selectedShipId,
+}: {
+  selectedShipId?: string
+}) => {
   const { user } = useUser()
 
   const [healthList, setHealthList] = useState([])
-  const [shipId, setShipId] = useState<number | null>(null)
 
   useEffect(() => {
     if (!user) return
     const fetchHealthList = async () => {
-      const res = await fetchUserHealthList({
+      const params = {
         group_id: user?.group_id.toString(),
         ship_id: user?.ship_id.toString(),
         user_id: user?.id.toString(),
         page_num: '1',
         item_count: '5',
-      })
+      }
+      if (selectedShipId) {
+        const setParams = {
+          group_id: user?.group_id.toString(),
+          ship_id: selectedShipId,
+          user_id: user?.id.toString(),
+          page_num: '1',
+          item_count: '5',
+        }
+
+        const res = await fetchUserHealthList(params, setParams)
+        if (res?.status === 200) {
+          setHealthList(res.data.data)
+          console.log('업데이트!')
+        }
+        return
+      }
+
+      const res = await fetchUserHealthList(params)
       if (res?.status === 200) {
         setHealthList(res.data.data)
+        console.log('업데이트!')
       }
     }
+
     fetchHealthList()
-  }, [user])
+  }, [selectedShipId, user])
   return (
     <div>
       <div className="text-[20px] font-bold">승선원 건강정보</div>
@@ -56,50 +79,9 @@ export const CrewHealthInfo = () => {
         hover={false}
         data={healthList}
         onRowClick={(item: UserHealth) => {
-          setShipId(item.id)
+          // setShipId(item.id)
         }}
       />
     </div>
   )
 }
-
-// <div className="mt-[10px] w-full">
-// <div className="grid grid-cols-[1fr_2fr_repeat(3,2fr)_3fr_4fr] border-y border-[#c4c4c4] px-[20px] text-center">
-//   {[
-//     'No',
-//     '이름',
-//     '심박수',
-//     '혈압',
-//     '체온',
-//     '산소포화도',
-//     '기록 일시',
-//   ].map((item, idx) => (
-//     <div key={idx} className=" py-[10px] text-[14px] font-bold">
-//       {item}
-//     </div>
-//   ))}
-// </div>
-// <div>
-//   {healthList &&
-//     healthList
-//       .slice(-5)
-//       .reverse()
-//       .map((item: UserHealth, idx) => (
-//         <div
-//           key={idx}
-//           className="grid cursor-pointer grid-cols-[1fr_2fr_repeat(3,2fr)_3fr_4fr] border-b px-[20px] text-center hover:bg-slate-50"
-//           onClick={() => setShipId(item.id)}
-//         >
-//           <div className="py-[16px]">{idx + 1}</div>
-//           <div className="py-[16px]">{item.name}</div>
-//           <div className="py-[16px]">{item.health_rate ?? ''}</div>
-//           <div className="py-[16px]">{item.blood_pressure ?? ''}</div>
-//           <div className="py-[16px]">{item.temperature ?? ''}</div>
-//           <div className="py-[16px]">
-//             {item.oxygen_saturation ?? ''}
-//           </div>
-//           <div className="py-[16px]">{item.health_date ?? ''}</div>
-//         </div>
-//       ))}
-// </div>
-// </div>

@@ -52,6 +52,10 @@ const USER = {
     const query = getQueryString(params)
     return `${API_USER}/getUserSpecificHealth?${query}`
   },
+  GET_SHIP_NAME_LIST: (params: { group_id: string }) => {
+    const query = getQueryString(params)
+    return `${API_USER}/getShipNameList?${query}`
+  },
 }
 
 export const END_POINT = { USER }

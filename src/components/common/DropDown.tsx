@@ -32,20 +32,23 @@ const Container = ({ type, children }: any) => {
 
 // Content 컴포넌트
 const Content = ({
-  type = 'between',
+  type = 'center',
   dropData = dropDataInit,
   id,
   fieldValue,
   fieldOnChange,
   placeholder,
 }: DropDownProps) => {
-  const {
-    activeDropdown,
-    setActiveDropdown,
-    setSelectedValue,
-    selectedValues,
-  } = useDropdownStore()
-  const dropdownRef: any = useRef(null) // 드롭다운 ref
+  //드롭다운 관리
+  const { activeDropdown, setActiveDropdown } = useDropdownStore()
+
+  // 드롭다운 ref
+  const dropdownRef: any = useRef(null)
+
+  // 드롭다운을 열거나 닫습니다.
+  const toggleDropdown = () => {
+    setActiveDropdown(activeDropdown === id ? '' : id)
+  }
 
   // 드롭다운 외부 클릭 감지용
   useEffect(() => {
@@ -58,14 +61,9 @@ const Content = ({
     return () => document.removeEventListener('mouseup', handleClickOutside)
   }, [setActiveDropdown])
 
-  const handleOnClick = (value: string, label: string) => {
+  const handleOnClick = (dropItem: { value: string; label: string }) => {
     setActiveDropdown('') // 드롭다운을 닫습니다.
-    setSelectedValue(id, { value, label })
-    fieldOnChange && fieldOnChange({ value, label })
-  }
-
-  const toggleDropdown = () => {
-    setActiveDropdown(activeDropdown === id ? '' : id) // 드롭다운을 열거나 닫습니다.
+    fieldOnChange && fieldOnChange(dropItem)
   }
 
   return (
@@ -84,18 +82,14 @@ const Content = ({
         >
           <span
             className={
-              placeholder && selectedValues[id] === undefined
-                ? 'text-[18px] text-[#C4C4C4] md:text-[14px]'
-                : ''
+              placeholder ? 'text-[18px] text-[#C4C4C4] md:text-[14px]' : ''
             }
           >
-            {selectedValues[id] !== undefined && selectedValues[id].value !== ''
-              ? selectedValues[id].label
-              : fieldValue?.label
-                ? fieldValue?.label
-                : placeholder
-                  ? placeholder
-                  : dropData[0].label}
+            {fieldValue?.label
+              ? fieldValue?.label
+              : placeholder
+                ? placeholder
+                : dropData[0].label}
           </span>
           <CommonIcon.BLACK_DROPDOWN />
         </div>
@@ -103,7 +97,7 @@ const Content = ({
 
       {activeDropdown === id && (
         <div
-          className="absolute left-0 top-[35px] z-10 w-full rounded border bg-white py-[10px]"
+          className="absolute left-0 top-[35px] z-10 max-h-[300px] w-full overflow-auto rounded border bg-white py-[10px]"
           ref={dropdownRef}
         >
           {dropData.map((item) => (
@@ -111,7 +105,9 @@ const Content = ({
               key={item.value}
               id={item.value}
               className="cursor-pointer p-[7px] text-[14px] hover:bg-[#F3F5FF]"
-              onClick={() => handleOnClick(item.value, item.label)}
+              onClick={() =>
+                handleOnClick({ value: item.value, label: item.label })
+              }
             >
               {item.label}
             </div>

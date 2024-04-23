@@ -12,6 +12,7 @@ import { GenericSearchForm } from '@/components/common/GenericSearchForm'
 import { SearchFields } from '@/types/common'
 import { SearchController } from '@/components/common/SearchController'
 import { useUser } from '@/hooks/useUser'
+import { ROLES } from '@/constants/roles'
 
 const searchFields: SearchFields = [
   {
@@ -69,7 +70,7 @@ export default function GroupInfoPage(pageProps: {
 
       <div className="mb-[10px] mt-[40px] flex items-center justify-between">
         <div className="text-[18px] font-bold">선박 정보</div>
-        {role && role !== 'C' ? (
+        {role && role !== ROLES.SHIP ? (
           <Link href={PATHS.GROUP_ADD}>
             <button className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold">
               + 추가
@@ -87,7 +88,7 @@ export default function GroupInfoPage(pageProps: {
         <div className="relative">
           <div className="mt-[40px] flex items-center justify-between">
             <div className="text-[18px] font-bold">그룹(선박) 정보</div>
-            {role && role !== 'C' ? (
+            {role && role !== ROLES.SHIP ? (
               <button className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold">
                 수정
               </button>

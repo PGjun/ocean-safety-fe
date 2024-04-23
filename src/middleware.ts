@@ -1,6 +1,6 @@
 import { getToken } from 'next-auth/jwt'
 import { NextRequest, NextResponse } from 'next/server'
-import { roles } from './constants/roles'
+import { ROLES, roles } from './constants/roles'
 import { PATHS } from './constants/paths'
 
 export async function middleware(request: NextRequest) {
@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // 'D' 권한 사용자의 접근 제한
-  if (isLoggedIn && roles[token.user.crew_level] === 'D') {
+  if (isLoggedIn && roles[token.user.crew_level] === ROLES.CREW) {
     const allowedPaths = [
       PATHS.HEALTH_INFO(),
       PATHS.NOTICE(),

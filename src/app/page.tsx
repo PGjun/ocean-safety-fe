@@ -1,13 +1,23 @@
+'use client'
+
 import { CrewFall } from '@/components/main/CrewFall'
 import { CrewHealthInfo } from '@/components/main/CrewHealthInfo'
 import { CrewSos } from '@/components/main/CrewSos'
 import { CrewStatus } from '@/components/main/CrewStatus'
+import { useState } from 'react'
 
 export default function Home() {
+  const [selectedDrop, setSelectedDrop] = useState<{
+    value: string
+    label: string
+  } | null>(null)
   return (
     <main className="grid gap-[56px] md:mx-[40px] md:grid-cols-2">
-      <CrewStatus />
-      <CrewHealthInfo />
+      <CrewStatus
+        selectedDrop={selectedDrop}
+        setSelectedDrop={setSelectedDrop}
+      />
+      <CrewHealthInfo selectedShipId={selectedDrop?.value} />
       <CrewSos />
       <CrewFall />
     </main>

@@ -1,4 +1,4 @@
-import { roles } from '@/constants/roles'
+import { ROLES, roles } from '@/constants/roles'
 import { getSession } from 'next-auth/react'
 
 // 파라미터 필터 함수 정의
@@ -11,12 +11,12 @@ export const filterParamsByRole = async ({ params }: { params: any }) => {
   console.log('🚀 ~ filterParamsByRole ~ role:', role)
   const newParams = { ...params }
 
-  // 'C' 또는 'D' 권한이 아닌 경우 ship_id 제거
-  if (role !== 'C' && role !== 'D') {
+  // 'SHIP' 또는 'CREW' 권한이 아닌 경우 ship_id 제거
+  if (role !== ROLES.SHIP && role !== ROLES.CREW) {
     delete newParams.ship_id
   }
-  // 'D' 권한이 아닌 경우 user_id 제거
-  if (role !== 'D') {
+  // 'CREW' 권한이 아닌 경우 user_id 제거
+  if (role !== ROLES.CREW) {
     delete newParams.user_id
   }
   return newParams

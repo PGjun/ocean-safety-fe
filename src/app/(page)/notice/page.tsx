@@ -3,6 +3,7 @@
 import { CommonIcon } from '@/components/SvgIcons'
 import { Pagination, SearchParams } from '@/components/common/Pagination'
 import { PATHS } from '@/constants/paths'
+import { ROLES } from '@/constants/roles'
 import { useUser } from '@/hooks/useUser'
 import { fetchNoticeList } from '@/services/api/user'
 import moment from 'moment'
@@ -83,7 +84,7 @@ export default function NoticePage(pageProps: {
             </Link>
           )
         })}
-        {role && role !== 'D' ? (
+        {role && role !== ROLES.CREW ? (
           <div className="mt-[32px] flex justify-end">
             <Link href={PATHS.NOTICE_ADD}>
               <button className="rounded border border-[#C4C4C4] px-[28px] py-[13.5px] text-[14px] font-bold md:leading-[16.71px]">
