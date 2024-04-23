@@ -3,16 +3,22 @@
 import { UserHealth, fetchUserHealthList } from '@/services/api/user'
 import { useEffect, useState } from 'react'
 import { GenericTable } from '../common/GenericTable'
+import { useUser } from '@/hooks/useUser'
 
 export const CrewHealthInfo = () => {
+  const { user } = useUser()
+
   const [healthList, setHealthList] = useState([])
   const [shipId, setShipId] = useState<number | null>(null)
 
   useEffect(() => {
+    if (!user) return
     const fetchHealthList = async () => {
       const res = await fetchUserHealthList({
+        group_id: user?.group_id.toString(),
+        ship_id: user?.ship_id.toString(),
+        user_id: user?.id.toString(),
         page_num: '1',
-        group_id: '1',
         item_count: '5',
       })
       if (res?.status === 200) {
@@ -20,7 +26,7 @@ export const CrewHealthInfo = () => {
       }
     }
     fetchHealthList()
-  }, [])
+  }, [user])
   return (
     <div>
       <div className="text-[20px] font-bold">승선원 건강정보</div>

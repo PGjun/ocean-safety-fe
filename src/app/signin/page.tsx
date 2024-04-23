@@ -19,7 +19,12 @@ export default function LoginPage() {
     }
   }, [])
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const onSubmit = async (data: any) => {
+    if (isLoading) return // 로딩 중에는 함수 early return
+
+    setIsLoading(true)
     const { id: username, password } = data
     const result = await signIn('credentials', {
       username,
@@ -35,6 +40,7 @@ export default function LoginPage() {
       localStorage.setItem('keepLogin', keepLogin.toString()) // 로그인 성공 시 로컬 스토리지에 상태 저장
       window.location.href = '/' // 성공 시 메인 페이지로 이동
     }
+    setIsLoading(false) // 처리가 끝난 후 로딩 상태 해제
   }
 
   return (

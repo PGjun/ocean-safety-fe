@@ -80,7 +80,7 @@ export const MainNavbar = () => {
 
   const currentPath = usePathname()
 
-  const isLoginPage = currentPath === PATHS.API_AUTH_SIGNIN
+  const isLoginPage = currentPath === PATHS.SIGNIN
 
   const [openNav, setOpenNav] = useState(false)
   const handleBackClick = (e: any) => {

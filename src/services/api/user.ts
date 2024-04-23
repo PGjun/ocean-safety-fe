@@ -1,6 +1,7 @@
 import { convertFormData } from '@/utils/convertFormData'
 import { httpClient } from '../config/api-conf'
 import { END_POINT } from '../config/end-point'
+import { filterParamsByRole } from '@/utils/filterParamsByRole'
 
 export interface LoginParams {
   id: string
@@ -74,17 +75,18 @@ export const fetchShipInfo = async (shipId: number) => {
 
 export interface FetchShipListParams {
   group_id: string
+  ship_id: number
   page_num: string
   item_count: string
   search_group?: string
   search_ship?: string
-  ship_id?: number
 }
 
 export const fetchShipList = async (params: FetchShipListParams) => {
+  const filteredParams = await filterParamsByRole({ params })
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_SHIP_LIST(params),
+    endPoint: END_POINT.USER.GET_SHIP_LIST(filteredParams),
   })
 }
 
@@ -126,9 +128,10 @@ export interface FetchUserListParams {
 }
 
 export const fetchUserList = async (params: FetchUserListParams) => {
+  const filteredParams = await filterParamsByRole({ params })
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_USER_LIST(params),
+    endPoint: END_POINT.USER.GET_USER_LIST(filteredParams),
   })
 }
 
@@ -142,10 +145,10 @@ export interface UserHealth extends User {
 
 export interface UserHealthListParams {
   group_id: string
+  ship_id: string
+  user_id: string
   page_num: string
   item_count: string
-  user_id?: string
-  ship_id?: string
   search_group?: string
   search_ship?: string
   search_name?: string
@@ -154,9 +157,11 @@ export interface UserHealthListParams {
 }
 
 export const fetchUserHealthList = async (params: UserHealthListParams) => {
+  const filteredParams = await filterParamsByRole({ params })
+
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_USER_HEALTH_LIST(params),
+    endPoint: END_POINT.USER.GET_USER_HEALTH_LIST(filteredParams),
   })
 }
 
@@ -175,9 +180,9 @@ export const fetchUserLocationList = async (shipId: number) => {
 
 export interface UserEmergencyListParams {
   group_id: string
+  ship_id: string
   page_num: string
   item_count: string
-  ship_id?: string
   search_name?: string
   search_code?: string
   search_status?: string
@@ -201,9 +206,10 @@ export interface UserEmergencyData {
 export const fetchUserEmergencyList = async (
   params: UserEmergencyListParams,
 ) => {
+  const filteredParams = await filterParamsByRole({ params })
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_USER_EMERGENCY_LIST(params),
+    endPoint: END_POINT.USER.GET_USER_EMERGENCY_LIST(filteredParams),
   })
 }
 
@@ -216,15 +222,16 @@ export const fetchUserSpecificEmergency = async (sos_id: number) => {
 
 export interface NoticeListParams {
   group_id: string
+  ship_id: string
   page_num: string
   item_count: string
-  ship_id?: string
 }
 
 export const fetchNoticeList = async (params: NoticeListParams) => {
+  const filteredParams = await filterParamsByRole({ params })
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_NOTICE_LIST(params),
+    endPoint: END_POINT.USER.GET_NOTICE_LIST(filteredParams),
   })
 }
 

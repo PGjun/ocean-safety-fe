@@ -14,7 +14,7 @@ export const useUser = () => {
       const userSession = data?.user as User
 
       setUser(userSession)
-      setRole(roles[roles[userSession.crew_level]])
+      setRole(roles[userSession.crew_level])
     }
   }, [data])
 

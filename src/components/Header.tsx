@@ -3,33 +3,22 @@
 import { PATHS } from '@/constants/paths'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import useWebSocket from '@/hooks/useWebSocket'
-import { signOut, useSession } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect } from 'react'
 
 export const Header = () => {
   useWebSocket()
   const currentPath = usePathname()
 
-  const isLoginPage = currentPath === PATHS.API_AUTH_SIGNIN
+  const isLoginPage = currentPath === PATHS.SIGNIN
 
   const isMobile = useMediaQuery('768')
 
   //todo 임시 로그인 변경
   const logout = () => {
-    // document.cookie =
-    //   'loggedIn=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;'
-
-    // localStorage.removeItem('userInfo')
     signOut()
   }
-
-  // const { data } = useSession()
-
-  // useEffect(() => {
-  //   console.log('Header.tsx', data)
-  // }, [data])
 
   if (isLoginPage) return null
   return (
@@ -45,9 +34,7 @@ export const Header = () => {
       ) : (
         <div className="h-[60px] flex-1 items-center justify-end">
           <div className="fixed right-[30px] top-[30px]">
-            <Link href="/login">
-              <button onClick={logout}>로그아웃</button>
-            </Link>
+            <button onClick={logout}>로그아웃</button>
           </div>
         </div>
       )}

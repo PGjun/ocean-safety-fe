@@ -8,7 +8,7 @@ const nextAuthOptions = async () => ({
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
+        username: { label: 'Username', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials: any) => {
@@ -26,8 +26,6 @@ const nextAuthOptions = async () => ({
             ...loginResponse.data,
             keepLogin: credentials.keepLogin === 'true', // 문자열로 전달될 가능성
           }
-        } else {
-          throw new Error('Invalid credentials')
         }
       },
     }),
@@ -49,13 +47,6 @@ const nextAuthOptions = async () => ({
         token.maxAge = user.keepLogin ? 30 * 24 * 60 * 60 : 12 * 60 * 60 // 30일/12시간
       }
       return token
-    },
-    async redirect({ url, baseUrl }: any) {
-      // 로그인 성공 후 리디렉션 처리
-      if (url === process.env.NEXTAUTH_URL + '/api/auth/signin') {
-        return baseUrl
-      }
-      return url
     },
   },
 })

@@ -12,14 +12,14 @@ export async function middleware(request: NextRequest) {
     })
   } catch (error) {
     console.error('토큰 가져오기 실패:', error)
-    return NextResponse.redirect(new URL(PATHS.API_AUTH_SIGNIN, request.url))
+    return NextResponse.redirect(new URL(PATHS.SIGNIN, request.url))
   }
 
   const { pathname } = request.nextUrl
   const isLoggedIn = token !== null && token.user !== undefined
 
   // 로그인 페이지 접근 시 이미 로그인 상태인 경우, 메인 페이지로 리디렉트
-  if (pathname.startsWith(PATHS.API_AUTH_SIGNIN) && isLoggedIn) {
+  if (pathname.startsWith(PATHS.SIGNIN) && isLoggedIn) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
@@ -27,16 +27,28 @@ export async function middleware(request: NextRequest) {
   if (
     !isLoggedIn &&
     !pathname.includes('/_next') &&
-    !pathname.startsWith(PATHS.API_AUTH_SIGNIN) &&
-    !pathname.startsWith('/api/') // API 경로를 리다이렉트에서 제외해야됌
+    !pathname.startsWith('/api/') && // API 경로를 리다이렉트에서 제외해야됌
+    !pathname.startsWith(PATHS.SIGNIN)
   ) {
-    return NextResponse.redirect(new URL(PATHS.API_AUTH_SIGNIN, request.url))
+    return NextResponse.redirect(new URL(PATHS.SIGNIN, request.url))
   }
 
-  // 권한 검사 및 페이지 리디렉션
-  if (isLoggedIn) {
-    const role = roles[token.user.crew_level]
-    if (pathname === '/' && role === 'D') {
+  // 'D' 권한 사용자의 접근 제한
+  if (isLoggedIn && roles[token.user.crew_level] === 'D') {
+    const allowedPaths = [
+      PATHS.HEALTH_INFO(),
+      PATHS.NOTICE(),
+      PATHS.NOTICE_DETAIL(),
+    ]
+    const isAllowedPath = allowedPaths.some((path) => path.startsWith(pathname))
+
+    // 허용된 경로가 아니면 HEALTH_INFO 페이지로 리디렉트
+    if (
+      (!isAllowedPath &&
+        !pathname.includes('/_next') &&
+        !pathname.startsWith('/api/')) ||
+      pathname === '/'
+    ) {
       return NextResponse.redirect(new URL(PATHS.HEALTH_INFO(), request.url))
     }
   }

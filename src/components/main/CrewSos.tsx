@@ -5,20 +5,23 @@ import { GenericTable } from '../common/GenericTable'
 import { UserEmergencyData, fetchUserEmergencyList } from '@/services/api/user'
 import { useRouter } from 'next/navigation'
 import { PATHS } from '@/constants/paths'
+import { useUser } from '@/hooks/useUser'
 
 export const CrewSos = () => {
+  const { user } = useUser()
+
   const router = useRouter()
 
   const [sosList, setSosList] = useState([])
   const [sosId, setSosId] = useState<number | null>()
 
-  const pageSize = '5'
-
   useEffect(() => {
+    if (!user) return
     const fetcEmergencyListData = async () => {
       const res = await fetchUserEmergencyList({
-        group_id: '1',
-        item_count: pageSize,
+        group_id: user?.group_id.toString(),
+        ship_id: user?.ship_id.toString(),
+        item_count: '5',
         page_num: '1',
       })
       if (res?.status === 200) {
@@ -27,7 +30,7 @@ export const CrewSos = () => {
     }
 
     fetcEmergencyListData()
-  }, [])
+  }, [user])
 
   return (
     <div className="max-w-[636px]">
@@ -37,7 +40,7 @@ export const CrewSos = () => {
         mobileContents={(item: UserEmergencyData, idx) => (
           <>
             <div>
-              No. {idx + 1} &nbsp; {item.name}
+              No. {item.id} &nbsp; {item.name}
             </div>
             <div>
               응급코드 : {item.emergency_code} 기록일시 : {item.sos_date}

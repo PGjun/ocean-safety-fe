@@ -3,6 +3,7 @@
 import { CommonIcon } from '@/components/SvgIcons'
 import { Pagination, SearchParams } from '@/components/common/Pagination'
 import { PATHS } from '@/constants/paths'
+import { useUser } from '@/hooks/useUser'
 import { fetchNoticeList } from '@/services/api/user'
 import moment from 'moment'
 import Link from 'next/link'
@@ -23,17 +24,20 @@ export default function NoticePage(pageProps: {
   params: {}
   searchParams: SearchParams
 }) {
-  const pageSize = '10'
+  const { user, role } = useUser()
 
   const [noticeList, setNoticeList] = useState([])
   const [totalPage, setTotlaPage] = useState(1)
 
   const searchParams = pageProps.searchParams
   useEffect(() => {
+    if (!user) return
+
     const getNoticeListData = async () => {
       const res = await fetchNoticeList({
-        group_id: '1',
-        item_count: pageSize,
+        group_id: user?.group_id.toString(),
+        ship_id: user?.ship_id.toString(),
+        item_count: '5',
         ...searchParams,
       })
       if (res?.status === 200) {
@@ -43,7 +47,7 @@ export default function NoticePage(pageProps: {
     }
 
     getNoticeListData()
-  }, [searchParams])
+  }, [searchParams, user])
 
   return (
     <div className="md:mx-[40px]">
@@ -79,13 +83,15 @@ export default function NoticePage(pageProps: {
             </Link>
           )
         })}
-        <div className="mt-[32px] flex justify-end">
-          <Link href={PATHS.NOTICE_ADD}>
-            <button className="rounded border border-[#C4C4C4] px-[28px] py-[13.5px] text-[14px] font-bold md:leading-[16.71px]">
-              새 글쓰기
-            </button>
-          </Link>
-        </div>
+        {role && role !== 'D' ? (
+          <div className="mt-[32px] flex justify-end">
+            <Link href={PATHS.NOTICE_ADD}>
+              <button className="rounded border border-[#C4C4C4] px-[28px] py-[13.5px] text-[14px] font-bold md:leading-[16.71px]">
+                새 글쓰기
+              </button>
+            </Link>
+          </div>
+        ) : null}
         <div className="mt-[32px] flex w-full justify-center">
           <Pagination
             path={PATHS.NOTICE}

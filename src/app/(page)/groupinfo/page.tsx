@@ -11,6 +11,7 @@ import { ShipDetailTab } from './components/ShipDetailTab'
 import { GenericSearchForm } from '@/components/common/GenericSearchForm'
 import { SearchFields } from '@/types/common'
 import { SearchController } from '@/components/common/SearchController'
+import { useUser } from '@/hooks/useUser'
 
 const searchFields: SearchFields = [
   {
@@ -33,6 +34,7 @@ export default function GroupInfoPage(pageProps: {
   params: {}
   searchParams: SearchParams
 }) {
+  const { role } = useUser()
   const searchParams = pageProps.searchParams
 
   const router = useRouter()
@@ -67,11 +69,13 @@ export default function GroupInfoPage(pageProps: {
 
       <div className="mb-[10px] mt-[40px] flex items-center justify-between">
         <div className="text-[18px] font-bold">선박 정보</div>
-        <Link href={PATHS.GROUP_ADD}>
-          <button className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold">
-            + 추가
-          </button>
-        </Link>
+        {role && role !== 'C' ? (
+          <Link href={PATHS.GROUP_ADD}>
+            <button className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold">
+              + 추가
+            </button>
+          </Link>
+        ) : null}
       </div>
 
       <ShipListTable
@@ -83,9 +87,11 @@ export default function GroupInfoPage(pageProps: {
         <div className="relative">
           <div className="mt-[40px] flex items-center justify-between">
             <div className="text-[18px] font-bold">그룹(선박) 정보</div>
-            <button className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold">
-              수정
-            </button>
+            {role && role !== 'C' ? (
+              <button className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold">
+                수정
+              </button>
+            ) : null}
           </div>
           <ShipDetailTab shipId={shipId} />
         </div>

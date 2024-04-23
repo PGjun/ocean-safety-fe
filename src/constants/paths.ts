@@ -1,7 +1,7 @@
 import { getQueryString } from '@/utils/getQueryString'
 
 export const PATHS = {
-  API_AUTH_SIGNIN: '/signin',
+  SIGNIN: '/signin',
   CREW_INFO: (params = { page_num: '1' }) => {
     const query = getQueryString(params)
     return `/crewinfo?${query}`

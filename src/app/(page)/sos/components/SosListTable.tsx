@@ -4,6 +4,7 @@ import { PATHS } from '@/constants/paths'
 import { UserEmergencyData, fetchUserEmergencyList } from '@/services/api/user'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { useUser } from '@/hooks/useUser'
 
 export const SosListTable = ({
   searchParams,
@@ -16,16 +17,19 @@ export const SosListTable = ({
   setLocation: ({ lng, lat }: { lng: number; lat: number }) => void
   query: any
 }) => {
+  const { user } = useUser()
+
   const [sosList, setSosList] = useState([])
 
-  const pageSize = '5'
   const [totalPage, setTotalPage] = useState(1)
 
   useEffect(() => {
+    if (!user) return
     const fetcEmergencyListData = async () => {
       const res = await fetchUserEmergencyList({
-        group_id: '1',
-        item_count: pageSize,
+        group_id: user?.group_id,
+        ship_id: user?.ship_id,
+        item_count: '5',
         ...searchParams,
         ...query,
       })
@@ -36,7 +40,7 @@ export const SosListTable = ({
     }
 
     fetcEmergencyListData()
-  }, [pageSize, searchParams, query])
+  }, [searchParams, query, user])
 
   return (
     <div className="flex-1">

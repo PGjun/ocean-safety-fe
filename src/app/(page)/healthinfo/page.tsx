@@ -13,6 +13,7 @@ import moment from 'moment'
 import { HealthChartDetailTab } from './components/HealthChartDetailTab'
 import { GenericSearchForm } from '@/components/common/GenericSearchForm'
 import { SearchFields } from '@/types/common'
+import { useUser } from '@/hooks/useUser'
 
 // 필드 설정을 포함한 배열 정의
 const searchFields: SearchFields = [
@@ -43,6 +44,8 @@ export default function HealthInfoPage(pageProps: {
   params: {}
   searchParams: SearchParams
 }) {
+  const { role } = useUser()
+
   const searchParams = pageProps.searchParams
 
   const router = useRouter()
@@ -98,12 +101,13 @@ export default function HealthInfoPage(pageProps: {
           <span className="text-[18px] font-bold leading-[18px]">{` 22`}</span>
           건
         </div>
-
-        <Link href={PATHS.SOS_SETTINGS}>
-          <button className="rounded border border-[#888888] px-[12px] py-[8px] text-[12px] font-bold leading-[14.32px] md:px-[16px] md:text-[12px] md:leading-[16.71px]">
-            SOS 설정
-          </button>
-        </Link>
+        {role && role !== 'D' ? (
+          <Link href={PATHS.SOS_SETTINGS}>
+            <button className="rounded border border-[#888888] px-[12px] py-[8px] text-[12px] font-bold leading-[14.32px] md:px-[16px] md:text-[12px] md:leading-[16.71px]">
+              SOS 설정
+            </button>
+          </Link>
+        ) : null}
       </div>
 
       <HealthSearchTable

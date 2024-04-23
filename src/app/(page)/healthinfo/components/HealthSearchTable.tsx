@@ -3,6 +3,7 @@ import { GenericTable } from '@/components/common/GenericTable'
 import { PATHS } from '@/constants/paths'
 import { UserHealth, fetchUserHealthList } from '@/services/api/user'
 import { useEffect, useState } from 'react'
+import { useUser } from '@/hooks/useUser'
 
 export const HealthSearchTable = ({
   searchParams,
@@ -13,15 +14,20 @@ export const HealthSearchTable = ({
   query: any
   setUserIndex: (useIndex: number) => void
 }) => {
+  const { user } = useUser()
+
   const [healthList, setHealthList] = useState([])
 
   const pageSize = '5'
   const [totalPage, setTotalPage] = useState(1)
 
   useEffect(() => {
+    if (!user) return
     const fetchHealthList = async () => {
       const res = await fetchUserHealthList({
-        group_id: '1',
+        group_id: user?.group_id,
+        ship_id: user?.ship_id,
+        user_id: user?.id,
         item_count: pageSize,
         ...searchParams,
         ...query,
@@ -38,7 +44,7 @@ export const HealthSearchTable = ({
 
     // setInterval에 의해 설정된 타이머를 해제합니다.
     return () => clearInterval(intervalId)
-  }, [pageSize, searchParams, query])
+  }, [pageSize, searchParams, query, user])
 
   return (
     <div className="flex-1">

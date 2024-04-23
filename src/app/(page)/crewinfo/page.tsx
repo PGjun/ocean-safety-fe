@@ -36,15 +36,14 @@ export default function CrewInfoPage(pageProps: {
   params: {}
   searchParams: SearchParams
 }) {
-  const router = useRouter()
-
   const { user } = useUser()
+
+  const router = useRouter()
 
   const searchParams = pageProps.searchParams
   const { handleSubmit, control } = useForm()
   const [query, setQuery] = useState<any>()
 
-  const pageSize = '5'
   const [totalPage, setTotalPage] = useState(1)
 
   const [userList, setUserList] = useState([])
@@ -61,7 +60,7 @@ export default function CrewInfoPage(pageProps: {
       const res = await fetchUserList({
         group_id: user.group_id,
         ship_id: user.ship_id,
-        item_count: pageSize,
+        item_count: '5',
         ...searchParams,
         ...query,
       })

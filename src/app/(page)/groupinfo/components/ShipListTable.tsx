@@ -3,6 +3,7 @@ import { GenericTable } from '@/components/common/GenericTable'
 import { PATHS } from '@/constants/paths'
 import { ShipInfoParams, fetchShipList } from '@/services/api/user'
 import { useEffect, useState } from 'react'
+import { useUser } from '@/hooks/useUser'
 
 export const ShipListTable = ({
   query,
@@ -13,16 +14,19 @@ export const ShipListTable = ({
   searchParams: SearchParams
   setShipId: (ship_id: number) => void
 }) => {
+  const { user } = useUser()
+
   const [shipList, setShipList] = useState([])
 
-  const pageSize = '5'
   const [totalPage, setTotlaPage] = useState(1)
 
   useEffect(() => {
+    if (!user) return
     const getShipListData = async () => {
       const res = await fetchShipList({
-        group_id: '1',
-        item_count: pageSize,
+        group_id: user?.group_id,
+        ship_id: user?.ship_id,
+        item_count: '5',
         ...searchParams,
         ...query,
       })
@@ -33,7 +37,7 @@ export const ShipListTable = ({
     }
 
     getShipListData()
-  }, [searchParams, query])
+  }, [searchParams, query, user])
 
   return (
     <div className="flex-1">
