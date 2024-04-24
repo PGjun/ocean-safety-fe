@@ -8,7 +8,7 @@ import { PATHS } from '@/constants/paths'
 import { SearchParams } from '@/components/common/Pagination'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { DatePickerController } from '@/components/common/DatePicker'
+import { DatePickerRangeController } from '@/components/common/DatePicker'
 import moment from 'moment'
 import { HealthChartDetailTab } from './components/HealthChartDetailTab'
 import { GenericSearchForm } from '@/components/common/GenericSearchForm'
@@ -29,7 +29,7 @@ const searchFields: SearchFields = [
     name: 'search_date',
     label: '기록일',
     placeholder: 'YY.MM.DD ~ YY.MM.DD',
-    component: DatePickerController,
+    component: DatePickerRangeController,
     width: 245,
   },
   {

@@ -28,6 +28,7 @@ const USER = {
     const query = getQueryString(params)
     return `${API_USER}/getUserList?${query}`
   },
+  ADD_USER: `${API_USER}/addUser`,
   GET_USER_HEALTH_LIST: (params: UserHealthListParams) => {
     const query = getQueryString(params)
     return `${API_USER}/getUserHealthList?${query}`
@@ -55,6 +56,12 @@ const USER = {
   GET_SHIP_NAME_LIST: (params: { group_id: string }) => {
     const query = getQueryString(params)
     return `${API_USER}/getShipNameList?${query}`
+  },
+  GET_CREW_LEVEL: () => {
+    return `${API_USER}/getCrewlevel`
+  },
+  GET_COMPANY_LIST: () => {
+    return `${API_USER}/getCompanyList`
   },
 }
 

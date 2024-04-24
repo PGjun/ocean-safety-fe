@@ -20,6 +20,13 @@ export default function TestPage() {
   const [locationList, setLocationList] = useState([])
   const [shipId, setShipId] = useState<number | null>(null)
 
+  const [dotsData, setDotsData] = useState([])
+
+  const handleDotsChange = (dots: any) => {
+    setDotsData(dots)
+    console.log('Updated dots data:', dots)
+  }
+
   useEffect(() => {
     const fetchLocationList = async () => {
       const res = await fetchUserLocationList(2)
@@ -109,7 +116,7 @@ export default function TestPage() {
         </div>
       </div> */}
       <div className="mt-[50px]">
-        <CanvasComponent />
+        {/* <CanvasComponent onDotsChange={handleDotsChange} /> */}
       </div>
     </div>
   )

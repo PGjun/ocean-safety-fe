@@ -17,31 +17,15 @@ export const CrewHealthInfo = ({
   useEffect(() => {
     if (!user) return
     const fetchHealthList = async () => {
-      const params = {
+      const res = await fetchUserHealthList({
         group_id: user?.group_id.toString(),
-        ship_id: user?.ship_id.toString(),
+        ship_id: selectedShipId ? selectedShipId : user?.ship_id.toString(),
         user_id: user?.id.toString(),
         page_num: '1',
         item_count: '5',
-      }
-      if (selectedShipId) {
-        const setParams = {
-          group_id: user?.group_id.toString(),
-          ship_id: selectedShipId,
-          user_id: user?.id.toString(),
-          page_num: '1',
-          item_count: '5',
-        }
+        noFilter: !!selectedShipId,
+      })
 
-        const res = await fetchUserHealthList(params, setParams)
-        if (res?.status === 200) {
-          setHealthList(res.data.data)
-          console.log('업데이트!')
-        }
-        return
-      }
-
-      const res = await fetchUserHealthList(params)
       if (res?.status === 200) {
         setHealthList(res.data.data)
         console.log('업데이트!')

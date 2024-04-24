@@ -1,13 +1,17 @@
 'use client'
 
+import CanvasComponent from '@/app/test/Canvas2'
+import CanvasRect from '@/app/test/CanvasRect'
 import { CreateDataTable } from '@/components/common/CreateDataTable'
-import { DatePickerSingle } from '@/components/common/DatePicker'
+import { DatePickerSingleController } from '@/components/common/DatePicker'
 import { PATHS } from '@/constants/paths'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { CommonIcon } from '@/icons/common'
 import { addShipParams, postAddShip } from '@/services/api/user'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ChangeEvent, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { Control, Controller, useForm } from 'react-hook-form'
 
 interface Field {
@@ -93,7 +97,7 @@ const groupFields = [
     label: '진수일',
     placeholder: '진수일을 입력하세요',
     defaultValue: '',
-    component: DatePickerSingle,
+    component: DatePickerSingleController,
   },
   {
     name: 'shipyard',
@@ -128,7 +132,7 @@ const groupFields = [
     label: '임차기간',
     placeholder: '임차기간을 입력하세요',
     defaultValue: '',
-    component: DatePickerSingle,
+    component: DatePickerSingleController,
   },
 ]
 
@@ -152,6 +156,75 @@ const GroupInfoForm = ({ watch, control }: any) => {
   )
 }
 
+const formatMacAddress = (value: string) => {
+  if (!value) return value
+
+  // 알파벳과 숫자만 허용
+  const mac = value.replace(/[^0-9A-Fa-f]/g, '').toUpperCase()
+
+  // 각 두 자리마다 콜론(:) 추가
+  const formatted = mac.split('').reduce((acc, char, idx) => {
+    return acc + char + (idx % 2 === 1 && idx !== mac.length - 1 ? ':' : '')
+  }, '')
+
+  // 17자리를 초과하는 입력 제거 (XX:XX:XX:XX:XX:XX - 콜론 포함 17자)
+  return formatted.length <= 17 ? formatted : formatted.slice(0, 17)
+}
+
+const DotInputComponent = ({ dots, setDots }: any) => {
+  // 레이블 변경 핸들러
+  const handleNameChange = (index: number, name: string) => {
+    const newDots = [...dots]
+    newDots[index] = { ...newDots[index], name }
+    setDots(newDots)
+  }
+  const handleMcAdressChange = (index: number, mac_address: string) => {
+    const formattedMac = formatMacAddress(mac_address)
+    const newDots = [...dots]
+    newDots[index] = { ...newDots[index], mac_address: formattedMac }
+    setDots(newDots)
+  }
+  // 도트 삭제 핸들러
+  const handleRemoveDot = (index: number) => {
+    const newDots = dots.filter((_: any, i: any) => i !== index)
+    setDots(newDots)
+  }
+
+  return (
+    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+      {dots.map((dot: any, index: any) => (
+        <div
+          key={index}
+          className="flex w-full items-center gap-2 rounded border border-[#C4C4C4]"
+        >
+          <div className="h-full w-[60px] place-content-center bg-[#F3F5FF] text-center text-[20px] font-bold leading-[16px] text-[#2262C6] md:w-[50px]">
+            {index + 1}
+          </div>
+          <input
+            className="min-w-0 flex-grow border-r outline-none"
+            type="text"
+            placeholder="비콘 이름"
+            value={dot.name || ''}
+            onChange={(e) => handleNameChange(index, e.target.value)}
+          />
+          <input
+            className="min-w-0 flex-grow outline-none"
+            type="text"
+            placeholder="Mac Address"
+            value={dot.mac_address || ''}
+            onChange={(e) => handleMcAdressChange(index, e.target.value)}
+          />
+          <div className="px-[18px] py-[15px] text-[20px] leading-[16px]">
+            <button type="button" onClick={() => handleRemoveDot(index)}>
+              <CommonIcon.Xmark />
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 const ShipDrawing = ({
   file,
   setFile,
@@ -159,13 +232,25 @@ const ShipDrawing = ({
   file: File | null
   setFile: (file: File) => void
 }) => {
+  const isMobile = useMediaQuery('768')
+
   // const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string>('')
   const fileRef = useRef<HTMLInputElement>(null)
+  const [dots, setDots] = useState<
+    {
+      x: number
+      y: number
+    }[]
+  >([])
+
+  // const [rectangles, setRectangles] = useState<
+  //   { x1: number; y1: number; x2: number; y2: number }[]
+  // >([])
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null
-    console.log('🚀 ~ handleFileChange ~ file:', file)
+    console.log(file)
     if (file) {
       // 파일이 선택되었을 때만 타입 검사 진행
       if (file.type === 'image/png' || file.type === 'image/jpeg') {
@@ -180,6 +265,38 @@ const ShipDrawing = ({
       }
     }
   }
+
+  const onDotsChange = (dots: any) => {
+    setDots(dots)
+  }
+
+  useEffect(() => {
+    // 결과 객체를 생성하는 함수
+    function formatData(dots: any) {
+      // 결과 객체 초기화
+      const result: any = {
+        ship_id: 0, // 이 예제에서 ship_id는 0으로 설정
+        mac_address_list: [],
+        location_x_list: [],
+        location_y_list: [],
+        beacon_name_list: [],
+      }
+
+      // 배열의 각 요소에 대해 필요한 속성 추출
+      dots.forEach((dot: any) => {
+        result.mac_address_list.push(dot.mac_address)
+        result.location_x_list.push(dot.x)
+        result.location_y_list.push(dot.y)
+        result.beacon_name_list.push(dot.name)
+      })
+
+      return result
+    }
+
+    const formattedData = formatData(dots)
+    console.log(dots)
+    console.log(formattedData)
+  }, [dots])
 
   return (
     <div>
@@ -213,15 +330,47 @@ const ShipDrawing = ({
       <div className="mt-[5px] rounded bg-[#F3F2F8] p-[20px] md:p-[40px]">
         <div className="relative h-[92px] md:h-[248px]">
           {preview && (
-            <Image
-              src={preview}
-              alt="선박 도면 미리보기"
-              layout="fill"
-              objectFit="contain"
-            />
+            <>
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  zIndex: 2,
+                  width: '100%',
+                  height: '100%',
+                }}
+              >
+                <CanvasComponent
+                  width={isMobile ? 270 : 1020}
+                  height={isMobile ? 92 : 248}
+                  dots={dots}
+                  onDotsChange={onDotsChange}
+                />
+              </div>
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  zIndex: 1,
+                  width: '100%',
+                  height: '100%',
+                }}
+              >
+                <Image
+                  src={preview}
+                  alt="선박 도면 미리보기"
+                  layout="fill"
+                  objectFit="fill"
+                />
+              </div>
+            </>
           )}
         </div>
       </div>
+      <div className="mb-[5px] mt-[10px]">선택 영역</div>
+      <>{dots && <DotInputComponent dots={dots} setDots={setDots} />}</>
     </div>
   )
 }

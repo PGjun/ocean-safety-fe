@@ -10,7 +10,7 @@ import { Control, Controller, useForm } from 'react-hook-form'
 import DropDown from '@/components/common/DropDown'
 import { SearchController } from '@/components/common/SearchController'
 import { SosListTable } from './components/SosListTable'
-import { DatePickerController } from '@/components/common/DatePicker'
+import { DatePickerRangeController } from '@/components/common/DatePicker'
 import { useRouter } from 'next/navigation'
 import moment from 'moment'
 import { GenericSearchForm } from '@/components/common/GenericSearchForm'
@@ -70,7 +70,7 @@ const searchFields: SearchFields = [
     name: 'search_date',
     label: '기록일',
     placeholder: 'YY.MM.DD ~ YY.MM.DD',
-    component: DatePickerController,
+    component: DatePickerRangeController,
     width: 245,
   },
   {

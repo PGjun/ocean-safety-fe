@@ -7,15 +7,7 @@ import { SearchParams } from './Pagination'
 interface GenericSearchForm {
   searchFields: {
     name: string
-    component: ({
-      control,
-      value,
-      name,
-    }: {
-      control: Control
-      value?: string | object | undefined
-      name: string
-    }) => ReactNode
+    component: (props: any) => ReactNode
     width: number
   }[]
   searchParams: SearchParams

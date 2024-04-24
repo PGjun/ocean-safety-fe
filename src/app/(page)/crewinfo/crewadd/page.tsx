@@ -4,9 +4,19 @@ import { PATHS } from '@/constants/paths'
 import Link from 'next/link'
 import { useForm, Controller, Control } from 'react-hook-form'
 import Image from 'next/image'
-import { DatePickerSingle } from '@/components/common/DatePicker'
-import { SlideDropDown } from '@/components/common/SlideDropDown'
-import useDropdownStore from '@/stores/dropdownStore'
+import { DatePickerSingleController } from '@/components/common/DatePicker'
+import DropDown from '@/components/common/DropDown'
+import { useEffect, useState } from 'react'
+import {
+  fetchCompanyList,
+  fetchCrewLevel,
+  fetchShipNameList,
+  postUser,
+} from '@/services/api/user'
+import moment from 'moment'
+import { useUser } from '@/hooks/useUser'
+import { SliderDropDown } from '@/components/common/SliderDropDown'
+import { useRouter } from 'next/navigation'
 
 interface Field {
   control: Control<any>
@@ -15,13 +25,158 @@ interface Field {
   currentValue?: string
   defaultValue?: string
   placeholder?: string
+  maxLength?: number
+  dropDatas?: { crewLevels?: []; companies?: [] }
 }
 
-// 기본 필드와 커스텀 필드 컴포넌트 정의
-const Field = ({ control, name, label, placeholder }: Field) => (
+const formatPhoneNumber = (value: string) => {
+  if (!value) return value
+
+  // 숫자만 추출
+  const phoneNumber = value.replace(/[^\d]/g, '')
+
+  // 숫자 길이에 따라 포맷 조정
+  if (phoneNumber.length < 4) return phoneNumber
+  if (phoneNumber.length < 8)
+    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`
+  return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`
+}
+
+const PhoneController = ({ control, name, label, placeholder }: Field) => (
   <Controller
     control={control}
     name={name}
+    rules={{ required: true }}
+    render={({ field }) => (
+      <div>
+        <label htmlFor={name} className="text-[12px] font-bold">
+          {label}
+        </label>
+        <input
+          {...field}
+          value={formatPhoneNumber(field.value)}
+          onChange={(e) => {
+            // 입력값이 11자리를 초과하지 않도록 조정
+            const formatted = formatPhoneNumber(e.target.value)
+            if (formatted.replace(/[^0-9]/g, '').length <= 11) {
+              field.onChange(formatted)
+            }
+          }}
+          id={name}
+          type="text"
+          className="block w-full rounded border border-[#C4C4C4] px-[15px] py-[10px] text-[14px]"
+          placeholder={placeholder}
+        />
+      </div>
+    )}
+  />
+)
+
+const NumberFieldController = ({
+  control,
+  name,
+  label,
+  placeholder,
+  maxLength,
+}: Field) => (
+  <Controller
+    control={control}
+    name={name}
+    rules={{ required: true }}
+    render={({ field }) => (
+      <div>
+        <label htmlFor={name} className="text-[12px] font-bold">
+          {label}
+        </label>
+        <input
+          {...field}
+          value={field.value || ''}
+          onChange={(e) => {
+            if (!maxLength) return
+            const newValue = e.target.value.replace(/\D/g, '') // 숫자만 허용
+            if (newValue !== field.value && newValue.length <= maxLength) {
+              // 길이 제한 검사
+              field.onChange(newValue)
+            }
+          }}
+          id={name}
+          maxLength={maxLength}
+          type="number"
+          className="block w-full rounded border border-[#C4C4C4] px-[15px] py-[10px] text-[14px]"
+          placeholder={placeholder}
+        />
+      </div>
+    )}
+  />
+)
+
+const CompanyDropController = ({
+  control,
+  name,
+  label,
+  dropDatas,
+  placeholder,
+}: Field) => (
+  <Controller
+    control={control}
+    name={name}
+    rules={{ required: true }}
+    render={({ field }) => (
+      <div>
+        <label htmlFor={name} className="text-[12px] font-bold">
+          {label}
+        </label>
+        <div className="block w-full rounded border border-[#C4C4C4] py-[10px] text-[14px]">
+          <DropDown.Content
+            fieldValue={field.value}
+            fieldOnChange={field.onChange}
+            id={name}
+            dropData={dropDatas?.companies}
+            placeholder={placeholder}
+            type="between"
+          />
+        </div>
+      </div>
+    )}
+  />
+)
+
+const CrewLevelDropController = ({
+  control,
+  name,
+  label,
+  dropDatas,
+  placeholder,
+}: Field) => (
+  <Controller
+    control={control}
+    name={name}
+    rules={{ required: true }}
+    render={({ field }) => (
+      <div>
+        <label htmlFor={name} className="text-[12px] font-bold">
+          {label}
+        </label>
+        <div className="block w-full rounded border border-[#C4C4C4] py-[10px] text-[14px]">
+          <DropDown.Content
+            fieldValue={field.value}
+            fieldOnChange={field.onChange}
+            id={name}
+            dropData={dropDatas?.crewLevels}
+            placeholder={placeholder}
+            type="between"
+          />
+        </div>
+      </div>
+    )}
+  />
+)
+
+const FieldController = ({ control, name, label, placeholder }: Field) => (
+  <Controller
+    control={control}
+    name={name}
+    rules={{ required: true }}
     render={({ field }) => (
       <div>
         <label htmlFor={name} className="text-[12px] font-bold">
@@ -41,18 +196,18 @@ const Field = ({ control, name, label, placeholder }: Field) => (
   />
 )
 
-const RadioField = ({ control, name, label }: Field) => {
+const RadioFieldController = ({ control, name, label }: Field) => {
   let value1 = ''
   let value2 = ''
   let text1 = ''
   let text2 = ''
 
   if (name === 'gender') {
-    value1 = 'M'
-    value2 = 'F'
+    value1 = '남'
+    value2 = '여'
     text1 = '남'
     text2 = '여'
-  } else if (name === 'personal-info' || name === 'safety-training') {
+  } else if (name === 'personal_agreement' || name === 'safety_training') {
     value1 = 'Y'
     value2 = 'N'
     text1 = 'o'
@@ -113,138 +268,164 @@ const crewInfoInit = [
     label: '이름',
     placeholder: '이름을 입력하세요.',
     defaultValue: '',
-    component: Field,
+    component: FieldController,
   },
   {
-    name: 'userId',
+    name: 'user_id',
     label: '사용자 ID',
     placeholder: '사용자 ID를 입력하세요.',
     defaultValue: '',
-    component: Field,
+    component: FieldController,
   },
   {
     name: 'password',
     label: '비밀번호',
     placeholder: '비밀번호를 입력하세요.',
     defaultValue: '',
-    component: Field,
+    component: FieldController,
   },
   {
     name: 'phone',
     label: '연락처',
     placeholder: '연락처를 입력하세요.',
     defaultValue: '',
-    component: Field,
+    component: PhoneController,
   },
   {
     name: 'birth',
     label: '생년월일',
+    placeholder: '날짜 선택',
     defaultValue: '',
-    component: DatePickerSingle,
+    component: DatePickerSingleController,
   },
   {
     name: 'age',
     label: '나이',
     placeholder: '나이를 입력하세요',
     defaultValue: '',
-    component: Field,
+    maxLength: 3,
+    component: NumberFieldController,
   },
   {
     name: 'gender',
     label: '성별',
-    defaultValue: 'M',
-    component: RadioField,
+    defaultValue: '남',
+    component: RadioFieldController,
   },
   {
-    name: 'zip-code',
+    name: 'zipcode',
     label: '우편번호',
     placeholder: '우편번호를 입력하세요',
     defaultValue: '',
-    component: Field,
+    maxLength: 10,
+    component: NumberFieldController,
   },
   {
-    name: 'road-name',
+    name: 'roadname',
     label: '도로명 주소',
     placeholder: '도로명 주소를 입력하세요',
     defaultValue: '',
-    component: Field,
+    component: FieldController,
   },
   {
     name: 'address',
     label: '상세 주소',
     placeholder: '상세 주소를 입력하세요',
     defaultValue: '',
-    component: Field,
+    component: FieldController,
   },
   {
-    name: 'company',
+    name: 'company_id',
     label: '소속 업체',
     placeholder: '소속 업체를 입력하세요',
     defaultValue: '',
-    component: Field,
+    component: CompanyDropController,
   },
   {
-    name: 'safety-training',
+    name: 'safety_training',
     label: '사전 예방 안전교육 이수 여부',
     defaultValue: 'Y',
-    component: RadioField,
+    component: RadioFieldController,
   },
   {
-    name: 'safety-training-date',
+    name: 'safety_training_date',
     label: '마지막 이수 일자',
+    placeholder: '날짜 선택',
     defaultValue: '',
-    component: DatePickerSingle,
+    component: DatePickerSingleController,
   },
   {
-    name: 'crew-level',
+    name: 'crewlevel',
     label: '승선원 구분',
     placeholder: '승선원 구분을 입력하세요',
     defaultValue: '',
-    component: Field,
+    component: CrewLevelDropController,
   },
   {
-    name: 'crew-join-date',
+    name: 'join_date',
     label: '승선원 가입일',
+    placeholder: '날짜 선택',
     defaultValue: '',
-    component: DatePickerSingle,
+    component: DatePickerSingleController,
   },
+  // {
+  //   name: 'group',
+  //   label: '소속 그룹',
+  //   placeholder: '소속 그룹을 입력하세요',
+  //   defaultValue: '',
+  //   component: Field,
+  // },
   {
-    name: 'group',
-    label: '소속 그룹',
-    placeholder: '소속 그룹을 입력하세요',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'personal-info',
+    name: 'personal_agreement',
     label: '개인정보제공 동의 여부',
     defaultValue: 'Y',
-    component: RadioField,
+    component: RadioFieldController,
   },
   {
-    name: 'personal-info-date',
+    name: 'personal_agreement_date',
     label: '개인정보제공 동의 일',
+    placeholder: '날짜 선택',
     defaultValue: '',
-    component: DatePickerSingle,
+    component: DatePickerSingleController,
   },
 ]
 
-const CrewInfoForm = ({ control }: { control: Control<any> }) => {
+const CrewInfoForm = ({
+  control,
+  dropDatas,
+}: {
+  control: Control<any>
+  dropDatas?: { crewLevels?: []; companies?: [] }
+}) => {
   return (
     <div className="mt-[10px] grid gap-[16px] md:mx-[10px] md:grid-cols-3 md:gap-[32px]">
-      {crewInfoInit.map((field, index) => {
-        return <field.component key={index} control={control} {...field} />
+      {crewInfoInit.map((fields, index) => {
+        return (
+          <fields.component
+            dropDatas={dropDatas}
+            key={index}
+            control={control}
+            {...fields}
+          />
+        )
       })}
     </div>
   )
 }
 
-const GroupDropBoxs = ({ control }: { control: Control<any> }) => {
+const GroupDropBoxs = ({
+  control,
+  ships,
+}: {
+  control: Control<any>
+  ships: any
+}) => {
+  if (!ships) return
   return (
     <>
       <div className="mt-[32px] font-bold">소속 그룹</div>
       <div className="mt-[15px] flex flex-col items-start gap-5 md:mx-[10px] md:flex-row md:items-center">
-        <div>
+        {/* <div>
           <div className="text-[14px] md:text-[16px]">그룹 선택</div>
           <Controller
             name="crew_add_ship_group"
@@ -271,29 +452,20 @@ const GroupDropBoxs = ({ control }: { control: Control<any> }) => {
               )
             }}
           />
-        </div>
+        </div> */}
         <div>
           <div className="text-[14px] md:text-[16px]">선박 선택</div>
           <Controller
-            name="crew_add_ship"
+            name="ship_id"
             control={control}
+            defaultValue={ships[0]}
             render={({ field }) => {
-              const dropData = [
-                [
-                  { value: '0', label: '강원호1' },
-                  { value: '1', label: '강원호11' },
-                ],
-                [
-                  { value: '2', label: '강원호2' },
-                  { value: '3', label: '강원호22' },
-                ],
-              ]
               return (
-                <SlideDropDown
-                  id="crew_add_ship"
+                <SliderDropDown
+                  id="ship_id"
                   fieldValue={field.value}
                   fieldOnChange={field.onChange}
-                  dropData={dropData}
+                  dropData={ships}
                 />
               )
             }}
@@ -345,6 +517,8 @@ const AreaSettings = ({ control }: { control: Control<any> }) => {
 }
 
 export default function CrewAdd() {
+  const router = useRouter()
+  const { user } = useUser()
   // useForm에서 defaultValues를 동적으로 생성
   const defaultValues1 = crewInfoInit.reduce(
     (acc: { [key: string]: any }, field) => {
@@ -362,23 +536,99 @@ export default function CrewAdd() {
     {},
   )
 
+  const [crewLevels, setCrewLevels] = useState()
+  const [companies, setCompanies] = useState()
+  const [ships, setShips] = useState()
+
+  useEffect(() => {
+    if (!user) return
+    const getCrewLevel = async () => {
+      const res = await fetchCrewLevel()
+      setCrewLevels(
+        res?.data.data.map((item: any) => ({
+          value: item.id,
+          label: item.crew_level,
+        })),
+      )
+    }
+    const getCompanyList = async () => {
+      const res = await fetchCompanyList()
+      setCompanies(
+        res?.data.data.map((item: any) => ({
+          value: item.id,
+          label: item.company_name,
+        })),
+      )
+    }
+    const getShipList = async () => {
+      const res = await fetchShipNameList({
+        group_id: user?.group_id.toString(),
+      })
+      setShips(
+        res?.data.data.map((item: any) => ({
+          value: item.ship_id,
+          label: item.ship_name,
+        })),
+      )
+    }
+    getCrewLevel()
+    getCompanyList()
+    getShipList()
+  }, [user])
+
   const { control, handleSubmit } = useForm({
-    defaultValues: { ...defaultValues1, ...defaultValues2 },
+    defaultValues: { ...defaultValues1 },
   })
 
-  const onSubmit = (data: any) => {
-    console.log('!!!!!!!!!!!!!!!!', data)
+  const onSubmit = async (data: any) => {
+    const formattedData = {
+      ...data,
+      age: parseInt(data.age, 10), // 나이를 숫자로 변환
+      zipcode: parseInt(data.zipcode, 10), // 우편번호를 숫자로 변환
+      birth: moment(data.birth).format('YYYY-MM-DD'), // 날짜를 문자열로 포맷
+      join_date: moment(data.join_date).format('YYYY-MM-DD'), // 날짜를 문자열로 포맷
+      company_id: data.company_id.value, // company_id에서 value 추출
+      crewlevel: data.crewlevel.value, // crewlevel에서 value 추출
+      ship_id: data.ship_id.value, // ship_id에서 value 추출
+      personal_agreement: data.personal_agreement === 'Y', // 'Y'이면 true, 아니면 false
+      safety_training: data.safety_training === 'Y', // 'Y'이면 true, 아니면 false
+    }
+    // personal_agreement가 false이면 관련 날짜 제거
+    if (!formattedData.personal_agreement) {
+      delete formattedData.personal_agreement_date
+    } else {
+      formattedData.personal_agreement_date = moment(
+        data.personal_agreement_date,
+      ).format('YYYY-MM-DD')
+    }
+
+    // safety_training가 false이면 관련 날짜 제거
+    if (!formattedData.safety_training) {
+      delete formattedData.safety_training_date
+    } else {
+      formattedData.safety_training_date = moment(
+        data.safety_training_date,
+      ).format('YYYY-MM-DD')
+    }
+
+    const res = await postUser(formattedData)
+    if (res?.status === 200) {
+      alert('유저 생성 성공!')
+      router.push(PATHS.CREW_INFO())
+    }
+
+    console.log('!!!!!!!!!!!!!!!!', formattedData)
   }
   return (
     <div className="md:mx-[40px]">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="text-[22px] font-bold">승선원 추가</div>
         <div className="mt-[20px] font-bold">승선원 내역</div>
-        <CrewInfoForm control={control} />
+        <CrewInfoForm control={control} dropDatas={{ crewLevels, companies }} />
         <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
-        <GroupDropBoxs control={control} />
-        <div className="mt-[20px] font-bold">제한 구역 설정</div>
-        <AreaSettings control={control} />
+        <GroupDropBoxs control={control} ships={ships} />
+        {/* <div className="mt-[20px] font-bold">제한 구역 설정</div>
+        <AreaSettings control={control} /> */}
         <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
           <Link href={PATHS.CREW_INFO()}>
             <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
@@ -392,27 +642,4 @@ export default function CrewAdd() {
       </form>
     </div>
   )
-}
-
-{
-  /* <div className="mt-[32px] flex items-center justify-center">
-  <div className="w-[310px] md:mx-[40px] md:min-w-[1100px]">
-    <div className="text-[26px] font-bold">승선원 추가</div>
-    <div className="mt-[15px] flex h-[580px] items-center justify-center bg-[#F3F5FF]">
-      <div className="flex flex-col items-center gap-[30px] text-center">
-        <div className="h-[190px] w-[190px] border-[6px] border-[#2262C6] bg-white"></div>
-        <div className="max-w-[270px] text-[18px] font-bold leading-[21.6qpx] text-[#2262C6] md:max-w-[340px]">
-          {`웨어러블 정보를 입력하기 위해 갤럭시
-         워치로 QR코드를 인식해주세요.`}
-        </div>
-      </div>
-    </div>
-    <div className="mt-[10px] flex justify-end">
-      <button className="rounded border border-[#888888] px-[28px] py-[10px] text-[14px] font-bold md:text-[18px]">
-        건너뛰기
-      </button>
-      []
-    </div>
-  </div>
-</div> */
 }

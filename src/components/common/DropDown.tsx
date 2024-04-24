@@ -82,7 +82,11 @@ const Content = ({
         >
           <span
             className={
-              placeholder ? 'text-[18px] text-[#C4C4C4] md:text-[14px]' : ''
+              fieldValue?.label
+                ? ''
+                : placeholder
+                  ? ' text-[14px] text-[#C4C4C4]'
+                  : ''
             }
           >
             {fieldValue?.label

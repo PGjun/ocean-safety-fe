@@ -135,6 +135,14 @@ export const fetchUserList = async (params: FetchUserListParams) => {
   })
 }
 
+export const postUser = async (data: any) => {
+  return httpClient({
+    method: 'post',
+    endPoint: END_POINT.USER.ADD_USER,
+    data: data,
+  })
+}
+
 export interface UserHealth extends User {
   blood_pressure: string
   health_date: string
@@ -154,19 +162,19 @@ export interface UserHealthListParams {
   search_name?: string
   search_start_date?: string
   search_end_date?: string
+  noFilter?: boolean
 }
 
-export const fetchUserHealthList = async (
-  params: UserHealthListParams,
-  setParam?: UserHealthListParams,
-) => {
-  const filteredParams = await filterParamsByRole({ params })
+export const fetchUserHealthList = async (params: UserHealthListParams) => {
+  const { noFilter, ...rest } = params
+
+  let lastParams = await filterParamsByRole({ params })
+
+  if (noFilter) lastParams = rest
 
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_USER_HEALTH_LIST(
-      setParam ? setParam : filteredParams,
-    ),
+    endPoint: END_POINT.USER.GET_USER_HEALTH_LIST(lastParams),
   })
 }
 
@@ -294,5 +302,19 @@ export const fetchShipNameList = async (params: { group_id: string }) => {
   return httpClient({
     method: 'get',
     endPoint: END_POINT.USER.GET_SHIP_NAME_LIST(params),
+  })
+}
+
+export const fetchCrewLevel = async () => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_CREW_LEVEL(),
+  })
+}
+
+export const fetchCompanyList = async () => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_COMPANY_LIST(),
   })
 }

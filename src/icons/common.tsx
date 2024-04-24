@@ -16,6 +16,28 @@ export const CommonIcon = {
       />
     </svg>
   ),
+
+  Xmark: () => (
+    <svg
+      width="12"
+      height="13"
+      viewBox="0 0 12 13"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10.5 2.41016L1.5 11.4102"
+        stroke="#888888"
+        strokeLinecap="round"
+      />
+      <path
+        d="M1.5 2.41016L10.5 11.4102"
+        stroke="#888888"
+        strokeLinecap="round"
+      />
+    </svg>
+  ),
+
   Plus: () => (
     <svg
       width="15"
