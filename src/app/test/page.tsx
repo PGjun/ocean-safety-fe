@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Canvas from './Canvas'
-import CanvasComponent from './Canvas2'
+import CanvasComponent from '../../components/common/CanvasDots'
 import GoogleMapWrapper from '../../components/common/GoogleMapWrapper'
 import { Location, fetchUserLocationList } from '@/services/api/user'
 // import QrScanner from './QrScanner'

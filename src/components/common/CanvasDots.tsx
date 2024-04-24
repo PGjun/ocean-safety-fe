@@ -14,12 +14,7 @@ interface Canvas {
   height: number
 }
 
-function CanvasComponent({
-  dots,
-  onDotsChange,
-  width = 400,
-  height = 400,
-}: Canvas) {
+function CanvasDots({ dots, onDotsChange, width = 400, height = 400 }: Canvas) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   // const [dots, setDots] = useState<Dot[]>([])
   const [isDragging, setIsDragging] = useState(false)
@@ -115,4 +110,4 @@ function CanvasComponent({
   )
 }
 
-export default CanvasComponent
+export default CanvasDots
