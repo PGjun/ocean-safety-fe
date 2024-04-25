@@ -15,10 +15,10 @@ const tabGroup = [
     tabId: 'tab2',
     tabName: '웨어러블 정보',
   },
-  {
-    tabId: 'tab3',
-    tabName: '제한구역 설정',
-  },
+  // {
+  //   tabId: 'tab3',
+  //   tabName: '제한구역 설정',
+  // },
   {
     tabId: 'tab4',
     tabName: '소속 그룹 정보',
@@ -52,7 +52,7 @@ export const CrewDetailTab = ({ userId }: { userId: number | null }) => {
 
       {activeTab === 'tab1' && <CrewDetail userId={userId} />}
       {activeTab === 'tab2' && <WearableInfo userId={userId} />}
-      {activeTab === 'tab3' && <AreaSettings />}
+      {/* {activeTab === 'tab3' && <AreaSettings />} */}
       {activeTab === 'tab4' && <GroupInfo />}
       {activeTab === 'tab5' && <UserOwnEmergencyList userId={userId} />}
     </>

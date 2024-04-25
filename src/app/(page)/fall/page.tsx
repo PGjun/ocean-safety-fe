@@ -9,13 +9,13 @@ import { useState } from 'react'
 import { Control, Controller, useForm } from 'react-hook-form'
 import DropDown from '@/components/common/DropDown'
 import { SearchController } from '@/components/common/SearchController'
-import { SosListTable } from './components/SosListTable'
 import { DatePickerRangeController } from '@/components/common/DatePicker'
 import { useRouter } from 'next/navigation'
 import moment from 'moment'
 import { GenericSearchForm } from '@/components/common/GenericSearchForm'
 import { SearchFields } from '@/types/common'
 import { UserEmergencyData } from '@/types/responseData'
+import { SosListTable } from '../sos/components/SosListTable'
 
 const DropController = ({
   placeholder,
@@ -104,7 +104,7 @@ const searchFields: SearchFields = [
   },
 ]
 
-export default function SosPage(pageProps: {
+export default function FallPage(pageProps: {
   params: {}
   searchParams: SearchParams
 }) {
@@ -163,7 +163,7 @@ export default function SosPage(pageProps: {
 
   return (
     <div className="md:mx-[40px]">
-      <div className="text-[22px] font-bold md:text-[26px]">SOS 내역</div>
+      <div className="text-[22px] font-bold md:text-[26px]">낙상감지 내역</div>
       <GenericSearchForm
         control={control}
         handleSubmit={handleSubmit}
@@ -181,7 +181,7 @@ export default function SosPage(pageProps: {
           setSosData={setSosData}
           setLocation={setLocation}
           query={query}
-          type="SOS"
+          type="낙상"
         />
         {!isMobile && (
           <div className=" flex flex-col gap-[8px]">

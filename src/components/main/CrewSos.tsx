@@ -8,7 +8,13 @@ import { PATHS } from '@/constants/paths'
 import { useUser } from '@/hooks/useUser'
 import { UserEmergencyData } from '@/types/responseData'
 
-export const CrewSos = () => {
+export const CrewSos = ({
+  title,
+  type,
+}: {
+  title: string
+  type: 'SOS' | '낙상'
+}) => {
   const { user } = useUser()
 
   const router = useRouter()
@@ -23,7 +29,7 @@ export const CrewSos = () => {
         ship_id: user?.ship_id.toString(),
         item_count: '5',
         page_num: '1',
-        search_code: 'SOS',
+        search_code: type,
       })
       if (res?.status === 200) {
         setSosList(res.data.data)
@@ -31,11 +37,11 @@ export const CrewSos = () => {
     }
 
     fetcEmergencyListData()
-  }, [user])
+  }, [user, type])
 
   return (
     <div className="max-w-[636px]">
-      <div className="text-[20px] font-bold">SOS 내역</div>
+      <div className="text-[20px] font-bold">{title}</div>
 
       <GenericTable
         mobileContents={(item: UserEmergencyData, idx) => (

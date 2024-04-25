@@ -23,11 +23,14 @@ export const PATHS = {
     const query = getQueryString(params)
     return `/sos?${query}`
   },
+  FALL: (params = { page_num: '1' }) => {
+    const query = getQueryString(params)
+    return `/fall?${query}`
+  },
   SOS_DETAIL: (params = { sos_id: '1' }) => {
     const query = getQueryString(params)
     return `/sos/detail?${query}`
   },
-  FALL_DETECTION: '/falldetection',
   HEALTH_INFO: (params = { page_num: '1' }) => {
     const query = getQueryString(params)
     return `/healthinfo?${query}`

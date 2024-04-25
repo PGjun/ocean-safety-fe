@@ -73,6 +73,7 @@ export interface UserEmergencyData {
   latitude: number
   emergency_code: string
   emergency_status_code: string
+  content: string
 }
 
 export interface LocationData {
@@ -110,4 +111,17 @@ export interface UserHealthData {
   health_date: string
   ship_name: string
   group_name: string
+}
+
+export interface HealthWarningData {
+  id: number
+  min_heartrate: number
+  max_heartrate: number
+  min_blood_pressure: number
+  max_blood_pressure: number
+  min_skin_temperature: number
+  max_skin_temperature: number
+  min_battery: number
+  min_sp02: number
+  ship_id: number
 }

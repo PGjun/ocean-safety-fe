@@ -68,6 +68,18 @@ export interface UserSpecificHealthParams {
   search_end_datetime: string
 }
 
+export interface HealthWarningParams {
+  ship_id: number
+  min_heartrate: number
+  max_heartrate: number
+  min_blood_pressure: number
+  max_blood_pressure: number
+  min_skin_temperature: number
+  max_skin_temperature: number
+  min_battery: number
+  min_SP02: number
+}
+
 export interface UserEmergencyListParams {
   group_id: string
   ship_id: string
@@ -85,6 +97,12 @@ export interface UserOwnEmergencyListParams {
   user_index: number
   page_num: string
   item_count: string
+}
+
+export interface ModifyEmergencyCall {
+  emergency_id: number
+  status: string
+  content: string
 }
 
 export interface NoticeListParams {

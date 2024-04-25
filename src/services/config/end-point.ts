@@ -4,6 +4,7 @@ import {
   FetchShipListParams,
   FetchUserListParams,
   FetchUserNameListParams,
+  ModifyEmergencyCall,
   NoticeListParams,
   UserEmergencyListParams,
   UserHealthListParams,
@@ -58,6 +59,13 @@ const USER = {
     const query = getQueryString(params)
     return `${API_USER}/getUserSpecificHealth?${query}`
   },
+  // 건강 자동 경고 조회
+  GET_HEALTH_WARNING: (params: { ship_id: number }) => {
+    const query = getQueryString(params)
+    return `${API_USER}/getHealthWarning?${query}`
+  },
+  // 건강 자동 경고 추가
+  SET_HEALTH_WARNING: `${API_USER}/setHealthWarning`,
   // 위치 목록 조회
   GET_USER_LOCATION_LIST: (ship_id: number) =>
     `${API_USER}/getUserLocationList?ship_id=${ship_id}`,
@@ -74,6 +82,8 @@ const USER = {
   // 응급 상세 조회
   GET_USER_SPECIFIC_EMERGENCY: (sos_id: number) =>
     `${API_USER}/getUserSpecificEmergency?sos_id=${sos_id}`,
+  // 응급 처리현황 추가
+  POST_MODIFY_EMERGENCY_CALL: `${API_USER}/modifyEmergencyCall`,
   // 공지 목록 조회
   GET_NOTICE_LIST: (params: NoticeListParams) => {
     const query = getQueryString(params)
@@ -111,6 +121,11 @@ const USER = {
   }) => {
     const query = getQueryString(params)
     return `${API_USER}/getCrewMessage?${query}`
+  },
+  // 제한구역 조회
+  GET_RESTRICT_AREAS: (params: { ship_id: number }) => {
+    const query = getQueryString(params)
+    return `${API_USER}/getRestrictAreas?${query}`
   },
 }
 

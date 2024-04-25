@@ -8,7 +8,9 @@ import {
   FetchShipListParams,
   FetchUserListParams,
   FetchUserNameListParams,
+  HealthWarningParams,
   LoginParams,
+  ModifyEmergencyCall,
   NoticeListParams,
   UserEmergencyListParams,
   UserHealthListParams,
@@ -121,8 +123,6 @@ export const fetchUserHealthList = async (params: UserHealthListParams) => {
   let lastParams = await filterParamsByRole({ params })
   if (noFilter) lastParams = rest
 
-  console.log(lastParams)
-
   return httpClient({
     method: 'get',
     endPoint: END_POINT.USER.GET_USER_HEALTH_LIST(lastParams),
@@ -136,6 +136,23 @@ export const fetchUserSpecificHealth = async (
   return httpClient({
     method: 'get',
     endPoint: END_POINT.USER.GET_USER_SPECIFIC_HEALTH(params),
+  })
+}
+
+//* 건강 자동 경고 조회
+export const fetchHealthWarning = async (params: { ship_id: number }) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_HEALTH_WARNING(params),
+  })
+}
+
+//* 건강 자동 경고 추가
+export const postHealthWarning = async (data: HealthWarningParams) => {
+  return httpClient({
+    method: 'post',
+    endPoint: END_POINT.USER.SET_HEALTH_WARNING,
+    data,
   })
 }
 
@@ -161,7 +178,7 @@ export const fetchUserEmergencyList = async (
   })
 }
 
-//* 응급 상세 조회
+//* 유저 응급 목록 조회
 export const fetchUserOwnEmergencyList = async (
   params: UserOwnEmergencyListParams,
 ) => {
@@ -176,6 +193,15 @@ export const fetchUserSpecificEmergency = async (sos_id: number) => {
   return httpClient({
     method: 'get',
     endPoint: END_POINT.USER.GET_USER_SPECIFIC_EMERGENCY(sos_id),
+  })
+}
+
+//* 응급 처리현황 추가
+export const postModifyEmergencyCall = async (data: ModifyEmergencyCall) => {
+  return httpClient({
+    method: 'post',
+    endPoint: END_POINT.USER.POST_MODIFY_EMERGENCY_CALL,
+    data,
   })
 }
 
@@ -263,5 +289,13 @@ export const fetchCrewMessage = async (params: {
   return httpClient({
     method: 'get',
     endPoint: END_POINT.USER.GET_CREW_MESSAGE(params),
+  })
+}
+
+//* 제한 구역 조회
+export const fetchRestrictAreas = async (params: { ship_id: number }) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_RESTRICT_AREAS(params),
   })
 }

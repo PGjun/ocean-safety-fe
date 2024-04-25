@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { fetchShipInfo } from '@/services/api/user'
+import { fetchRestrictAreas, fetchShipInfo } from '@/services/api/user'
 import Image from 'next/image'
+import RestrictRects from '@/components/common/RestrictAreaRects'
 
 const shipDetails = [
   { name: 'ship_number', title: '선박번호', content: '191-' },
@@ -19,12 +20,23 @@ const shipDetails = [
 
 export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
   const [detail, setDetail] = useState([{ name: '', title: '', content: '' }])
+  const [restricts, setRestricts] = useState([
+    {
+      id: 0,
+      ship_id: 0,
+      area_name: '',
+      location_start_x: 0,
+      location_start_y: 0,
+      location_end_x: 0,
+      location_end_y: 0,
+    },
+  ])
   const [shipImg, setShipImg] = useState('')
 
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchShipDetail = async () => {
+    const getShipInfo = async () => {
       setLoading(true)
       if (shipId === null) return
 
@@ -43,7 +55,16 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
         setLoading(false)
       }
     }
-    fetchShipDetail()
+
+    const getRestrictAreas = async () => {
+      if (shipId === null) return
+      const res = await fetchRestrictAreas({ ship_id: shipId })
+      if (res?.status === 200) {
+        setRestricts(res.data.data)
+      }
+    }
+    getShipInfo()
+    getRestrictAreas()
   }, [shipId])
 
   if (loading) return null
@@ -64,17 +85,54 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
             )
           })}
       </div>
-      <div className="mt-[50px] text-[18px] font-bold">선박 도면</div>
+      <div className="mt-[50px] text-[18px] font-bold">제한구역</div>
 
-      <div className="mt-[5px] rounded bg-[#F3F2F8] p-[20px] md:p-[40px]">
-        <div className="relative h-[92px] md:h-[248px]">
-          {shipImg !== '' && shipImg !== 'None' && (
-            <Image
-              src={process.env.NEXT_PUBLIC_API_URL + '/' + shipImg}
-              alt="선박 도면 미리보기"
-              layout="fill"
-              objectFit="contain"
-            />
+      <div className="mt-[5px] rounded bg-[#F3F2F8]">
+        <div className="relative h-[92px] md:h-[270px] md:w-[1100px]">
+          {restricts && (
+            <div>
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  zIndex: 2,
+                  width: '100%',
+                  height: '100%',
+                }}
+              >
+                <RestrictRects
+                  width={1100}
+                  height={270}
+                  rects={restricts.map((item) => ({
+                    ...item,
+                    x1: item.location_start_x,
+                    x2: item.location_end_x,
+                    y1: item.location_start_y,
+                    y2: item.location_end_y,
+                  }))}
+                />
+              </div>
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  zIndex: 1,
+                  width: '100%',
+                  height: '100%',
+                }}
+              >
+                {shipImg && shipImg !== 'None' && (
+                  <Image
+                    src={process.env.NEXT_PUBLIC_API_URL + '/' + shipImg}
+                    alt="선박 도면 미리보기"
+                    layout="fill"
+                    objectFit="fill"
+                  />
+                )}
+              </div>
+            </div>
           )}
         </div>
       </div>

@@ -5,12 +5,16 @@ import DropDown from '@/components/common/DropDown'
 import { PATHS } from '@/constants/paths'
 import Link from 'next/link'
 import { GenericTable } from '@/components/common/GenericTable'
-import { fetchUserSpecificEmergency } from '@/services/api/user'
+import {
+  fetchUserSpecificEmergency,
+  postModifyEmergencyCall,
+} from '@/services/api/user'
 import { PageProps } from '@/types/common'
 import { useFetch } from '@/hooks/useFetch'
 import { useRouter } from 'next/navigation'
 import { UserEmergencyData } from '@/types/responseData'
 import { Controller, useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 
 export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
   const searchParams = pageProps.searchParams
@@ -32,15 +36,41 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
           sos_date: '',
           status_code: 0,
           user_id: 0,
+          content: '',
         },
       ],
     },
   })
 
-  const { control } = useForm()
+  const { control, handleSubmit, setValue } = useForm()
+
+  const onSubmit = async (data: any) => {
+    const params = {
+      emergency_id: Number(searchParams.sos_id),
+      status: data.status?.value,
+      content: data.content,
+    }
+
+    if (!params.status || params.content === '') {
+      alert('모든 필드를 입력해주세요.')
+      return // 함수를 여기서 종료
+    }
+    console.log('🚀 ~ onSubmit ~ params:', params)
+
+    const res = await postModifyEmergencyCall(params)
+    if (res?.status === 202) {
+      alert('변경 완료')
+      router.push(PATHS.SOS())
+    }
+  }
+
+  useEffect(() => {
+    if (!data.data) return
+    setValue('content', data.data[0].content)
+  }, [data.data, setValue])
 
   return (
-    <div className="md:mx-[40px]">
+    <form onSubmit={handleSubmit(onSubmit)} className="md:mx-[40px]">
       <div className="text-[26px] font-bold">SOS/낙상감지 상세내역</div>
       <div className="mb-[10px] flex justify-end">
         <div className="mt-[16px] flex max-w-[332px] flex-1 flex-col gap-[4px] md:flex-row">
@@ -54,7 +84,7 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
                     id="sos_detail_type"
                     dropData={[
                       { value: '1', label: 'SOS' },
-                      { value: '2', label: '낙상감지' },
+                      { value: '2', label: '낙상' },
                     ]}
                     placeholder="응급코드 선택"
                     fieldOnChange={field.onChange}
@@ -73,8 +103,9 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
                   <DropDown.Content
                     id="sos_detail_status"
                     dropData={[
-                      { value: '1', label: '처리완료' },
-                      { value: '2', label: '이상보고' },
+                      { value: '이상보고', label: '이상보고' },
+                      { value: '처리중', label: '처리중' },
+                      { value: '처리완료', label: '처리완료' },
                     ]}
                     placeholder="처리현황 선택"
                     fieldOnChange={field.onChange}
@@ -189,6 +220,6 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
           완료
         </button>
       </div>
-    </div>
+    </form>
   )
 }

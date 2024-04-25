@@ -215,8 +215,8 @@ export const ShipDrawing = ({
           <div className="mt-[20px] text-[12px] font-bold md:text-[14px]">
             비콘 위치 설정
           </div>
-          <div className="mt-[5px] rounded bg-[#F3F2F8] p-[20px] md:p-[40px]">
-            <div className="relative h-[92px] md:h-[248px]">
+          <div className="mt-[5px] rounded bg-[#F3F2F8]">
+            <div className="relative h-[92px] outline outline-1 md:h-[270px] md:w-[1100px]">
               <div
                 style={{
                   position: 'absolute',
@@ -228,8 +228,8 @@ export const ShipDrawing = ({
                 }}
               >
                 <CanvasDots
-                  width={isMobile ? 270 : 1020}
-                  height={isMobile ? 92 : 248}
+                  width={isMobile ? 310 : 1100}
+                  height={isMobile ? 92 : 270}
                   dots={dots.map((item) => ({
                     x: item.location_x,
                     y: item.location_y,
@@ -271,8 +271,8 @@ export const ShipDrawing = ({
           <div className="mt-[20px] text-[12px] font-bold md:text-[14px]">
             제한구역 설정
           </div>
-          <div className="mt-[5px] rounded bg-[#F3F2F8] p-[20px] md:p-[40px]">
-            <div className="relative h-[92px] md:h-[248px]">
+          <div className="mt-[5px] bg-[#F3F2F8]">
+            <div className="relative h-[92px] outline outline-1 md:h-[270px] md:w-[1100px]">
               <div
                 style={{
                   position: 'absolute',
@@ -284,8 +284,8 @@ export const ShipDrawing = ({
                 }}
               >
                 <CanvasRect
-                  width={isMobile ? 270 : 1020}
-                  height={isMobile ? 92 : 248}
+                  width={isMobile ? 310 : 1100}
+                  height={isMobile ? 92 : 270}
                   rects={rects.map((item) => ({
                     x1: item.location_start_x,
                     x2: item.location_end_x,

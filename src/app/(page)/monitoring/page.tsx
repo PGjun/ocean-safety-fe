@@ -16,7 +16,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useCrewMessage } from '@/hooks/fetch/useCrewMessage'
 
 export default function MonitoringPage() {
-  const [searchParams, setQueryParams] = useState<{
+  const [searchParams, setSearchParams] = useState<{
     s_page_num: string
     h_page_num: string
   }>({ s_page_num: '', h_page_num: '' })
@@ -25,7 +25,7 @@ export default function MonitoringPage() {
     if (typeof window !== 'undefined') {
       const searchParams = new URLSearchParams(window.location.search)
       const params: any = Object.fromEntries(searchParams.entries())
-      setQueryParams(params)
+      setSearchParams(params)
     }
   }, [])
 
@@ -129,73 +129,57 @@ export default function MonitoringPage() {
           placeholder="선박 선택"
         />
       </div>
-      <div className="mt-[10px]">
-        <div className="relative h-[92px] md:h-[248px]">
-          {/* {shipInfo &&
-            shipInfo.ship_drawings_url !== '' &&
-            shipInfo.ship_drawings_url !== 'None' && (
-              <Image
-                src={
-                  process.env.NEXT_PUBLIC_API_URL +
-                  '/' +
-                  shipInfo.ship_drawings_url
-                }
-                alt="선박 도면 미리보기"
-                layout="fill"
-                objectFit="fill"
+      <div className="relative mt-[10px] h-[92px] outline outline-1 md:h-[270px] md:w-[1100px]">
+        {crewLocations && (
+          <div>
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                zIndex: 2,
+                width: '100%',
+                height: '100%',
+              }}
+            >
+              <CrewLocationDots
+                width={isMobile ? 310 : 1100}
+                height={isMobile ? 92 : 270}
+                dots={crewLocations}
+                onSelectDot={(dot) => {
+                  {
+                    console.log(dot)
+                  }
+                }}
               />
-            )} */}
-          {crewLocations && (
-            <div className="relative h-[92px] md:h-[248px]">
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  zIndex: 2,
-                  width: '100%',
-                  height: '100%',
-                }}
-              >
-                <CrewLocationDots
-                  width={isMobile ? 270 : 1100}
-                  height={isMobile ? 92 : 248}
-                  dots={crewLocations}
-                  onSelectDot={(dot) => {
-                    {
-                      console.log(dot)
-                    }
-                  }}
-                />
-              </div>
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  zIndex: 1,
-                  width: '100%',
-                  height: '100%',
-                }}
-              >
-                {shipInfo &&
-                  shipInfo.ship_drawings_url !== '' &&
-                  shipInfo.ship_drawings_url !== 'None' && (
-                    <Image
-                      src={
-                        process.env.NEXT_PUBLIC_API_URL +
-                        '/' +
-                        shipInfo.ship_drawings_url
-                      }
-                      alt="선박 도면 미리보기"
-                      layout="fill"
-                      objectFit="fill"
-                    />
-                  )}
-              </div>
             </div>
-          )}
-        </div>
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                zIndex: 1,
+                width: '100%',
+                height: '100%',
+              }}
+            >
+              {shipInfo &&
+                shipInfo.ship_drawings_url !== '' &&
+                shipInfo.ship_drawings_url !== 'None' && (
+                  <Image
+                    src={
+                      process.env.NEXT_PUBLIC_API_URL +
+                      '/' +
+                      shipInfo.ship_drawings_url
+                    }
+                    alt="선박 도면 미리보기"
+                    layout="fill"
+                    objectFit="fill"
+                  />
+                )}
+            </div>
+          </div>
+        )}
       </div>
       <div className="mt-[32px] flex flex-col justify-between md:flex-row md:items-center">
         <div className="text-[18px] font-bold md:text-[20px]">

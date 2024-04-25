@@ -7,7 +7,9 @@ export const Slider = ({
   min = 40,
   max = 80,
   current = 45,
-}) => {
+  settingName = '',
+  setNewSettings,
+}: any) => {
   const [value, setValue] = useState(current)
 
   // 슬라이더의 값에 따라 배경 색상을 계산합니다.
@@ -28,6 +30,10 @@ export const Slider = ({
 
   const handleChange = (e: any) => {
     setValue(e.target.value)
+    setNewSettings((pre: any) => ({
+      ...pre,
+      [settingName]: Number(e.target.value),
+    }))
   }
 
   return (

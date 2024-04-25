@@ -103,7 +103,6 @@ function CanvasDots({ dots, onDotsChange, width = 400, height = 400 }: Canvas) {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         className="bg-transparent"
-        style={{ border: '1px solid #000' }}
       />
       {/* <p>점 개수: {dots.length}</p> */}
     </div>

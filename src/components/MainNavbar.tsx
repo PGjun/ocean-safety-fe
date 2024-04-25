@@ -49,7 +49,7 @@ export const navMenuList = [
   {
     IconComponent: NavIcon.FallDetection,
     name: '낙상 감지',
-    path: PATHS.FALL_DETECTION,
+    path: PATHS.FALL(),
     role: ACCESS_ALLOW.ADMIN,
   },
   {

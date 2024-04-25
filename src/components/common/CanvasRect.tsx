@@ -138,7 +138,6 @@ function CanvasRect({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         className="bg-transparent"
-        style={{ border: '1px solid #000' }}
         width={width}
         height={height}
       />

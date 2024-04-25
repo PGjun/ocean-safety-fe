@@ -128,4 +128,38 @@ export const CommonIcon = {
       />
     </svg>
   ),
+  DownLoad: () => (
+    <svg
+      width="16"
+      height="15"
+      viewBox="0 0 16 15"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M14.3466 9.47461V12.8532H1.6543V9.47461"
+        stroke="#333333"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M4.07422 7.15625L7.92157 10.967L11.7689 7.15625"
+        stroke="#333333"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.9209 10.9678V1.85352"
+        stroke="#333333"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
 }

@@ -86,9 +86,8 @@ export const CrewStatus = ({ selectedDrop, setSelectedDrop }: any) => {
               <SliderDropDownSm
                 id="main_ship_dropdown"
                 dropData={shipList}
-                fieldValue={
-                  selectedDrop ? selectedDrop : { value: '', label: '' }
-                }
+                fieldValue={selectedDrop}
+                placeholder="선박 선택"
                 fieldOnChange={handleOnChange}
               />
             </>

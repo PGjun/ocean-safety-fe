@@ -2,6 +2,7 @@
 
 import { SearchParams } from '@/components/common/Pagination'
 import { useFetch } from '@/hooks/useFetch'
+import { CommonIcon } from '@/icons/common'
 import { fetchSpecificNotice } from '@/services/api/user'
 import { PageProps } from '@/types/common'
 import { downloadFile } from '@/utils/downloadFile'
@@ -50,29 +51,39 @@ export default function NoticeDetailPage(pageProps: PageProps<SearchParams>) {
   const noticeFile = data.file_data && data.file_data
 
   return (
-    <div>
-      <div>제목 : {notice.title}</div>
-      <div>내용 : {notice.content}</div>
-      <div>날짜 : {notice.posted_date}</div>
-      <div>구분 : {notice.publisher_crew_level}</div>
-      <div>아이디 : {notice.publisher_user_id}</div>
-      <div>이름 : {notice.publisher_name}</div>
-      <div>
-        {noticeFile &&
-          noticeFile.map((item, idx) => {
-            return (
-              <div key={idx}>
-                {item.notice_file_name}
-                <button
-                  type="button"
-                  className="border border-[#888888] px-3"
-                  onClick={() =>
-                    downloadFile(item.notice_file_url, item.notice_file_name)
-                  }
-                >
-                  다운로드
-                </button>
-                {/* <a
+    <div className="md:mx-[40px]">
+      <div className="border-b text-[18px] font-bold md:border-0 md:text-[26px]">
+        공지사항
+      </div>
+      <div className="mt-[30px] w-full rounded-xl md:border md:p-[36px] md:shadow-md">
+        <div className="text-center">
+          <div className="font-bold md:text-[22px]">{notice.title}</div>
+          <div className="text-[#888888]">
+            작성자 : {notice.publisher_name}{' '}
+            <span className="text-[#c4c4c4]">/</span>{' '}
+            {notice.publisher_crew_level}{' '}
+            <span className="text-[#c4c4c4]">/</span> {notice.posted_date}
+          </div>
+        </div>
+        <div className="my-[30px] h-[1px] w-full bg-[#c4c4c4]" />
+        <div className="min-h-[300px]">{notice.content}</div>
+
+        <div className="flex flex-wrap gap-3">
+          {noticeFile &&
+            noticeFile.map((item, idx) => {
+              return (
+                <div key={idx} className="flex items-center gap-3 border p-3">
+                  <span>{item.notice_file_name}</span>
+                  <button
+                    type="button"
+                    className="place-items-center"
+                    onClick={() =>
+                      downloadFile(item.notice_file_url, item.notice_file_name)
+                    }
+                  >
+                    <CommonIcon.DownLoad />
+                  </button>
+                  {/* <a
                   href={
                     process.env.NEXT_PUBLIC_API_URL + '/' + item.notice_file_url
                   }
@@ -81,9 +92,10 @@ export default function NoticeDetailPage(pageProps: PageProps<SearchParams>) {
                 >
                   {item.notice_file_name}
                 </a> */}
-              </div>
-            )
-          })}
+                </div>
+              )
+            })}
+        </div>
       </div>
     </div>
   )

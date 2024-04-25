@@ -19,6 +19,7 @@ export const SliderDropDownSm = ({
   id,
   fieldValue,
   fieldOnChange,
+  placeholder,
 }: DropProps) => {
   // 초기 인덱스 설정
   const initIdx = dropData.findIndex((item) => item.value === fieldValue?.value)
@@ -60,6 +61,7 @@ export const SliderDropDownSm = ({
           dropData={dropData}
           fieldValue={fieldValue}
           fieldOnChange={fieldOnChange}
+          placeholder={placeholder ? placeholder : undefined}
         />
       </div>
       <button

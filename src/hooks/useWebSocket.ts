@@ -5,6 +5,7 @@ import useModalStore from '@/stores/modalStore'
 export interface sosData {
   sos_id: number
   message: string
+  emergency_code_name: string
 }
 
 const useWebSocket = () => {

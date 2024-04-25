@@ -18,8 +18,8 @@ export default function Home() {
         setSelectedDrop={setSelectedDrop}
       />
       <CrewHealthInfo selectedShipId={selectedDrop?.value} />
-      <CrewSos />
-      <CrewFall />
+      <CrewSos title="SOS 내역" type="SOS" />
+      <CrewSos title="낙상감지 내역" type="낙상" />
     </main>
   )
 }

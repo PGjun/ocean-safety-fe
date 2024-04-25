@@ -12,11 +12,13 @@ export const SosListTable = ({
   setSosData,
   setLocation,
   query,
+  type,
 }: {
   searchParams: SearchParams
   setSosData: (data: UserEmergencyData) => void
   setLocation: ({ lng, lat }: { lng: number; lat: number }) => void
   query: any
+  type: 'SOS' | '낙상'
 }) => {
   const { user } = useUser()
 
@@ -32,7 +34,7 @@ export const SosListTable = ({
         group_id: user?.group_id,
         ship_id: user?.ship_id,
         item_count: '5',
-        search_code: 'SOS',
+        search_code: type,
         ...searchParams,
         ...query,
       })

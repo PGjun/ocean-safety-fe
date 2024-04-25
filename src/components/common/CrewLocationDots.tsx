@@ -108,7 +108,6 @@ function CrewLocationDots({
         onMouseOut={handleMouseOut}
         onClick={handleMouseClick}
         className="bg-transparent"
-        style={{ border: '1px solid #000' }}
       />
     </div>
   )
