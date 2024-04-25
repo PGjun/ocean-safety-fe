@@ -8,17 +8,27 @@ import { useUserList } from '@/hooks/fetch/useUserList'
 import { MonitoringTab } from './components/MonitoringTab'
 import { useShipInfo } from '@/hooks/fetch/useShipInfo'
 import { useUser } from '@/hooks/useUser'
-import { DropItem, PageProps } from '@/types/common'
+import { DropItem } from '@/types/common'
 import { useUserHealthList } from '@/hooks/fetch/useUserHealthList'
 import { useCrewLocation } from '@/hooks/fetch/useCrewLocation'
 import CrewLocationDots from '@/components/common/CrewLocationDots'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useCrewMessage } from '@/hooks/fetch/useCrewMessage'
 
-export default function MonitoringPage(
-  pageProps: PageProps<{ s_page_num: string; h_page_num: string }>,
-) {
-  const searchParams = pageProps.searchParams
+export default function MonitoringPage() {
+  const [searchParams, setQueryParams] = useState<{
+    s_page_num: string
+    h_page_num: string
+  }>({ s_page_num: '', h_page_num: '' })
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search)
+      const params: any = Object.fromEntries(searchParams.entries())
+      setQueryParams(params)
+    }
+  }, [])
+
   const { user } = useUser()
   const isMobile = useMediaQuery('768')
 
@@ -93,7 +103,7 @@ export default function MonitoringPage(
 
   // 유저 건강정보 업데이트
   useEffect(() => {
-    if (!selecetdUser || !selecetdShip) return
+    if (!selecetdUser || !selecetdShip || !searchParams.h_page_num) return
     const shipId = selecetdShip?.value
     const userIndex = selecetdUser?.value
     getUserHealthList({
@@ -103,19 +113,6 @@ export default function MonitoringPage(
       userIndex: userIndex,
     })
   }, [getUserHealthList, selecetdUser, selecetdShip, searchParams])
-
-  // 유저 응급메시지 업데이트
-  // useEffect(() => {
-  //   if (!selecetdUser || !selecetdShip) return
-  //   const shipId = selecetdShip?.value
-  //   const userIndex = selecetdUser?.value
-  //   getUserHealthList({
-  //     shipId: shipId,
-  //     setData: setUserHealthList,
-  //     pageNum: searchParams.h_page_num,
-  //     userIndex: userIndex,
-  //   })
-  // }, [getUserHealthList, selecetdUser, selecetdShip, searchParams])
 
   return (
     <div className="md:mx-[40px]">

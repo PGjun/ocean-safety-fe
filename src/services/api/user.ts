@@ -121,6 +121,8 @@ export const fetchUserHealthList = async (params: UserHealthListParams) => {
   let lastParams = await filterParamsByRole({ params })
   if (noFilter) lastParams = rest
 
+  console.log(lastParams)
+
   return httpClient({
     method: 'get',
     endPoint: END_POINT.USER.GET_USER_HEALTH_LIST(lastParams),
