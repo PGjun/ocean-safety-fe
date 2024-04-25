@@ -73,8 +73,7 @@ export default function GroupAddPage() {
       })
 
       if (hasIncompleteEntry) {
-        alert('입력중인 웨어러블 정보를 전부 입력해주세요.')
-        return [] // 부분적으로 입력된 웨어러블이 있으면 빈 배열 반환
+        return false // 부분적으로 입력된 웨어러블이 있으면 빈 배열 반환
       }
 
       // 모든 필드가 채워진 웨어러블만 필터링
@@ -85,7 +84,8 @@ export default function GroupAddPage() {
 
     const validWearables = validateAndFilterWearables(wearables)
 
-    if (validWearables.length === 0) {
+    if (!validWearables) {
+      alert('입력중인 웨어러블 정보를 전부 입력해주세요.')
       return
     }
 
