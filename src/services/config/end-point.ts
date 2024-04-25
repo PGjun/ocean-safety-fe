@@ -104,6 +104,14 @@ const USER = {
     const query = getQueryString(params)
     return `${API_USER}/getCrewLocation?${query}`
   },
+  // 승선원 일반메시지 목록 조회
+  GET_CREW_MESSAGE: (params: {
+    ship_id: number
+    message_level_name: string
+  }) => {
+    const query = getQueryString(params)
+    return `${API_USER}/getCrewMessage?${query}`
+  },
 }
 
 export const END_POINT = { USER }

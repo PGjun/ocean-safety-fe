@@ -245,10 +245,21 @@ export const fetchWatchInfo = async (params: { user_id: number }) => {
   })
 }
 
-//* 승선원 모니터링 목록
+//* 승선원 모니터링 목록 조회
 export const fetchCrewLocation = async (params: { ship_id: number }) => {
   return httpClient({
     method: 'get',
     endPoint: END_POINT.USER.GET_CREW_LOCATION(params),
+  })
+}
+
+//* 승선원 일반메시지 목록 조회
+export const fetchCrewMessage = async (params: {
+  ship_id: number
+  message_level_name: string
+}) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_CREW_MESSAGE(params),
   })
 }

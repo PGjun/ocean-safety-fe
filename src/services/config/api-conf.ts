@@ -53,12 +53,12 @@ function handleAxiosError(error: AxiosError) {
 
 function alertUserOfError(status: number, data: any) {
   if (status === 400) {
-    alert(data.detail || '...클라이언트 요청 에러')
+    console.error(data.detail || '...클라이언트 요청 에러')
   } else if (status === 401) {
-    alert('...필요 인증 에러')
+    console.error('...필요 인증 에러')
   } else if (status >= 500) {
-    alert('...서버 에러')
+    console.error('...서버 에러')
   } else {
-    alert('...예외 에러')
+    console.error('...예외 에러')
   }
 }

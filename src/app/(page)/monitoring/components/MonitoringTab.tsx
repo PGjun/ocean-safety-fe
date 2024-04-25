@@ -23,10 +23,12 @@ export const MonitoringTab = ({
   userHealthList,
   searchParams,
   userIndex,
+  crewMessages,
 }: {
   userHealthList: any
   searchParams: any
   userIndex: number | null
+  crewMessages: any
 }) => {
   const [activeTab, setActiveTab] = useState('tab1')
 
@@ -53,21 +55,14 @@ export const MonitoringTab = ({
       {activeTab === 'tab1' && (
         <div>
           <div className="mt-[20px] border-t border-[#c4c4c4] text-[14px] md:text-[16px]">
-            <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
-            </div>
-            <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
-            </div>
-            <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
-            </div>
-            <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
-            </div>
-            <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
-            </div>
+            {crewMessages &&
+              crewMessages.map((item: { content: string }, idx: number) => {
+                return (
+                  <div key={idx} className="border-b px-[8px] py-[10px]">
+                    {item.content}
+                  </div>
+                )
+              })}
           </div>
           <div className="mt-[20px] flex w-full justify-center">
             <Pagination

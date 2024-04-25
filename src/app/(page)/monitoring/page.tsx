@@ -13,6 +13,7 @@ import { useUserHealthList } from '@/hooks/fetch/useUserHealthList'
 import { useCrewLocation } from '@/hooks/fetch/useCrewLocation'
 import CrewLocationDots from '@/components/common/CrewLocationDots'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { useCrewMessage } from '@/hooks/fetch/useCrewMessage'
 
 export default function MonitoringPage(
   pageProps: PageProps<{ s_page_num: string; h_page_num: string }>,
@@ -26,12 +27,14 @@ export default function MonitoringPage(
   const [shipInfo, setShipInfo] = useState<any>()
   const [userHealthList, setUserHealthList] = useState<any>()
   const [crewLocations, setCrewLocations] = useState<any>()
+  const [crewMessages, setCrewMessages] = useState<any>()
 
   const { getShipList } = useShipList()
   const { getUserList } = useUserList()
   const { getShipInfo } = useShipInfo()
   const { getUserHealthList } = useUserHealthList()
   const { getCrewLocation, setShipId } = useCrewLocation()
+  const { getCrewMessage, setShipId: messageShipId } = useCrewMessage()
 
   const [selecetdShip, setSelectedShip] = useState<DropItem>()
   const [selecetdUser, setSelectedUser] = useState<DropItem>()
@@ -64,25 +67,29 @@ export default function MonitoringPage(
   // 선택된 선박이 있으면 유저리스트와 선박상세정보를 업데이트
   useEffect(() => {
     if (!selecetdShip) return
-    const shipId = selecetdShip?.value
+    const shipId = selecetdShip.value
     getUserList({ ship_id: shipId, setUsers })
     getShipInfo({ ship_id: shipId, setData: setShipInfo })
   }, [selecetdShip, getUserList, getShipInfo])
 
   useEffect(() => {
     if (!selecetdShip) return
-    setShipId(selecetdShip.value)
+    const shipId = selecetdShip.value
+    setShipId(shipId)
+    messageShipId(shipId)
 
     getCrewLocation({ setData: setCrewLocations })
+    getCrewMessage({ setData: setCrewMessages })
 
     const interval = setInterval(() => {
       getCrewLocation({
         setData: setCrewLocations,
       })
+      getCrewMessage({ setData: setCrewMessages })
     }, 3000)
 
     return () => clearInterval(interval)
-  }, [getCrewLocation, setShipId, selecetdShip])
+  }, [getCrewMessage, getCrewLocation, setShipId, messageShipId, selecetdShip])
 
   // 유저 건강정보 업데이트
   useEffect(() => {
@@ -214,6 +221,7 @@ export default function MonitoringPage(
       ) : null}
       <div className="mt-[20px]">
         <MonitoringTab
+          crewMessages={crewMessages}
           userHealthList={userHealthList}
           searchParams={searchParams}
           userIndex={Number(selecetdUser?.value) ?? 0}
