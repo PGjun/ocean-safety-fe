@@ -99,6 +99,11 @@ const USER = {
     const query = getQueryString(params)
     return `${API_USER}/getUserWatchInfo?${query}`
   },
+  // 승선원 모니터링 목록 조회
+  GET_CREW_LOCATION: (params: { ship_id: number }) => {
+    const query = getQueryString(params)
+    return `${API_USER}/getCrewLocation?${query}`
+  },
 }
 
 export const END_POINT = { USER }

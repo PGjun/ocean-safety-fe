@@ -10,23 +10,28 @@ import { useShipInfo } from '@/hooks/fetch/useShipInfo'
 import { useUser } from '@/hooks/useUser'
 import { DropItem, PageProps } from '@/types/common'
 import { useUserHealthList } from '@/hooks/fetch/useUserHealthList'
+import { useCrewLocation } from '@/hooks/fetch/useCrewLocation'
+import CrewLocationDots from '@/components/common/CrewLocationDots'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 export default function MonitoringPage(
   pageProps: PageProps<{ s_page_num: string; h_page_num: string }>,
 ) {
   const searchParams = pageProps.searchParams
   const { user } = useUser()
+  const isMobile = useMediaQuery('768')
 
   const [ships, setShips] = useState<DropItem[]>([])
   const [users, setUsers] = useState()
   const [shipInfo, setShipInfo] = useState<any>()
   const [userHealthList, setUserHealthList] = useState<any>()
-  const [userEmergencyList, setUserEmergencyList] = useState<any>()
+  const [crewLocations, setCrewLocations] = useState<any>()
 
   const { getShipList } = useShipList()
   const { getUserList } = useUserList()
   const { getShipInfo } = useShipInfo()
   const { getUserHealthList } = useUserHealthList()
+  const { getCrewLocation, setShipId } = useCrewLocation()
 
   const [selecetdShip, setSelectedShip] = useState<DropItem>()
   const [selecetdUser, setSelectedUser] = useState<DropItem>()
@@ -63,6 +68,13 @@ export default function MonitoringPage(
     getUserList({ ship_id: shipId, setUsers })
     getShipInfo({ ship_id: shipId, setData: setShipInfo })
   }, [selecetdShip, getUserList, getShipInfo])
+
+  useEffect(() => {
+    if (!selecetdShip) return
+    setShipId(selecetdShip.value)
+
+    getCrewLocation({ setData: setCrewLocations })
+  }, [getCrewLocation, setShipId, selecetdShip])
 
   // 유저 건강정보 업데이트
   useEffect(() => {
@@ -107,7 +119,7 @@ export default function MonitoringPage(
       </div>
       <div className="mt-[10px]">
         <div className="relative h-[92px] md:h-[248px]">
-          {shipInfo &&
+          {/* {shipInfo &&
             shipInfo.ship_drawings_url !== '' &&
             shipInfo.ship_drawings_url !== 'None' && (
               <Image
@@ -120,7 +132,57 @@ export default function MonitoringPage(
                 layout="fill"
                 objectFit="fill"
               />
-            )}
+            )} */}
+          {crewLocations && (
+            <div className="relative h-[92px] md:h-[248px]">
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  zIndex: 2,
+                  width: '100%',
+                  height: '100%',
+                }}
+              >
+                <CrewLocationDots
+                  width={isMobile ? 270 : 1100}
+                  height={isMobile ? 92 : 248}
+                  dots={crewLocations}
+                  onSelectDot={(dot) => {
+                    {
+                      console.log(dot)
+                    }
+                  }}
+                />
+              </div>
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  zIndex: 1,
+                  width: '100%',
+                  height: '100%',
+                }}
+              >
+                {shipInfo &&
+                  shipInfo.ship_drawings_url !== '' &&
+                  shipInfo.ship_drawings_url !== 'None' && (
+                    <Image
+                      src={
+                        process.env.NEXT_PUBLIC_API_URL +
+                        '/' +
+                        shipInfo.ship_drawings_url
+                      }
+                      alt="선박 도면 미리보기"
+                      layout="fill"
+                      objectFit="fill"
+                    />
+                  )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="mt-[32px] flex flex-col justify-between md:flex-row md:items-center">

@@ -244,3 +244,11 @@ export const fetchWatchInfo = async (params: { user_id: number }) => {
     endPoint: END_POINT.USER.GET_USER_WATCH_INFO(params),
   })
 }
+
+//* 승선원 모니터링 목록
+export const fetchCrewLocation = async (params: { ship_id: number }) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_CREW_LOCATION(params),
+  })
+}
