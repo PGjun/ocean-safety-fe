@@ -1,9 +1,10 @@
 'use client'
 
-import { UserHealth, fetchUserHealthList } from '@/services/api/user'
+import { fetchUserHealthList } from '@/services/api/user'
 import { useEffect, useState } from 'react'
 import { GenericTable } from '../common/GenericTable'
 import { useUser } from '@/hooks/useUser'
+import { UserHealthData } from '@/types/responseData'
 
 export const CrewHealthInfo = ({
   selectedShipId,
@@ -39,7 +40,7 @@ export const CrewHealthInfo = ({
       <div className="text-[20px] font-bold">승선원 건강정보</div>
 
       <GenericTable
-        mobileContents={(item: UserHealth, idx) => (
+        mobileContents={(item: UserHealthData, idx) => (
           <>
             <div>
               No. {item.id} &nbsp; {item.name}
@@ -62,7 +63,7 @@ export const CrewHealthInfo = ({
         ]}
         hover={false}
         data={healthList}
-        onRowClick={(item: UserHealth) => {
+        onRowClick={(item: UserHealthData) => {
           // setShipId(item.id)
         }}
       />

@@ -12,7 +12,13 @@ export const PATHS = {
     return `/groupinfo?${query}`
   },
   GROUP_ADD: '/groupinfo/groupadd',
-  MONITORING: '/monitoring',
+  // MONITORING: '/monitoring',
+  MONITORING: (
+    params: { [key: string]: string } = { s_page_num: '1', h_page_num: '1' },
+  ) => {
+    const query = getQueryString(params)
+    return `/monitoring?${query}`
+  },
   SOS: (params = { page_num: '1' }) => {
     const query = getQueryString(params)
     return `/sos?${query}`

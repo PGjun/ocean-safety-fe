@@ -5,7 +5,7 @@ export const apiClient = axios.create({
 })
 
 //공통 api처리 함수
-interface httpClient {
+interface HttpClientParams {
   method: 'get' | 'post' | 'put' | 'delete'
   endPoint: string
   data?: object | FormData | null
@@ -15,7 +15,7 @@ export const httpClient = async ({
   method,
   endPoint,
   data = null,
-}: httpClient) => {
+}: HttpClientParams) => {
   try {
     const res = await apiClient({
       method,

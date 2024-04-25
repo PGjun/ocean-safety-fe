@@ -6,6 +6,7 @@ export interface ColProps {
   field: string
   title: string
   width?: string
+  render?: (value: string, fn: any, idx: any, col: any) => any
 }
 
 type onRowClick = (item: any) => void
@@ -14,15 +15,21 @@ interface GenericTableProps {
   columns: ColProps[]
   onRowClick?: onRowClick
   hover?: boolean
+  handleData?: any
 }
 
 export const CreateDataTable = ({
   columns,
-  onRowClick,
   hover = true,
+  handleData = (data: any) => {},
 }: GenericTableProps) => {
   const isMobile = useMediaQuery('768')
   const [data, setData] = useState(Array(5).fill({})) // 초기 데이터 상태, 5개의 빈 객체로 시작
+
+  const onChangeData = (data: any) => {
+    setData(data)
+    handleData(data)
+  }
 
   // CSS Grid 템플릿 컬럼을 동적으로 생성
   const gridTemplateColumns = columns
@@ -33,7 +40,7 @@ export const CreateDataTable = ({
     const newData = data.map((item, idx) =>
       idx === rowIdx ? { ...item, [field]: value } : item,
     )
-    setData(newData)
+    onChangeData(newData)
   }
 
   const addRow = () => {
@@ -41,7 +48,7 @@ export const CreateDataTable = ({
   }
 
   const removeRow = (rowIdx: any) => {
-    if (data.length > 5) setData(data.filter((_, idx) => idx !== rowIdx)) // 행 삭제
+    if (data.length > 5) onChangeData(data.filter((_, idx) => idx !== rowIdx)) // 행 삭제
   }
 
   const renderRow = (item: any, idx: number) => (
@@ -52,13 +59,20 @@ export const CreateDataTable = ({
     >
       {columns.map((col, colIdx) => {
         if (colIdx === 0) return <div key={idx}>{idx + 1}</div>
+        if (col.render)
+          return (
+            <div key={'col' + colIdx}>
+              {col.render(item[col.field], handleInputChange, idx, col)}
+            </div>
+          )
         return (
           <input
             key={'col' + colIdx}
             type="text"
             value={item[col.field] || ''}
+            placeholder={col.title}
             onChange={(e) => handleInputChange(e.target.value, idx, col.field)}
-            className="w-full border p-[4px]"
+            className="w-full rounded border p-[4px]"
           />
         )
       })}
@@ -94,21 +108,24 @@ export const CreateDataTable = ({
 
   return (
     <div>
-      <div className="flex justify-end gap-1">
-        <button
-          type="button"
-          onClick={addRow}
-          className="mt-[10px] flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#888888] hover:bg-gray-50"
-        >
-          <CommonIcon.Plus />
-        </button>
-        <button
-          type="button"
-          onClick={() => removeRow(data.length - 1)}
-          className="mt-[10px] flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#888888] hover:bg-gray-50"
-        >
-          <CommonIcon.Minus />
-        </button>
+      <div className="flex items-center justify-between">
+        <div className="text-[18px] font-bold">웨어러블</div>
+        <div className="flex gap-1">
+          <button
+            type="button"
+            onClick={addRow}
+            className="mt-[10px] flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#888888] hover:bg-gray-50"
+          >
+            <CommonIcon.Plus />
+          </button>
+          <button
+            type="button"
+            onClick={() => removeRow(data.length - 1)}
+            className="mt-[10px] flex h-[30px] w-[30px] items-center justify-center rounded-md border border-[#888888] hover:bg-gray-50"
+          >
+            <CommonIcon.Minus />
+          </button>
+        </div>
       </div>
       <div className="mt-[10px]">
         {isMobile ? (

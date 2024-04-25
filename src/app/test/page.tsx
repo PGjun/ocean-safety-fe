@@ -1,11 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Canvas from './Canvas'
-import CanvasComponent from '../../components/common/CanvasDots'
 import GoogleMapWrapper from '../../components/common/GoogleMapWrapper'
-import { Location, fetchUserLocationList } from '@/services/api/user'
-// import QrScanner from './QrScanner'
+import { fetchUserLocationList } from '@/services/api/user'
+import { LocationData } from '@/types/responseData'
 
 const COLTITLES = [
   'No',
@@ -18,14 +16,6 @@ const COLTITLES = [
 
 export default function TestPage() {
   const [locationList, setLocationList] = useState([])
-  const [shipId, setShipId] = useState<number | null>(null)
-
-  const [dotsData, setDotsData] = useState([])
-
-  const handleDotsChange = (dots: any) => {
-    setDotsData(dots)
-    console.log('Updated dots data:', dots)
-  }
 
   useEffect(() => {
     const fetchLocationList = async () => {
@@ -37,27 +27,6 @@ export default function TestPage() {
     }
     fetchLocationList()
   }, [])
-
-  // const [ws, setWs] = useState<any>(null)
-
-  // useEffect(() => {
-  //   const socket: any = new WebSocket('ws://localhost:8080')
-  //   setWs(socket)
-
-  //   socket.onmessage = (event: any) => {
-  //     console.log('서버로부터 메시지 수신:', event.data)
-  //   }
-
-  //   return () => {
-  //     socket.close()
-  //   }
-  // }, [])
-
-  // const sendMessage = () => {
-  //   if (ws) {
-  //     ws.send('클라이언트에서 서버로 메시지')
-  //   }
-  // }
 
   return (
     <div className="m-[30px]">
@@ -80,14 +49,8 @@ export default function TestPage() {
               locationList
                 .slice(-20)
                 .reverse()
-                .map((item: Location, idx) => (
-                  <tr
-                    key={idx}
-                    className="cursor-pointer hover:bg-slate-50"
-                    onClick={() => {
-                      return setShipId(item.id)
-                    }}
-                  >
+                .map((item: LocationData, idx) => (
+                  <tr key={idx} className="cursor-pointer hover:bg-slate-50">
                     <td className="border-b py-[16px]">{idx + 1}</td>
                     <td className="border-b py-[16px]">{item.name}</td>
                     <td className="border-b py-[16px]">{item.user_id ?? ''}</td>
@@ -103,20 +66,8 @@ export default function TestPage() {
           </tbody>
         </table>
       </div>
-      {/* <button onClick={sendMessage}>메시지 보내기</button> */}
       <div className="mt-[50px]">
         <GoogleMapWrapper />
-      </div>
-      <div className="mt-[50px]">
-        <Canvas />
-      </div>
-      {/* <div className="mt-[50px] w-[190px]">
-        <div>
-          <QrScanner />
-        </div>
-      </div> */}
-      <div className="mt-[50px]">
-        {/* <CanvasComponent onDotsChange={handleDotsChange} /> */}
       </div>
     </div>
   )

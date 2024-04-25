@@ -36,7 +36,7 @@ export const ShipDetailTab = ({ shipId }: { shipId: number | null }) => {
         </div>
 
         {activeTab === 'tab1' && <ShipDetail shipId={shipId} />}
-        {activeTab === 'tab2' && <WearableList />}
+        {activeTab === 'tab2' && <WearableList shipId={shipId} />}
       </>
     </>
   )

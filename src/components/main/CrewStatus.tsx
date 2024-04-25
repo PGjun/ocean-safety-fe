@@ -12,7 +12,6 @@ import { useUser } from '@/hooks/useUser'
 import { ROLES } from '@/constants/roles'
 import { useEffect, useState } from 'react'
 import { SliderDropDownSm } from '../common/SliderDropDown'
-import { useFetch } from '@/hooks/useFetch'
 import { fetchShipNameList } from '@/services/api/user'
 
 const dashBoardList = [

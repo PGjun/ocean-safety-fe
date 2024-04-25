@@ -1,85 +1,95 @@
 'use client'
 
 import Image from 'next/image'
-import { Fragment, useState } from 'react'
-import { SosMessage } from './components/SosMessage'
-import { HealthInfo } from './components/HealthInfo'
-import { Pagination } from '@/components/common/Pagination'
-import { SlideDropDown } from '@/components/common/SlideDropDown'
+import { useEffect, useState } from 'react'
+import { SliderDropDown } from '@/components/common/SliderDropDown'
+import { useShipList } from '@/hooks/fetch/useShipList'
+import { useUserList } from '@/hooks/fetch/useUserList'
+import { MonitoringTab } from './components/MonitoringTab'
+import { useShipInfo } from '@/hooks/fetch/useShipInfo'
+import { useUser } from '@/hooks/useUser'
+import { DropItem, PageProps } from '@/types/common'
+import { useUserHealthList } from '@/hooks/fetch/useUserHealthList'
 
-const TabGroup = [
-  {
-    tabId: 'tab1',
-    tabName: '일반메시지',
-  },
-  {
-    tabId: 'tab2',
-    tabName: '응급메시지',
-  },
-  {
-    tabId: 'tab3',
-    tabName: '건강정보',
-  },
-]
+export default function MonitoringPage(
+  pageProps: PageProps<{ s_page_num: string; h_page_num: string }>,
+) {
+  const searchParams = pageProps.searchParams
+  const { user } = useUser()
 
-const MonitoringTab = () => {
-  const [activeTab, setActiveTab] = useState('tab1')
+  const [ships, setShips] = useState<DropItem[]>([])
+  const [users, setUsers] = useState()
+  const [shipInfo, setShipInfo] = useState<any>()
+  const [userHealthList, setUserHealthList] = useState<any>()
+  const [userEmergencyList, setUserEmergencyList] = useState<any>()
 
-  return (
-    <>
-      <div className="mt-[10px] flex gap-1 overflow-x-auto whitespace-nowrap border-b-[2px] border-[#2262C6] font-bold">
-        {TabGroup.map((tab, idx) => {
-          const Default = 'bg-[#F3F5FF] text-[#2262C6]'
-          const Active = 'bg-[#2262C6] text-white'
-          return (
-            <Fragment key={idx}>
-              <button
-                key={idx}
-                className={`${activeTab === tab.tabId ? Active : Default} cursor-pointer rounded-t-[8px] px-[26px] py-[10px]`}
-                onClick={() => setActiveTab(tab.tabId)}
-              >
-                {tab.tabName}
-              </button>
-            </Fragment>
-          )
-        })}
-      </div>
+  const { getShipList } = useShipList()
+  const { getUserList } = useUserList()
+  const { getShipInfo } = useShipInfo()
+  const { getUserHealthList } = useUserHealthList()
 
-      {activeTab === 'tab1' && (
-        <div>
-          <div className="mt-[20px] border-t border-[#c4c4c4] text-[14px] md:text-[16px]">
-            <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
-            </div>
-            <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
-            </div>
-            <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
-            </div>
-            <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
-            </div>
-            <div className="border-b px-[8px] py-[10px]">
-              [ 16:00:00 ] 위치 lng : 112.13 lat : 122.35
-            </div>
-          </div>
-          <div className="mt-[20px] flex w-full justify-center">
-            <Pagination
-              path={() => {
-                return '/'
-              }}
-            />
-          </div>
-        </div>
-      )}
-      {activeTab === 'tab2' && <SosMessage />}
-      {activeTab === 'tab3' && <HealthInfo />}
-    </>
-  )
-}
+  const [selecetdShip, setSelectedShip] = useState<DropItem>()
+  const [selecetdUser, setSelectedUser] = useState<DropItem>()
 
-export default function MonitoringPage() {
+  const handleShipChange = (dropItem: DropItem) => {
+    setSelectedShip(dropItem)
+  }
+  const handleUserChange = (dropItem: DropItem) => {
+    setSelectedUser(dropItem)
+  }
+
+  // 선박리스트 업데이트
+  useEffect(() => {
+    getShipList({ setShips })
+  }, [getShipList])
+
+  // useUser에서 가져온 ship_id로 ships안에 유저의 선박을 찾아서 selectedShip 업데이트
+  useEffect(() => {
+    if (!user || !ships) return
+    const currentShip = ships.find((item: any) => item.value === user?.ship_id)
+    setSelectedShip(currentShip)
+  }, [user, ships])
+
+  // setSelectedUser를 업데이트 해서 초기화
+  useEffect(() => {
+    if (!users) return
+    setSelectedUser(users[0])
+  }, [users])
+
+  // 선택된 선박이 있으면 유저리스트와 선박상세정보를 업데이트
+  useEffect(() => {
+    if (!selecetdShip) return
+    const shipId = selecetdShip?.value
+    getUserList({ ship_id: shipId, setUsers })
+    getShipInfo({ ship_id: shipId, setData: setShipInfo })
+  }, [selecetdShip, getUserList, getShipInfo])
+
+  // 유저 건강정보 업데이트
+  useEffect(() => {
+    if (!selecetdUser || !selecetdShip) return
+    const shipId = selecetdShip?.value
+    const userIndex = selecetdUser?.value
+    getUserHealthList({
+      shipId: shipId,
+      setData: setUserHealthList,
+      pageNum: searchParams.h_page_num,
+      userIndex: userIndex,
+    })
+  }, [getUserHealthList, selecetdUser, selecetdShip, searchParams])
+
+  // 유저 응급메시지 업데이트
+  // useEffect(() => {
+  //   if (!selecetdUser || !selecetdShip) return
+  //   const shipId = selecetdShip?.value
+  //   const userIndex = selecetdUser?.value
+  //   getUserHealthList({
+  //     shipId: shipId,
+  //     setData: setUserHealthList,
+  //     pageNum: searchParams.h_page_num,
+  //     userIndex: userIndex,
+  //   })
+  // }, [getUserHealthList, selecetdUser, selecetdShip, searchParams])
+
   return (
     <div className="md:mx-[40px]">
       <div className="text-[22px] font-bold md:text-[26px]">
@@ -87,22 +97,31 @@ export default function MonitoringPage() {
       </div>
       <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
         <span className="text-[14px] md:text-[16px]">선박 선택</span>
-        <SlideDropDown
+        <SliderDropDown
           id="monitoring_ship"
-          dropData={[
-            [{ value: '0', label: '강원호1' }],
-            [{ value: '1', label: '강원호2' }],
-          ]}
+          dropData={ships}
+          fieldValue={selecetdShip}
+          fieldOnChange={handleShipChange}
+          placeholder="선박 선택"
         />
       </div>
       <div className="mt-[10px]">
-        <Image
-          src="/temp-ship.png"
-          alt="tempship"
-          width={1100}
-          height={200}
-          style={{ objectFit: 'fill' }}
-        />
+        <div className="relative h-[92px] md:h-[248px]">
+          {shipInfo &&
+            shipInfo.ship_drawings_url !== '' &&
+            shipInfo.ship_drawings_url !== 'None' && (
+              <Image
+                src={
+                  process.env.NEXT_PUBLIC_API_URL +
+                  '/' +
+                  shipInfo.ship_drawings_url
+                }
+                alt="선박 도면 미리보기"
+                layout="fill"
+                objectFit="fill"
+              />
+            )}
+        </div>
       </div>
       <div className="mt-[32px] flex flex-col justify-between md:flex-row md:items-center">
         <div className="text-[18px] font-bold md:text-[20px]">
@@ -110,17 +129,25 @@ export default function MonitoringPage() {
         </div>
         <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
           <span className="text-[14px] md:text-[16px]">승선원 선택</span>
-          <SlideDropDown
-            id="monitoring_crew"
-            dropData={[
-              [{ value: '0', label: '김김김' }],
-              [{ value: '1', label: '박박박' }],
-            ]}
+          <SliderDropDown
+            id="monitoring_user"
+            dropData={users}
+            fieldValue={selecetdUser}
+            fieldOnChange={handleUserChange}
+            placeholder="승선원 선택"
           />
         </div>
       </div>
+      {/* 클릭 에러방지 */}
+      {!userHealthList ? (
+        <div className="fixed left-0 top-0 z-50 h-full w-full" />
+      ) : null}
       <div className="mt-[20px]">
-        <MonitoringTab />
+        <MonitoringTab
+          userHealthList={userHealthList}
+          searchParams={searchParams}
+          userIndex={Number(selecetdUser?.value) ?? 0}
+        />
       </div>
     </div>
   )

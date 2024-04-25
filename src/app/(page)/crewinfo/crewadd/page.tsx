@@ -3,7 +3,6 @@
 import { PATHS } from '@/constants/paths'
 import Link from 'next/link'
 import { useForm, Controller, Control } from 'react-hook-form'
-import Image from 'next/image'
 import { DatePickerSingleController } from '@/components/common/DatePicker'
 import DropDown from '@/components/common/DropDown'
 import { useEffect, useState } from 'react'
@@ -476,59 +475,11 @@ const GroupDropBoxs = ({
   )
 }
 
-const areaSettingInit = [
-  { name: 'crew_add_ship', defaultValue: { value: '', label: '' } },
-  { name: 'crew_add_ship_group', defaultValue: { value: '', label: '' } },
-]
-
-const AreaSettings = ({ control }: { control: Control<any> }) => {
-  return (
-    <div className="mt-[10px]">
-      <div className="mt-[10px] md:mx-[10px]">
-        <Image
-          src="/temp-ship.png"
-          alt="tempship"
-          width={1100}
-          height={200}
-          style={{ objectFit: 'fill' }}
-        />
-      </div>
-      <div className="mt-[30px] flex flex-col gap-2">
-        <span className="text-[14px] md:text-[16px]">선택 영역</span>
-        <div className="flex gap-2 md:mx-[10px]">
-          <div className="flex items-center gap-[12px] rounded border border-[#C4C4C4] px-[16px] py-[10px]">
-            <div className="text-[12px] md:text-[14px]">비콘 RSSI 값 2</div>
-            <div className="relative h-[10px] w-[10px]">
-              <div className="absolute top-[4px] h-[1px] w-full rotate-45 rounded bg-[#888888]"></div>
-              <div className="absolute top-[4px] h-[1px] w-full -rotate-45 rounded bg-[#888888]"></div>
-            </div>
-          </div>
-          <div className="flex items-center gap-[12px] rounded border border-[#C4C4C4] px-[16px] py-[10px]">
-            <div className="text-[12px] md:text-[14px]">비콘 RSSI 값 2</div>
-            <div className="relative h-[10px] w-[10px]">
-              <div className="absolute top-[4px] h-[1px] w-full rotate-45 rounded bg-[#888888]"></div>
-              <div className="absolute top-[4px] h-[1px] w-full -rotate-45 rounded bg-[#888888]"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export default function CrewAdd() {
   const router = useRouter()
   const { user } = useUser()
   // useForm에서 defaultValues를 동적으로 생성
   const defaultValues1 = crewInfoInit.reduce(
-    (acc: { [key: string]: any }, field) => {
-      acc[field.name] = field.defaultValue
-      return acc
-    },
-    {},
-  )
-
-  const defaultValues2 = areaSettingInit.reduce(
     (acc: { [key: string]: any }, field) => {
       acc[field.name] = field.defaultValue
       return acc
@@ -627,8 +578,6 @@ export default function CrewAdd() {
         <CrewInfoForm control={control} dropDatas={{ crewLevels, companies }} />
         <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
         <GroupDropBoxs control={control} ships={ships} />
-        {/* <div className="mt-[20px] font-bold">제한 구역 설정</div>
-        <AreaSettings control={control} /> */}
         <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
           <Link href={PATHS.CREW_INFO()}>
             <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">

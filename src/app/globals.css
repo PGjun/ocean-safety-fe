@@ -31,3 +31,6 @@ body {
     text-wrap: balance;
   }
 } */
+input::placeholder {
+  color: #c4c4c4; /* 원하는 플레이스홀더 색상 지정 */
+}

@@ -5,7 +5,7 @@ import { PATHS } from '@/constants/paths'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { CrewDetailTab } from './components/CrewDetailTab'
-import { User, fetchUserList } from '@/services/api/user'
+import { fetchUserList } from '@/services/api/user'
 import moment from 'moment'
 import { GenericTable } from '@/components/common/GenericTable'
 import { useForm } from 'react-hook-form'
@@ -14,6 +14,7 @@ import { SearchController } from '@/components/common/SearchController'
 import { GenericSearchForm } from '@/components/common/GenericSearchForm'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/hooks/useUser'
+import { UserInfoData } from '@/types/responseData'
 
 const searchFields: SearchFields = [
   {
@@ -100,7 +101,7 @@ export default function CrewInfoPage(pageProps: {
       </div>
 
       <GenericTable
-        mobileContents={(item: User, idx) => (
+        mobileContents={(item: UserInfoData, idx) => (
           <>
             <div>
               No. {item.id} &nbsp; {item.name ?? ''}
@@ -126,7 +127,7 @@ export default function CrewInfoPage(pageProps: {
           },
         ]}
         data={userList}
-        onRowClick={(item: User) => {
+        onRowClick={(item: UserInfoData) => {
           setUserId(item.id)
         }}
       />

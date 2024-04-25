@@ -1,10 +1,11 @@
 import { Pagination, SearchParams } from '@/components/common/Pagination'
 import { GenericTable } from '@/components/common/GenericTable'
 import { PATHS } from '@/constants/paths'
-import { UserEmergencyData, fetchUserEmergencyList } from '@/services/api/user'
+import { fetchUserEmergencyList } from '@/services/api/user'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useUser } from '@/hooks/useUser'
+import { UserEmergencyData } from '@/types/responseData'
 
 export const SosListTable = ({
   searchParams,
@@ -23,6 +24,7 @@ export const SosListTable = ({
 
   const [totalPage, setTotalPage] = useState(1)
 
+  //todo 임시 처리 sosData 초기화
   useEffect(() => {
     if (!user) return
     const fetcEmergencyListData = async () => {
@@ -30,12 +32,18 @@ export const SosListTable = ({
         group_id: user?.group_id,
         ship_id: user?.ship_id,
         item_count: '5',
+        search_code: 'SOS',
         ...searchParams,
         ...query,
       })
       if (res?.status === 200) {
         setSosList(res.data.data)
         setTotalPage(res.data.total_page)
+        setSosData(res.data.data[0])
+        setLocation({
+          lng: res.data.data[0].longitude,
+          lat: res.data.data[0].latitude,
+        })
       }
     }
 
@@ -44,6 +52,10 @@ export const SosListTable = ({
 
   return (
     <div className="flex-1">
+      {/* 클릭 에러방지 */}
+      {sosList.length === 0 ? (
+        <div className="fixed left-0 top-0 z-50 h-full w-full" />
+      ) : null}
       <GenericTable
         mobileContents={(item: UserEmergencyData, idx) => (
           <Link key={idx} href={PATHS.SOS_DETAIL()}>

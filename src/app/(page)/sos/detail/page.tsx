@@ -5,13 +5,12 @@ import DropDown from '@/components/common/DropDown'
 import { PATHS } from '@/constants/paths'
 import Link from 'next/link'
 import { GenericTable } from '@/components/common/GenericTable'
-import {
-  UserEmergencyData,
-  fetchUserSpecificEmergency,
-} from '@/services/api/user'
+import { fetchUserSpecificEmergency } from '@/services/api/user'
 import { PageProps } from '@/types/common'
 import { useFetch } from '@/hooks/useFetch'
 import { useRouter } from 'next/navigation'
+import { UserEmergencyData } from '@/types/responseData'
+import { Controller, useForm } from 'react-hook-form'
 
 export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
   const searchParams = pageProps.searchParams
@@ -38,29 +37,53 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
     },
   })
 
+  const { control } = useForm()
+
   return (
     <div className="md:mx-[40px]">
       <div className="text-[26px] font-bold">SOS/낙상감지 상세내역</div>
       <div className="mb-[10px] flex justify-end">
         <div className="mt-[16px] flex max-w-[332px] flex-1 flex-col gap-[4px] md:flex-row">
-          <DropDown.Container>
-            <DropDown.Content
-              id="sos_detail_type"
-              dropData={[
-                { value: '0', label: 'SOS' },
-                { value: '1', label: '낙상감지' },
-              ]}
-            />
-          </DropDown.Container>
-          <DropDown.Container>
-            <DropDown.Content
-              id="sos_detail_status"
-              dropData={[
-                { value: '0', label: '처리완료' },
-                { value: '1', label: '이상보고' },
-              ]}
-            />
-          </DropDown.Container>
+          <Controller
+            name="code"
+            control={control}
+            render={({ field }) => {
+              return (
+                <DropDown.Container>
+                  <DropDown.Content
+                    id="sos_detail_type"
+                    dropData={[
+                      { value: '1', label: 'SOS' },
+                      { value: '2', label: '낙상감지' },
+                    ]}
+                    placeholder="응급코드 선택"
+                    fieldOnChange={field.onChange}
+                    fieldValue={field.value}
+                  />
+                </DropDown.Container>
+              )
+            }}
+          />
+          <Controller
+            name="status"
+            control={control}
+            render={({ field }) => {
+              return (
+                <DropDown.Container>
+                  <DropDown.Content
+                    id="sos_detail_status"
+                    dropData={[
+                      { value: '1', label: '처리완료' },
+                      { value: '2', label: '이상보고' },
+                    ]}
+                    placeholder="처리현황 선택"
+                    fieldOnChange={field.onChange}
+                    fieldValue={field.value}
+                  />
+                </DropDown.Container>
+              )
+            }}
+          />
         </div>
       </div>
       <GenericTable
@@ -130,13 +153,22 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
           }}
         />
       </div>
-      <div className="mt-[28px] text-[18px] font-bold">처리 내용</div>{' '}
-      <textarea
-        name=""
-        id=""
-        rows={5}
-        className="w-full resize-none rounded border border-[#C4C4C4] p-[10px] text-[14px]"
-      ></textarea>
+      <div className="mt-[28px] text-[18px] font-bold">처리 내용</div>
+      <Controller
+        name="content"
+        control={control}
+        render={({ field }) => {
+          return (
+            <textarea
+              value={field.value}
+              onChange={field.onChange}
+              rows={5}
+              className="w-full resize-none rounded border border-[#C4C4C4] p-[10px] text-[14px]"
+            />
+          )
+        }}
+      />
+
       {/* <div className="mt-[8px] flex rounded bg-[#F3F5FF] p-[24px] text-[18px] leading-[21.6px] text-[#2262C6]">
         <div className="p-[3px]">
           <CommonIcon.BLUE_Exclamation />

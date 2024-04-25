@@ -96,7 +96,7 @@ export const CommonIcon = {
       />
     </svg>
   ),
-  BLACK_DROPDOWN: () => (
+  BLACK_DROPDOWN: ({ color = '#0A0A0A' }) => (
     <svg
       width="12"
       height="8"
@@ -106,7 +106,7 @@ export const CommonIcon = {
     >
       <path
         d="M11 1.71289L6 6.71289L1 1.71289"
-        stroke="#4A4A4A"
+        stroke={color}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -210,7 +210,7 @@ export const CommonIcon = {
       </defs>
     </svg>
   ),
-  SlideArrow: ({ className = '' }) => (
+  SlideArrow: ({ className = '', color = '#0A0A0A' }) => (
     <svg
       width="10"
       height="16"
@@ -221,7 +221,7 @@ export const CommonIcon = {
     >
       <path
         d="M8.375 14.6035L1.625 7.85352L8.375 1.10352"
-        stroke="#0A0A0A"
+        stroke={color}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"

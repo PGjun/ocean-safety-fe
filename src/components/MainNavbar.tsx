@@ -37,7 +37,7 @@ export const navMenuList = [
   {
     IconComponent: NavIcon.Monitoring,
     name: '선내 위치 모니터링',
-    path: PATHS.MONITORING,
+    path: PATHS.MONITORING(),
     role: ACCESS_ALLOW.ADMIN,
   },
   {

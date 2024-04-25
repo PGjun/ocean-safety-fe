@@ -1,516 +1,19 @@
 'use client'
 
-import CanvasDots from '@/components/common/CanvasDots'
-import CanvasRect from '@/components/common/CanvasRect'
 import { CreateDataTable } from '@/components/common/CreateDataTable'
-import { DatePickerSingleController } from '@/components/common/DatePicker'
 import { PATHS } from '@/constants/paths'
-import { useMediaQuery } from '@/hooks/useMediaQuery'
-import { CommonIcon } from '@/icons/common'
-import { addShipParams, postAddShip } from '@/services/api/user'
-import Image from 'next/image'
+import { postAddShip } from '@/services/api/user'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { Control, Controller, useForm } from 'react-hook-form'
-
-interface Field {
-  control: Control<any>
-  name: string
-  label: string
-  currentValue?: string
-  defaultValue?: string
-  placeholder?: string
-}
-
-// 기본 필드와 커스텀 필드 컴포넌트 정의
-const Field = ({ control, name, label, placeholder }: Field) => (
-  <Controller
-    control={control}
-    name={name}
-    rules={{ required: true }}
-    render={({ field }) => (
-      <div>
-        <label htmlFor={name} className="text-[12px] font-bold">
-          {label}
-        </label>
-        <input
-          {...field}
-          value={field.value || ''}
-          onChange={(e) => field.onChange(e.target.value)}
-          id={name}
-          type="text"
-          className="block w-full rounded border border-[#C4C4C4] px-[15px] py-[10px] text-[14px]"
-          placeholder={placeholder}
-        />
-      </div>
-    )}
-  />
-)
-
-// 필드 설정을 포함한 배열 정의
-const groupFields = [
-  {
-    name: 'ship_number',
-    label: '선박번호',
-    placeholder: '선박번호를 입력하세요.',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'ship_name',
-    label: '선박명',
-    placeholder: '선박명을 입력하세요.',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'nationality',
-    label: '선적항(국적)',
-    placeholder: '선적항(국적)을 입력하세요.',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'inter_tonnage',
-    label: '국제총톤수',
-    placeholder: '국제총톤수를 입력하세요.',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'weight_tonnage',
-    label: '재화중량톤수',
-    placeholder: '재화중량톤수를 입력하세요',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'reg_classname',
-    label: '등록선급명',
-    placeholder: '등록선급명을 입력하세요',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'launch_date',
-    label: '진수일',
-    placeholder: '진수일을 입력하세요',
-    defaultValue: '',
-    component: DatePickerSingleController,
-  },
-  {
-    name: 'shipyard',
-    label: '조선소',
-    placeholder: '조선소를 입력하세요',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'ship_owner',
-    label: '선박소유자',
-    placeholder: '선박소유자를 입력하세요',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'business_name',
-    label: '사업자명',
-    placeholder: '사업자명을 입력하세요',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'ship_lessee',
-    label: '선박임차인',
-    placeholder: '선박임차인을 입력하세요',
-    defaultValue: '',
-    component: Field,
-  },
-  {
-    name: 'rental_period',
-    label: '임차기간',
-    placeholder: '임차기간을 입력하세요',
-    defaultValue: '',
-    component: DatePickerSingleController,
-  },
-]
-
-const GroupInfoForm = ({ watch, control }: any) => {
-  return (
-    <div className="mt-[10px] grid gap-[16px] md:grid-cols-3 md:gap-[32px]">
-      <>
-        {groupFields.map((field, index) => {
-          const currentValue = watch(field.name)
-          return (
-            <field.component
-              key={index}
-              control={control}
-              currentValue={currentValue}
-              {...field}
-            />
-          )
-        })}
-      </>
-    </div>
-  )
-}
-
-const formatMacAddress = (value: string) => {
-  if (!value) return value
-
-  // 알파벳과 숫자만 허용
-  const mac = value.replace(/[^0-9A-Fa-f]/g, '').toUpperCase()
-
-  // 각 두 자리마다 콜론(:) 추가
-  const formatted = mac.split('').reduce((acc, char, idx) => {
-    return acc + char + (idx % 2 === 1 && idx !== mac.length - 1 ? ':' : '')
-  }, '')
-
-  // 17자리를 초과하는 입력 제거 (XX:XX:XX:XX:XX:XX - 콜론 포함 17자)
-  return formatted.length <= 17 ? formatted : formatted.slice(0, 17)
-}
-
-const DotInputComponent = ({ dots, setDots }: any) => {
-  // 레이블 변경 핸들러
-  const handleNameChange = (index: number, name: string) => {
-    const newDots = [...dots]
-    newDots[index] = { ...newDots[index], name }
-    setDots(newDots)
-  }
-  const handleMcAdressChange = (index: number, mac_address: string) => {
-    const formattedMac = formatMacAddress(mac_address)
-    const newDots = [...dots]
-    newDots[index] = { ...newDots[index], mac_address: formattedMac }
-    setDots(newDots)
-  }
-  // 도트 삭제 핸들러
-  const handleRemoveDot = (index: number) => {
-    const newDots = dots.filter((_: any, i: any) => i !== index)
-    setDots(newDots)
-  }
-
-  return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-      {dots.map((dot: any, index: any) => (
-        <div
-          key={index}
-          className="flex w-full items-center gap-2 rounded border border-[#C4C4C4]"
-        >
-          <div className="h-full w-[60px] place-content-center bg-[#F3F5FF] text-center text-[20px] font-bold leading-[16px] text-[#2262C6] md:w-[50px]">
-            {index + 1}
-          </div>
-          <input
-            className="min-w-0 flex-grow border-r outline-none"
-            type="text"
-            placeholder="비콘 이름"
-            value={dot.name || ''}
-            onChange={(e) => handleNameChange(index, e.target.value)}
-          />
-          <input
-            className="min-w-0 flex-grow outline-none"
-            type="text"
-            placeholder="Mac Address"
-            value={dot.mac_address || ''}
-            onChange={(e) => handleMcAdressChange(index, e.target.value)}
-          />
-          <div className="px-[18px] py-[15px] text-[20px] leading-[16px]">
-            <button type="button" onClick={() => handleRemoveDot(index)}>
-              <CommonIcon.Xmark />
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-const RectInputComponent = ({ rects, setRects }: any) => {
-  // 레이블 변경 핸들러
-  const handleNameChange = (index: number, name: string) => {
-    const newRects = [...rects]
-    newRects[index] = { ...newRects[index], name }
-    setRects(newRects)
-  }
-
-  // 도트 삭제 핸들러
-  const handleRemoveRect = (index: number) => {
-    const newRects = rects.filter((_: any, i: any) => i !== index)
-    setRects(newRects)
-  }
-
-  return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-      {rects.map((rect: any, index: any) => (
-        <div
-          key={index}
-          className="flex w-full items-center gap-2 rounded border border-[#C4C4C4]"
-        >
-          <div className="h-full w-[60px] place-content-center bg-[#F3F5FF] text-center text-[20px] font-bold leading-[16px] text-[#2262C6] md:w-[50px]">
-            {index + 1}
-          </div>
-          <input
-            className="min-w-0 flex-grow border-r outline-none"
-            type="text"
-            placeholder="제한구역 이름"
-            value={rect.name || ''}
-            onChange={(e) => handleNameChange(index, e.target.value)}
-          />
-
-          <div className="px-[18px] py-[15px] text-[20px] leading-[16px]">
-            <button type="button" onClick={() => handleRemoveRect(index)}>
-              <CommonIcon.Xmark />
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-const ShipDrawing = ({
-  file,
-  setFile,
-}: {
-  file: File | null
-  setFile: (file: File) => void
-}) => {
-  const isMobile = useMediaQuery('768')
-
-  // const [file, setFile] = useState<File | null>(null)
-  const [preview, setPreview] = useState<string>('')
-  const fileRef = useRef<HTMLInputElement>(null)
-  const [dots, setDots] = useState<
-    {
-      x: number
-      y: number
-    }[]
-  >([])
-
-  const [rects, setRects] = useState<
-    { x1: number; y1: number; x2: number; y2: number }[]
-  >([])
-
-  // const [rectangles, setRectangles] = useState<
-  //   { x1: number; y1: number; x2: number; y2: number }[]
-  // >([])
-
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files ? event.target.files[0] : null
-    console.log(file)
-    if (file) {
-      // 파일이 선택되었을 때만 타입 검사 진행
-      if (file.type === 'image/png' || file.type === 'image/jpeg') {
-        setFile(file)
-        const reader = new FileReader()
-        reader.onloadend = () => {
-          setPreview(reader.result as string)
-        }
-        reader.readAsDataURL(file)
-      } else {
-        alert('PNG, JPG, JPEG 파일만 업로드 가능합니다.')
-      }
-    }
-  }
-
-  const onDotsChange = (dots: any) => {
-    setDots(dots)
-  }
-
-  const onRectsChange = (rects: any) => {
-    setRects(rects)
-  }
-
-  useEffect(() => {
-    // 결과 객체를 생성하는 함수
-    function formatDots(dots: any) {
-      // 결과 객체 초기화
-      const result: any = {
-        ship_id: 0, // 이 예제에서 ship_id는 0으로 설정
-        mac_address_list: [],
-        location_x_list: [],
-        location_y_list: [],
-        beacon_name_list: [],
-      }
-
-      // 배열의 각 요소에 대해 필요한 속성 추출
-      dots.forEach((dot: any) => {
-        result.mac_address_list.push(dot.mac_address)
-        result.location_x_list.push(dot.x)
-        result.location_y_list.push(dot.y)
-        result.beacon_name_list.push(dot.name)
-      })
-
-      return result
-    }
-
-    function formatRects(rects: any) {
-      // 결과 객체 초기화
-      const result: any = {
-        ship_id: 0, // 이 예제에서 ship_id는 0으로 설정
-        location_start_x_list: [],
-        location_start_y_list: [],
-        location_end_x_list: [],
-        location_end_y_list: [],
-        area_name_list: [],
-      }
-
-      // 배열의 각 요소에 대해 필요한 속성 추출
-      rects.forEach((rect: any) => {
-        result.location_start_x_list.push(rect.x1)
-        result.location_start_y_list.push(rect.y1)
-        result.location_end_x_list.push(rect.x2)
-        result.location_end_y_list.push(rect.y2)
-        result.area_name_list.push(rect.name)
-      })
-
-      return result
-    }
-
-    const formattedDots = formatDots(dots)
-    const formattedRects = formatRects(rects)
-    console.log(formattedDots)
-    console.log(formattedRects)
-  }, [dots, rects])
-
-  return (
-    <div>
-      <div className="text-[18px] font-bold">선박 도면</div>
-      <div className="mt-[10px] flex w-full justify-between rounded py-[7px] pl-[16px] pr-[6px] text-[14px] outline-dotted outline-[2px] outline-[#C4C4C4]">
-        <input
-          type="text"
-          className="flex-1 bg-white"
-          placeholder="선박 도면을 등록해 주세요."
-          value={file ? file.name : ''}
-          disabled
-        />
-        <button
-          type="button"
-          onClick={() => fileRef.current?.click()}
-          className="rounded border border-[#C4C4C4] px-[12px] py-[2px] text-[12px]"
-        >
-          파일 업로드
-        </button>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/png, image/jpeg" // PNG, JPG, JPEG만 선택 가능
-          onChange={handleFileChange}
-          className="hidden"
-        />
-      </div>
-
-      <div className="mt-[20px] text-[12px] font-bold md:text-[14px]">
-        비콘 위치 설정
-      </div>
-      <div className="mt-[5px] rounded bg-[#F3F2F8] p-[20px] md:p-[40px]">
-        <div className="relative h-[92px] md:h-[248px]">
-          {preview && (
-            <>
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  zIndex: 2,
-                  width: '100%',
-                  height: '100%',
-                }}
-              >
-                <CanvasDots
-                  width={isMobile ? 270 : 1020}
-                  height={isMobile ? 92 : 248}
-                  dots={dots}
-                  onDotsChange={onDotsChange}
-                />
-              </div>
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  zIndex: 1,
-                  width: '100%',
-                  height: '100%',
-                }}
-              >
-                <Image
-                  src={preview}
-                  alt="선박 도면 미리보기"
-                  layout="fill"
-                  objectFit="fill"
-                />
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      {dots.length !== 0 && (
-        <>
-          <div className="mb-[5px] mt-[10px]">선택 영역</div>
-          <DotInputComponent dots={dots} setDots={setDots} />
-        </>
-      )}
-
-      <div className="mt-[20px] text-[12px] font-bold md:text-[14px]">
-        제한구역 설정
-      </div>
-      <div className="mt-[5px] rounded bg-[#F3F2F8] p-[20px] md:p-[40px]">
-        <div className="relative h-[92px] md:h-[248px]">
-          {preview && (
-            <>
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  zIndex: 2,
-                  width: '100%',
-                  height: '100%',
-                }}
-              >
-                <CanvasRect
-                  width={isMobile ? 270 : 1020}
-                  height={isMobile ? 92 : 248}
-                  rects={rects}
-                  onRectsChange={onRectsChange}
-                />
-              </div>
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  zIndex: 1,
-                  width: '100%',
-                  height: '100%',
-                }}
-              >
-                <Image
-                  src={preview}
-                  alt="선박 도면 미리보기"
-                  layout="fill"
-                  objectFit="fill"
-                />
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-      {rects.length !== 0 && (
-        <>
-          <div className="mb-[5px] mt-[10px]">선택 영역</div>
-          <RectInputComponent rects={rects} setRects={setRects} />
-        </>
-      )}
-    </div>
-  )
-}
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { ShipDrawing } from './components/ShipDrawing'
+import { ShipAddForm, groupFields } from './components/ShipAddForm'
+import { useUser } from '@/hooks/useUser'
+import moment from 'moment'
 
 export default function GroupAddPage() {
-  const router = useRouter()
-  // useForm에서 defaultValues를 동적으로 생성
+  // useForm에서 defaultValues(초기값)를 동적으로 생성
   const defaultValues = groupFields.reduce(
     (acc: { [key: string]: any }, field) => {
       acc[field.name] = field.defaultValue
@@ -519,22 +22,117 @@ export default function GroupAddPage() {
     {},
   )
 
-  const [file, setFile] = useState<File | null>(null)
+  const router = useRouter()
+  const { user } = useUser()
+  const { control, handleSubmit } = useForm({ defaultValues })
 
-  const { control, handleSubmit, watch } = useForm({ defaultValues })
+  const [file, setFile] = useState<File | null>(null)
+  const [dots, setDots] = useState<
+    {
+      location_x: number
+      location_y: number
+      beacon_name: string
+      mac_address: string
+    }[]
+  >([])
+  const [rects, setRects] = useState<
+    {
+      location_start_x: number
+      location_start_y: number
+      location_end_x: number
+      location_end_y: number
+      area_name: string
+    }[]
+  >([])
+  const [wearables, setWearables] = useState([])
+
+  const handleWearables = (data: any) => {
+    data.map((item: any) => ({
+      device_id: item.device_id,
+      phone_number: item.phone_number,
+      model_name: item.model_name,
+    }))
+
+    setWearables(data)
+  }
 
   const onSubmit = async (data: any) => {
-    const addData = { ...data, group_id: 1 }
+    function validateAndFilterWearables(wearables: any) {
+      const requiredFields = ['device_id', 'phone_number', 'model_name']
 
-    // 숫자로 변환하고 싶은 필드 이름들
+      // 필수 필드 중 하나라도 부분적으로 입력된 경우 검사
+      const hasIncompleteEntry = wearables.some((wearable: any) => {
+        if (Object.keys(wearable).length === 0) {
+          return false // 완전히 빈 객체는 건너뜀
+        }
+
+        const hasAnyField = requiredFields.some((field) => wearable[field])
+        const hasAllFields = requiredFields.every((field) => wearable[field])
+
+        return hasAnyField && !hasAllFields // 하나라도 있고 전부 채워지지 않은 경우 true
+      })
+
+      if (hasIncompleteEntry) {
+        alert('입력중인 웨어러블 정보를 전부 입력해주세요.')
+        return [] // 부분적으로 입력된 웨어러블이 있으면 빈 배열 반환
+      }
+
+      // 모든 필드가 채워진 웨어러블만 필터링
+      return wearables.filter((wearable: any) => {
+        return requiredFields.every((field) => wearable[field]) // 모든 필드가 채워져 있어야 함
+      })
+    }
+
+    const validWearables = validateAndFilterWearables(wearables)
+
+    if (validWearables.length === 0) {
+      return
+    }
+
+    // dots 배열 검사
+    const invalidDots = dots.some((dot) => !dot.beacon_name || !dot.mac_address)
+    if (invalidDots) {
+      alert(
+        '모든 비콘에 대한 정보가 필요합니다. 비콘 이름과 MAC 주소를 확인하세요.',
+      )
+      return
+    }
+
+    // rects 배열 검사
+    const invalidRects = rects.some((rect) => !rect.area_name)
+    if (invalidRects) {
+      alert(
+        '모든 제한구역에 대한 정보가 필요합니다. 제한구역 이름을 확인하세요.',
+      )
+      return
+    }
+
+    if (!user) return
+    const newData = {
+      ...data,
+      beacons: JSON.stringify(dots),
+      restrict_areas: JSON.stringify(rects),
+      watches: JSON.stringify(validWearables),
+      group_id: user.id,
+    }
+
+    // 필드 이름 리스트
     const integerFields = ['ship_number', 'inter_tonnage', 'weight_tonnage']
+    const dateFields = ['launch_date', 'rental_period']
 
-    // 특정 필드들에 대해서만 parseInt를 적용
-    const parseIntData: addShipParams = Object.entries(addData).reduce(
+    // 필드 타입 업데이트
+    const updateData = Object.entries(newData).reduce(
       (acc: any, [key, value]: any) => {
+        // 숫자 필드 처리
         if (integerFields.includes(key)) {
           acc[key] = parseInt(value)
-        } else {
+        }
+        // 날짜 필드 처리
+        else if (dateFields.includes(key)) {
+          acc[key] = moment(value).format('YYYY-MM-DD')
+        }
+        // 기타 필드 처리
+        else {
           acc[key] = value
         }
         return acc
@@ -542,15 +140,10 @@ export default function GroupAddPage() {
       {},
     )
 
-    let updateData = parseIntData
-
-    //파일이 존재하면 파일 필드 추가
+    // 파일이 존재하면 파일 필드 추가
     if (file) {
-      updateData = {
-        ...parseIntData,
-        ship_drawing_img: file,
-        ship_drawing_img_name: file.name,
-      }
+      updateData.ship_drawing_img = file
+      updateData.ship_drawing_img_name = file.name
     }
 
     const res = await postAddShip(updateData)
@@ -559,26 +152,50 @@ export default function GroupAddPage() {
       router.push(PATHS.GROUP_INFO())
     }
   }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="md:mx-[40px]">
       <div className="text-[22px] font-bold">그룹(선박) 추가</div>
-      <GroupInfoForm
-        control={control}
-        handleSubmit={handleSubmit(onSubmit)}
-        watch={watch}
+      <ShipAddForm control={control} />
+      <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
+      <ShipDrawing
+        file={file}
+        setFile={setFile}
+        dots={dots}
+        rects={rects}
+        setDots={setDots}
+        setRects={setRects}
       />
       <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
-      <ShipDrawing file={file} setFile={setFile} />
-      <div className="my-[20px]">
-        <CreateDataTable
-          columns={[
-            { field: 'no', title: 'No', width: '50px' },
-            { field: '1', title: '기기명 (디바이스 ID)', width: '1fr' },
-            { field: '2', title: '기종', width: '1fr' },
-            { field: '3', title: '등록 일시', width: '1fr' },
-          ]}
-        />
-      </div>
+      <CreateDataTable
+        columns={[
+          { field: 'no', title: 'No', width: '50px' },
+          { field: 'device_id', title: '기기명 (디바이스 ID)', width: '1fr' },
+          { field: 'model_name', title: '기종', width: '1fr' },
+          {
+            field: 'phone_number',
+            title: '폰번호',
+            width: '1fr',
+            render: (value, handleInputChange, idx, col) => {
+              return (
+                <input
+                  value={formatPhoneNumber(value) || ''}
+                  placeholder={col.title}
+                  onChange={(e) => {
+                    // 입력값이 11자리를 초과하지 않도록 조정
+                    const formatted = formatPhoneNumber(e.target.value)
+                    if (formatted.replace(/[^0-9]/g, '').length <= 11) {
+                      handleInputChange(formatted, idx, col.field)
+                    }
+                  }}
+                  className="w-full rounded border p-[4px]"
+                />
+              )
+            },
+          },
+        ]}
+        handleData={handleWearables}
+      />
       <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
         <Link href={PATHS.GROUP_INFO()}>
           <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
@@ -594,4 +211,16 @@ export default function GroupAddPage() {
       </div>
     </form>
   )
+}
+const formatPhoneNumber = (value: string) => {
+  if (!value) return value
+
+  // 숫자만 추출
+  const phoneNumber = value.replace(/[^\d]/g, '')
+
+  // 숫자 길이에 따라 포맷 조정
+  if (phoneNumber.length < 4) return phoneNumber
+  if (phoneNumber.length < 8)
+    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`
+  return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`
 }

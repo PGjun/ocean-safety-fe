@@ -1,9 +1,10 @@
 import { Pagination, SearchParams } from '@/components/common/Pagination'
 import { GenericTable } from '@/components/common/GenericTable'
 import { PATHS } from '@/constants/paths'
-import { UserHealth, fetchUserHealthList } from '@/services/api/user'
+import { fetchUserHealthList } from '@/services/api/user'
 import { useEffect, useState } from 'react'
 import { useUser } from '@/hooks/useUser'
+import { UserHealthData } from '@/types/responseData'
 
 export const HealthSearchTable = ({
   searchParams,
@@ -49,10 +50,10 @@ export const HealthSearchTable = ({
   return (
     <div className="flex-1">
       <GenericTable
-        mobileContents={(item: UserHealth, idx) => (
+        mobileContents={(item: UserHealthData, idx) => (
           <>
             <div className="space-x-1">
-              <span>No. {idx + 1}</span>
+              <span>No. {item.id}</span>
               <span>{item.name}</span>
             </div>
             <div className="space-x-1">
@@ -74,7 +75,7 @@ export const HealthSearchTable = ({
           { field: 'health_date', title: '기록 일시', width: '5fr' },
         ]}
         data={healthList}
-        onRowClick={(item: UserHealth) => {
+        onRowClick={(item: UserHealthData) => {
           setUserIndex(item.user_index)
         }}
       />

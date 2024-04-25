@@ -15,3 +15,8 @@ export interface PageProps<T> {
   params: {}
   searchParams: T
 }
+
+export interface DropItem {
+  value: string
+  label: string
+}

@@ -1,14 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { GenericTable } from '../common/GenericTable'
-import { fetchUserEmergencyList } from '@/services/api/user'
+import { GenericTable } from './GenericTable'
+import { fetchUserOwnEmergencyList } from '@/services/api/user'
 import { useRouter } from 'next/navigation'
 import { PATHS } from '@/constants/paths'
 import { useUser } from '@/hooks/useUser'
 import { UserEmergencyData } from '@/types/responseData'
 
-export const CrewSos = () => {
+export const UserOwnEmergencyList = ({ userId }: { userId: number | null }) => {
   const { user } = useUser()
 
   const router = useRouter()
@@ -16,27 +16,23 @@ export const CrewSos = () => {
   const [sosList, setSosList] = useState([])
 
   useEffect(() => {
-    if (!user) return
-    const fetcEmergencyListData = async () => {
-      const res = await fetchUserEmergencyList({
-        group_id: user?.group_id.toString(),
-        ship_id: user?.ship_id.toString(),
+    if (!user || !userId) return
+    const fetchOwnEmergencyList = async () => {
+      const res = await fetchUserOwnEmergencyList({
+        user_index: userId,
         item_count: '5',
         page_num: '1',
-        search_code: 'SOS',
       })
       if (res?.status === 200) {
         setSosList(res.data.data)
       }
     }
 
-    fetcEmergencyListData()
-  }, [user])
+    fetchOwnEmergencyList()
+  }, [user, userId])
 
   return (
-    <div className="max-w-[636px]">
-      <div className="text-[20px] font-bold">SOS 내역</div>
-
+    <div className="mt-[20px]">
       <GenericTable
         mobileContents={(item: UserEmergencyData, idx) => (
           <>

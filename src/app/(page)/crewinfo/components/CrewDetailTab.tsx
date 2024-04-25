@@ -4,6 +4,7 @@ import { WearableInfo } from './WearableInfo'
 import { AreaSettings } from './AreaSettings'
 import { GroupInfo } from './GroupInfo'
 import { SosInfo } from './SosInfo'
+import { UserOwnEmergencyList } from '@/components/common/UserOwnEmergencyList'
 
 const tabGroup = [
   {
@@ -50,10 +51,10 @@ export const CrewDetailTab = ({ userId }: { userId: number | null }) => {
       </div>
 
       {activeTab === 'tab1' && <CrewDetail userId={userId} />}
-      {activeTab === 'tab2' && <WearableInfo />}
+      {activeTab === 'tab2' && <WearableInfo userId={userId} />}
       {activeTab === 'tab3' && <AreaSettings />}
       {activeTab === 'tab4' && <GroupInfo />}
-      {activeTab === 'tab5' && <SosInfo />}
+      {activeTab === 'tab5' && <UserOwnEmergencyList userId={userId} />}
     </>
   )
 }

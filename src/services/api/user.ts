@@ -2,12 +2,21 @@ import { convertFormData } from '@/utils/convertFormData'
 import { httpClient } from '../config/api-conf'
 import { END_POINT } from '../config/end-point'
 import { filterParamsByRole } from '@/utils/filterParamsByRole'
+import {
+  AddNoticeParams,
+  AddShipParams,
+  FetchShipListParams,
+  FetchUserListParams,
+  FetchUserNameListParams,
+  LoginParams,
+  NoticeListParams,
+  UserEmergencyListParams,
+  UserHealthListParams,
+  UserOwnEmergencyListParams,
+  UserSpecificHealthParams,
+} from '@/types/requestParams'
 
-export interface LoginParams {
-  id: string
-  password: string
-}
-
+//* 로그인
 export const postUserLogin = async (params: LoginParams) => {
   return httpClient({
     method: 'post',
@@ -16,25 +25,8 @@ export const postUserLogin = async (params: LoginParams) => {
   })
 }
 
-export interface addShipParams {
-  group_id: number
-  ship_name: string
-  ship_number: number
-  nationality: string
-  inter_tonnage: number
-  weight_tonnage: number
-  reg_classname: string
-  launch_date: string // 날짜 형식의 문자열입니다. 실제 사용시 Date 객체나 라이브러리(예: moment.js, date-fns)를 활용할 수 있습니다.
-  shipyard: string
-  ship_owner: string
-  business_name: string
-  ship_lessee: string
-  rental_period: string // 날짜 형식의 문자열입니다.
-  ship_drawing_img?: Blob // 바이너리 데이터를 담을 문자열, 선택적 필드로 표시
-  ship_drawing_img_name?: string // 선택적 필드로 표시
-}
-
-export const postAddShip = async (params: addShipParams) => {
+//* 선박 추가
+export const postAddShip = async (params: AddShipParams) => {
   const formData = new FormData()
 
   // 텍스트 필드를 FormData에 추가
@@ -61,11 +53,7 @@ export const postAddShip = async (params: addShipParams) => {
   })
 }
 
-export interface ShipInfoParams extends addShipParams {
-  id: number
-  group_name: string
-}
-
+//* 선박 상세 조회
 export const fetchShipInfo = async (shipId: number) => {
   return httpClient({
     method: 'get',
@@ -73,15 +61,7 @@ export const fetchShipInfo = async (shipId: number) => {
   })
 }
 
-export interface FetchShipListParams {
-  group_id: string
-  ship_id: number
-  page_num: string
-  item_count: string
-  search_group?: string
-  search_ship?: string
-}
-
+//* 선박 목록 조회
 export const fetchShipList = async (params: FetchShipListParams) => {
   const filteredParams = await filterParamsByRole({ params })
   return httpClient({
@@ -90,27 +70,15 @@ export const fetchShipList = async (params: FetchShipListParams) => {
   })
 }
 
-export interface User extends ShipInfoParams {
-  id: number
-  name: string
-  company_id: number
-  email: string
-  phone: string
-  birth: string
-  age: number
-  gender: number
-  zip_code: number
-  road_name: string
-  address: string
-  join_date: string | null
-  password: string
-  created_at: string
-  ship_id: number
-  crew_level: number
-  user_id: string
-  user_index: number
+//* 선박이름 목록 조회
+export const fetchShipNameList = async (params: { group_id: string }) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_SHIP_NAME_LIST(params),
+  })
 }
 
+//* 유저 상세 조회
 export const fetchUserInfo = async (userId: number) => {
   return httpClient({
     method: 'get',
@@ -118,23 +86,27 @@ export const fetchUserInfo = async (userId: number) => {
   })
 }
 
-export interface FetchUserListParams {
-  group_id: number
-  ship_id: number
-  page_num: number
-  item_count: number
-  search_name?: string
-  search_phone?: string
-}
-
+//* 유저 목록 조회
 export const fetchUserList = async (params: FetchUserListParams) => {
-  const filteredParams = await filterParamsByRole({ params })
+  const { noFilter, ...rest } = params
+  let lastParams = await filterParamsByRole({ params })
+  if (noFilter) lastParams = rest
+
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_USER_LIST(filteredParams),
+    endPoint: END_POINT.USER.GET_USER_LIST(lastParams),
   })
 }
 
+//* 유저이름 목록 조회
+export const fetchUserNameList = async (params: FetchUserNameListParams) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_USER_NAME_LIST(params),
+  })
+}
+
+//* 유저 추가
 export const postUser = async (data: any) => {
   return httpClient({
     method: 'post',
@@ -143,33 +115,10 @@ export const postUser = async (data: any) => {
   })
 }
 
-export interface UserHealth extends User {
-  blood_pressure: string
-  health_date: string
-  health_rate: number
-  oxygen_saturation: number
-  temperature: number
-}
-
-export interface UserHealthListParams {
-  group_id: string
-  ship_id: string
-  user_id: string
-  page_num: string
-  item_count: string
-  search_group?: string
-  search_ship?: string
-  search_name?: string
-  search_start_date?: string
-  search_end_date?: string
-  noFilter?: boolean
-}
-
+//* 건강 목록 조회
 export const fetchUserHealthList = async (params: UserHealthListParams) => {
   const { noFilter, ...rest } = params
-
   let lastParams = await filterParamsByRole({ params })
-
   if (noFilter) lastParams = rest
 
   return httpClient({
@@ -178,6 +127,7 @@ export const fetchUserHealthList = async (params: UserHealthListParams) => {
   })
 }
 
+//* 건강 상세 조회
 export const fetchUserSpecificHealth = async (
   params: UserSpecificHealthParams,
 ) => {
@@ -187,12 +137,7 @@ export const fetchUserSpecificHealth = async (
   })
 }
 
-export interface Location extends User {
-  rssi: number
-  scan_time: string
-  beacon_uuid: string //Mac address?
-}
-
+//* 위치 목록 조회
 export const fetchUserLocationList = async (shipId: number) => {
   return httpClient({
     method: 'get',
@@ -200,41 +145,31 @@ export const fetchUserLocationList = async (shipId: number) => {
   })
 }
 
-export interface UserEmergencyListParams {
-  group_id: string
-  ship_id: string
-  page_num: string
-  item_count: string
-  search_name?: string
-  search_code?: string
-  search_status?: string
-  search_start_date?: string
-  search_end_date?: string
-}
-
-export interface UserEmergencyData {
-  sos_id: number
-  id: number
-  name: string
-  user_id: string
-  phone: string
-  sos_date: string
-  longitude: number
-  latitude: number
-  emergency_code: string
-  emergency_status_code: string
-}
-
+//* 응급 알림 목록
 export const fetchUserEmergencyList = async (
   params: UserEmergencyListParams,
 ) => {
-  const filteredParams = await filterParamsByRole({ params })
+  const { noFilter, ...rest } = params
+  let lastParams = await filterParamsByRole({ params })
+  if (noFilter) lastParams = rest
+
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_USER_EMERGENCY_LIST(filteredParams),
+    endPoint: END_POINT.USER.GET_USER_EMERGENCY_LIST(lastParams),
   })
 }
 
+//* 응급 상세 조회
+export const fetchUserOwnEmergencyList = async (
+  params: UserOwnEmergencyListParams,
+) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_USER_OWN_EMERGENCY(params),
+  })
+}
+
+//* 응급 상세 조회
 export const fetchUserSpecificEmergency = async (sos_id: number) => {
   return httpClient({
     method: 'get',
@@ -242,13 +177,7 @@ export const fetchUserSpecificEmergency = async (sos_id: number) => {
   })
 }
 
-export interface NoticeListParams {
-  group_id: string
-  ship_id: string
-  page_num: string
-  item_count: string
-}
-
+//* 공지 목록 조회
 export const fetchNoticeList = async (params: NoticeListParams) => {
   const filteredParams = await filterParamsByRole({ params })
   return httpClient({
@@ -257,6 +186,7 @@ export const fetchNoticeList = async (params: NoticeListParams) => {
   })
 }
 
+//* 공지 상세 조회
 export const fetchSpecificNotice = async (notice_id: string) => {
   return httpClient({
     method: 'get',
@@ -264,22 +194,7 @@ export const fetchSpecificNotice = async (notice_id: string) => {
   })
 }
 
-export interface UserSpecificHealthParams {
-  user_id: number //user_index
-  search_start_datetime: string
-  search_end_datetime: string
-}
-
-export interface AddNoticeParams {
-  group_id: number
-  ship_id?: number
-  user_id: number
-  title: string
-  content: string
-  upload_files?: File[]
-  upload_file_names?: string[]
-}
-
+//* 공지 추가
 export const postAddNotice = async (params: AddNoticeParams) => {
   // const formData = new FormData()
   const formData = convertFormData({ params, excludeKeys: ['upload_files'] })
@@ -298,23 +213,34 @@ export const postAddNotice = async (params: AddNoticeParams) => {
   })
 }
 
-export const fetchShipNameList = async (params: { group_id: string }) => {
-  return httpClient({
-    method: 'get',
-    endPoint: END_POINT.USER.GET_SHIP_NAME_LIST(params),
-  })
-}
-
+//* 승선원 구분 조회
 export const fetchCrewLevel = async () => {
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_CREW_LEVEL(),
+    endPoint: END_POINT.USER.GET_CREW_LEVEL,
   })
 }
 
+//* 업체 목록 조회
 export const fetchCompanyList = async () => {
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_COMPANY_LIST(),
+    endPoint: END_POINT.USER.GET_COMPANY_LIST,
+  })
+}
+
+//* 워치 목록 조회
+export const fetchWatches = async (params: { ship_id: number }) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_WATCHES(params),
+  })
+}
+
+//* 워치 상세 조회
+export const fetchWatchInfo = async (params: { user_id: number }) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_USER_WATCH_INFO(params),
   })
 }

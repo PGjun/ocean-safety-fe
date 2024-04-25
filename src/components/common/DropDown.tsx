@@ -1,11 +1,6 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { CommonIcon } from '../SvgIcons'
 import useDropdownStore from '@/stores/dropdownStore'
-
-const dropDataInit = [
-  { value: '0', label: 'SOS' },
-  { value: '1', label: '낙상감지' },
-]
 
 interface DropDataItem {
   value: string
@@ -33,7 +28,7 @@ const Container = ({ type, children }: any) => {
 // Content 컴포넌트
 const Content = ({
   type = 'center',
-  dropData = dropDataInit,
+  dropData,
   id,
   fieldValue,
   fieldOnChange,
@@ -71,7 +66,7 @@ const Content = ({
       <button
         type="button"
         onClick={toggleDropdown}
-        className="w-full text-center text-[12px] md:text-[14px]"
+        className={`w-full text-center text-[12px] md:text-[14px] ${dropData?.length === 0 ? 'cursor-default' : ''}`}
       >
         <div
           className={
@@ -89,17 +84,15 @@ const Content = ({
                   : ''
             }
           >
-            {fieldValue?.label
-              ? fieldValue?.label
-              : placeholder
-                ? placeholder
-                : dropData[0].label}
+            {fieldValue?.label ? fieldValue?.label : placeholder}
           </span>
-          <CommonIcon.BLACK_DROPDOWN />
+          <CommonIcon.BLACK_DROPDOWN
+            {...(dropData?.length == 0 && { color: '#C4C4C4' })}
+          />
         </div>
       </button>
 
-      {activeDropdown === id && (
+      {dropData && dropData?.length !== 0 && activeDropdown === id && (
         <div
           className="absolute left-0 top-[35px] z-10 max-h-[300px] w-full overflow-auto rounded border bg-white py-[10px]"
           ref={dropdownRef}

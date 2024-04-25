@@ -11,12 +11,11 @@ interface DropProps {
   id: string
   fieldValue?: DropItem
   fieldOnChange?: ({ value, label }: DropItem) => void
+  placeholder?: string
 }
 
-const initData = [{ value: '0', label: '선택' }]
-
 export const SliderDropDownSm = ({
-  dropData = initData,
+  dropData = [],
   id,
   fieldValue,
   fieldOnChange,
@@ -75,10 +74,11 @@ export const SliderDropDownSm = ({
 }
 
 export const SliderDropDown = ({
-  dropData = initData,
+  dropData = [],
   id,
   fieldValue,
   fieldOnChange,
+  placeholder,
 }: DropProps) => {
   // 초기 인덱스 설정
   const initIdx = dropData.findIndex((item) => item.value === fieldValue?.value)
@@ -106,28 +106,36 @@ export const SliderDropDown = ({
     fieldOnChange && fieldOnChange(dropData[newIdx])
   }
   return (
-    <div className="flex min-w-[310px] rounded border border-[#C4C4C4] ">
+    <div
+      className={`flex min-w-[310px] rounded border border-[#C4C4C4] ${dropData.length === 0 ? 'bg-slate-100' : ''}`}
+    >
       <button
         type="button"
-        className=" border-r border-[#C4C4C4] px-[13px]"
+        className={`border-r border-[#C4C4C4] px-[13px] ${dropData.length === 0 ? 'cursor-default' : ''}`}
         onClick={handlePrev}
       >
-        <CommonIcon.SlideArrow />
+        <CommonIcon.SlideArrow
+          {...(dropData.length == 0 && { color: '#C4C4C4' })}
+        />
       </button>
       <div className="w-full py-[10px]">
         <DropDown.Content
-          id={id}
-          dropData={dropData}
           fieldValue={fieldValue}
           fieldOnChange={fieldOnChange}
+          id={id}
+          dropData={dropData}
+          placeholder={placeholder ? placeholder : undefined}
         />
       </div>
       <button
         type="button"
-        className="border-l border-[#C4C4C4] px-[13px]"
+        className={`border-l border-[#C4C4C4] px-[13px] ${dropData.length === 0 ? 'cursor-default' : ''}`}
         onClick={handleNext}
       >
-        <CommonIcon.SlideArrow className="rotate-180" />
+        <CommonIcon.SlideArrow
+          className="rotate-180"
+          {...(dropData.length == 0 && { color: '#C4C4C4' })}
+        />
       </button>
     </div>
   )

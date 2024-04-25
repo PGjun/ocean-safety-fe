@@ -1,9 +1,10 @@
 import { Pagination, SearchParams } from '@/components/common/Pagination'
 import { GenericTable } from '@/components/common/GenericTable'
 import { PATHS } from '@/constants/paths'
-import { ShipInfoParams, fetchShipList } from '@/services/api/user'
+import { fetchShipList } from '@/services/api/user'
 import { useEffect, useState } from 'react'
 import { useUser } from '@/hooks/useUser'
+import { ShipInfoData } from '@/types/responseData'
 
 export const ShipListTable = ({
   query,
@@ -42,7 +43,7 @@ export const ShipListTable = ({
   return (
     <div className="flex-1">
       <GenericTable
-        mobileContents={(item: ShipInfoParams, idx) => (
+        mobileContents={(item: ShipInfoData, idx) => (
           <>
             <div>
               No. {idx + 1} &nbsp; 그룹명 : {item.group_name}
@@ -66,7 +67,7 @@ export const ShipListTable = ({
           },
         ]}
         data={shipList}
-        onRowClick={(item: ShipInfoParams) => {
+        onRowClick={(item: ShipInfoData) => {
           setShipId(item.id)
         }}
       />
