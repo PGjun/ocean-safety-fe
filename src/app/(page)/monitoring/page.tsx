@@ -74,6 +74,14 @@ export default function MonitoringPage(
     setShipId(selecetdShip.value)
 
     getCrewLocation({ setData: setCrewLocations })
+
+    const interval = setInterval(() => {
+      getCrewLocation({
+        setData: setCrewLocations,
+      })
+    }, 3000)
+
+    return () => clearInterval(interval)
   }, [getCrewLocation, setShipId, selecetdShip])
 
   // 유저 건강정보 업데이트
