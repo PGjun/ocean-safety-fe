@@ -34,3 +34,22 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+# 프로젝트 이름
+
+## 소개
+이 프로젝트는 [간단한 설명]을 목적으로 합니다. 이 README 파일은 프로젝트 설정과 데이터베이스 연결 방법에 대한 지침을 제공합니다.
+
+## 시작하기
+이 섹션에서는 로컬 개발 환경에서 프로젝트를 설정하고 실행하는 방법을 설명합니다.
+
+### 전제 조건
+- Node.js
+- MySQL
+- Git
+
+### 설치 방법
+1. 이 저장소를 클론합니다:
+   ```bash
+   git clone https://github.com/yourusername/yourprojectname.git
