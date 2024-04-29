@@ -63,7 +63,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 2. 프로덕트 환경 빌드 및 실행:
    ```bash
    npm run build
-   
-   ```bash  
+   # and 
    npm run start
    
