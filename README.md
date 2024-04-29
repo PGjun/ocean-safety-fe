@@ -46,10 +46,24 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ### 전제 조건
 - Node.js
-- MySQL
 - Git
 
 ### 설치 방법
 1. 이 저장소를 클론합니다:
    ```bash
-   git clone https://github.com/yourusername/yourprojectname.git
+   git clone https://github.com/PGjun/ocean-safety-fe.git
+2. 패키지 파일을 설치합니다:
+   ```bash
+   npm install
+
+### 실행 방법
+1. 개발 환경 실행:
+   ```bash
+   npm run dev
+2. 프로덕트 환경 빌드 및 실행:
+   ```bash
+   npm run build
+   
+   ```bash  
+   npm run start
+   
