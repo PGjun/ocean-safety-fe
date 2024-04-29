@@ -1,118 +1,31 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect } from 'react'
 import { SliderDropDown } from '@/components/common/SliderDropDown'
-import { useShipList } from '@/hooks/fetch/useShipList'
-import { useUserList } from '@/hooks/fetch/useUserList'
 import { MonitoringTab } from './components/MonitoringTab'
-import { useShipInfo } from '@/hooks/fetch/useShipInfo'
-import { useUser } from '@/hooks/useUser'
-import { DropItem } from '@/types/common'
-import { useUserHealthList } from '@/hooks/fetch/useUserHealthList'
-import { useCrewLocation } from '@/hooks/fetch/useCrewLocation'
 import CrewLocationDots from '@/components/common/CrewLocationDots'
-import { useMediaQuery } from '@/hooks/useMediaQuery'
-import { useCrewMessage } from '@/hooks/fetch/useCrewMessage'
+import { useMonitoringLogic } from '@/hooks/logic/useMonitoringLogic'
 
-export default function MonitoringPage() {
-  const [searchParams, setSearchParams] = useState<{
-    s_page_num: string
-    h_page_num: string
-  }>({ s_page_num: '', h_page_num: '' })
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const searchParams = new URLSearchParams(window.location.search)
-      const params: any = Object.fromEntries(searchParams.entries())
-      setSearchParams(params)
-    }
-  }, [])
-
-  const { user } = useUser()
-  const isMobile = useMediaQuery('768')
-
-  const [ships, setShips] = useState<DropItem[]>([])
-  const [users, setUsers] = useState()
-  const [shipInfo, setShipInfo] = useState<any>()
-  const [userHealthList, setUserHealthList] = useState<any>()
-  const [crewLocations, setCrewLocations] = useState<any>()
-  const [crewMessages, setCrewMessages] = useState<any>()
-
-  const { getShipList } = useShipList()
-  const { getUserList } = useUserList()
-  const { getShipInfo } = useShipInfo()
-  const { getUserHealthList } = useUserHealthList()
-  const { getCrewLocation, setShipId } = useCrewLocation()
-  const { getCrewMessage, setShipId: messageShipId } = useCrewMessage()
-
-  const [selecetdShip, setSelectedShip] = useState<DropItem>()
-  const [selecetdUser, setSelectedUser] = useState<DropItem>()
-
-  const handleShipChange = (dropItem: DropItem) => {
-    setSelectedShip(dropItem)
-  }
-  const handleUserChange = (dropItem: DropItem) => {
-    setSelectedUser(dropItem)
-  }
-
-  // 선박리스트 업데이트
-  useEffect(() => {
-    getShipList({ setShips })
-  }, [getShipList])
-
-  // useUser에서 가져온 ship_id로 ships안에 유저의 선박을 찾아서 selectedShip 업데이트
-  useEffect(() => {
-    if (!user || !ships) return
-    const currentShip = ships.find((item: any) => item.value === user?.ship_id)
-    setSelectedShip(currentShip)
-  }, [user, ships])
-
-  // setSelectedUser를 업데이트 해서 초기화
-  useEffect(() => {
-    if (!users) return
-    setSelectedUser(users[0])
-  }, [users])
-
-  // 선택된 선박이 있으면 유저리스트와 선박상세정보를 업데이트
-  useEffect(() => {
-    if (!selecetdShip) return
-    const shipId = selecetdShip.value
-    getUserList({ ship_id: shipId, setUsers })
-    getShipInfo({ ship_id: shipId, setData: setShipInfo })
-  }, [selecetdShip, getUserList, getShipInfo])
+const Monitoring = () => {
+  const {
+    isMobile,
+    pageNums,
+    crewLocations,
+    crewMessages,
+    crewNames,
+    selectedShip,
+    selectedUser,
+    handleShipChange,
+    handleUserChange,
+    shipInfo,
+    shipNames,
+    userHealthList,
+  } = useMonitoringLogic()
 
   useEffect(() => {
-    if (!selecetdShip) return
-    const shipId = selecetdShip.value
-    setShipId(shipId)
-    messageShipId(shipId)
-
-    getCrewLocation({ setData: setCrewLocations })
-    getCrewMessage({ setData: setCrewMessages })
-
-    const interval = setInterval(() => {
-      getCrewLocation({
-        setData: setCrewLocations,
-      })
-      getCrewMessage({ setData: setCrewMessages })
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [getCrewMessage, getCrewLocation, setShipId, messageShipId, selecetdShip])
-
-  // 유저 건강정보 업데이트
-  useEffect(() => {
-    if (!selecetdUser || !selecetdShip || !searchParams.h_page_num) return
-    const shipId = selecetdShip?.value
-    const userIndex = selecetdUser?.value
-    getUserHealthList({
-      shipId: shipId,
-      setData: setUserHealthList,
-      pageNum: searchParams.h_page_num,
-      userIndex: userIndex,
-    })
-  }, [getUserHealthList, selecetdUser, selecetdShip, searchParams])
+    console.log(userHealthList)
+  }, [userHealthList])
 
   return (
     <div className="md:mx-[40px]">
@@ -123,61 +36,60 @@ export default function MonitoringPage() {
         <span className="text-[14px] md:text-[16px]">선박 선택</span>
         <SliderDropDown
           id="monitoring_ship"
-          dropData={ships}
-          fieldValue={selecetdShip}
+          dropData={shipNames}
+          fieldValue={selectedShip}
           fieldOnChange={handleShipChange}
           placeholder="선박 선택"
         />
       </div>
+
       <div className="relative mt-[10px] h-[92px] outline outline-1 md:h-[270px] md:w-[1100px]">
-        {crewLocations && (
-          <div>
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                zIndex: 2,
-                width: '100%',
-                height: '100%',
-              }}
-            >
-              <CrewLocationDots
-                width={isMobile ? 310 : 1100}
-                height={isMobile ? 92 : 270}
-                dots={crewLocations}
-                onSelectDot={(dot) => {
-                  {
-                    console.log(dot)
-                  }
-                }}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 1,
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          {shipInfo &&
+            shipInfo.ship_drawings_url !== '' &&
+            shipInfo.ship_drawings_url !== 'None' && (
+              <Image
+                src={
+                  process.env.NEXT_PUBLIC_API_URL +
+                  '/' +
+                  shipInfo.ship_drawings_url
+                }
+                alt="선박 도면 미리보기"
+                layout="fill"
+                objectFit="fill"
               />
-            </div>
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                zIndex: 1,
-                width: '100%',
-                height: '100%',
+            )}
+        </div>
+        {crewLocations && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              zIndex: 2,
+              width: '100%',
+              height: '100%',
+            }}
+          >
+            <CrewLocationDots
+              width={isMobile ? 310 : 1100}
+              height={isMobile ? 92 : 270}
+              dots={crewLocations}
+              onSelectDot={(dot) => {
+                {
+                  console.log(dot)
+                }
               }}
-            >
-              {shipInfo &&
-                shipInfo.ship_drawings_url !== '' &&
-                shipInfo.ship_drawings_url !== 'None' && (
-                  <Image
-                    src={
-                      process.env.NEXT_PUBLIC_API_URL +
-                      '/' +
-                      shipInfo.ship_drawings_url
-                    }
-                    alt="선박 도면 미리보기"
-                    layout="fill"
-                    objectFit="fill"
-                  />
-                )}
-            </div>
+            />
           </div>
         )}
       </div>
@@ -189,25 +101,30 @@ export default function MonitoringPage() {
           <span className="text-[14px] md:text-[16px]">승선원 선택</span>
           <SliderDropDown
             id="monitoring_user"
-            dropData={users}
-            fieldValue={selecetdUser}
+            dropData={crewNames}
+            fieldValue={selectedUser}
             fieldOnChange={handleUserChange}
             placeholder="승선원 선택"
           />
         </div>
       </div>
-      {/* 클릭 에러방지 */}
-      {!userHealthList ? (
-        <div className="fixed left-0 top-0 z-50 h-full w-full" />
-      ) : null}
+
       <div className="mt-[20px]">
         <MonitoringTab
           crewMessages={crewMessages}
           userHealthList={userHealthList}
-          searchParams={searchParams}
-          userIndex={Number(selecetdUser?.value) ?? 0}
+          searchParams={pageNums}
+          userIndex={Number(selectedUser?.value) ?? 0}
         />
       </div>
     </div>
+  )
+}
+
+export default function MonitoringPage() {
+  return (
+    <Suspense fallback={null}>
+      <Monitoring />
+    </Suspense>
   )
 }

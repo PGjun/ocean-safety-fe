@@ -10,10 +10,12 @@ export const HealthSearchTable = ({
   searchParams,
   query,
   setUserIndex,
+  setUserName,
 }: {
   searchParams: SearchParams
   query: any
-  setUserIndex: (useIndex: number) => void
+  setUserIndex: (userIndex: number) => void
+  setUserName: (userName: string) => void
 }) => {
   const { user } = useUser()
 
@@ -22,9 +24,12 @@ export const HealthSearchTable = ({
   const pageSize = '5'
   const [totalPage, setTotalPage] = useState(1)
 
+  const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     if (!user) return
     const fetchHealthList = async () => {
+      setLoading(true)
       const res = await fetchUserHealthList({
         group_id: user?.group_id,
         ship_id: user?.ship_id,
@@ -36,7 +41,12 @@ export const HealthSearchTable = ({
       if (res?.status === 200) {
         setHealthList(res.data.data)
         setTotalPage(res.data.total_page)
+        if (res.data.data[0]) {
+          setUserIndex(res.data.data[0].user_index)
+          setUserName(res.data.data[0].name)
+        }
       }
+      setLoading(false)
     }
 
     // 함수를 즉시 실행한 다음, 5초마다 반복 실행합니다.
@@ -45,12 +55,12 @@ export const HealthSearchTable = ({
 
     // setInterval에 의해 설정된 타이머를 해제합니다.
     return () => clearInterval(intervalId)
-  }, [pageSize, searchParams, query, user])
+  }, [pageSize, searchParams, query, user, setUserIndex, setUserName])
 
   return (
     <div className="flex-1">
       <GenericTable
-        mobileContents={(item: UserHealthData, idx) => (
+        mobileContents={(item: UserHealthData) => (
           <>
             <div className="space-x-1">
               <span>No. {item.id}</span>
@@ -77,6 +87,7 @@ export const HealthSearchTable = ({
         data={healthList}
         onRowClick={(item: UserHealthData) => {
           setUserIndex(item.user_index)
+          setUserName(item.name)
         }}
       />
       <div className="mt-[20px] flex w-full justify-center">

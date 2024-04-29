@@ -15,7 +15,6 @@ import { useRouter } from 'next/navigation'
 import { UserEmergencyData } from '@/types/responseData'
 import { Controller, useForm } from 'react-hook-form'
 import { useEffect } from 'react'
-import { SosStatus } from '@/components/common/SosStatus'
 
 export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
   const searchParams = pageProps.searchParams
@@ -133,7 +132,10 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
             </div>
             <div>비상연락처 : {item.phone}</div>
             <div>기록일시 : {item.sos_date}</div>
-            <SosStatus status={item.emergency_status_code} />
+            <div className="inline-flex items-center gap-[4px] rounded bg-[#FFF0F0] px-[20px] py-[2px]">
+              <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]" />
+              {item.emergency_status_code}
+            </div>
           </Link>
         )}
         columns={[
@@ -157,8 +159,13 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
             field: 'emergency_status_code',
             title: '처리현황',
             width: '1fr',
-            render: (status) => {
-              return <SosStatus status={status} />
+            render: (code) => {
+              return (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]" />
+                  {code}
+                </div>
+              )
             },
           },
         ]}

@@ -424,34 +424,6 @@ const GroupDropBoxs = ({
     <>
       <div className="mt-[32px] font-bold">소속 그룹</div>
       <div className="mt-[15px] flex flex-col items-start gap-5 md:mx-[10px] md:flex-row md:items-center">
-        {/* <div>
-          <div className="text-[14px] md:text-[16px]">그룹 선택</div>
-          <Controller
-            name="crew_add_ship_group"
-            control={control}
-            render={({ field }) => {
-              const dropData = [
-                [
-                  { value: '0', label: '유에스티1' },
-                  { value: '1', label: '유에스티11' },
-                ],
-                [
-                  { value: '2', label: '유에스티2' },
-                  { value: '3', label: '유에스티22' },
-                ],
-              ]
-
-              return (
-                <SlideDropDown
-                  id="crew_add_ship_group"
-                  fieldValue={field.value}
-                  fieldOnChange={field.onChange}
-                  dropData={dropData}
-                />
-              )
-            }}
-          />
-        </div> */}
         <div>
           <div className="text-[14px] md:text-[16px]">선박 선택</div>
           <Controller

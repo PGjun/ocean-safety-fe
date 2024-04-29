@@ -1,4 +1,3 @@
-import { SlideDropDown } from '@/components/common/SlideDropDown'
 import Image from 'next/image'
 
 export const AreaSettings = () => {
@@ -6,10 +5,6 @@ export const AreaSettings = () => {
     <div className="mt-[10px]">
       <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
         <span className="text-[14px] md:text-[16px]">선박 선택</span>
-        <SlideDropDown
-          id="crew_info_areasetting_ship"
-          dropData={[[{ value: '1', label: '강원호' }]]}
-        />
       </div>
       <div className="mt-[10px]">
         <Image

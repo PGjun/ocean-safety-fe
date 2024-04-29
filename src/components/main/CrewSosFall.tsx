@@ -7,8 +7,9 @@ import { useRouter } from 'next/navigation'
 import { PATHS } from '@/constants/paths'
 import { useUser } from '@/hooks/useUser'
 import { UserEmergencyData } from '@/types/responseData'
+import { SosStatus } from '../common/SosStatus'
 
-export const CrewSos = ({
+export const CrewSosFall = ({
   title,
   type,
 }: {
@@ -52,10 +53,7 @@ export const CrewSos = ({
             <div>
               응급코드 : {item.emergency_code} 기록일시 : {item.sos_date}
             </div>
-            <div className="inline-flex items-center gap-[4px] rounded bg-[#FFF0F0] px-[20px] py-[2px]">
-              <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]" />
-              {item.emergency_status_code}
-            </div>
+            <SosStatus status={item.emergency_status_code} />
           </>
         )}
         columns={[
@@ -67,13 +65,8 @@ export const CrewSos = ({
             field: 'emergency_status_code',
             title: '처리현황',
             width: '1fr',
-            render: (code) => {
-              return (
-                <div className="flex items-center justify-center gap-2">
-                  <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]" />
-                  {code}
-                </div>
-              )
+            render: (status) => {
+              return <SosStatus status={status} />
             },
           },
         ]}

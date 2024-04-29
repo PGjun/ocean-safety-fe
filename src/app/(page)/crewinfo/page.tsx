@@ -66,8 +66,13 @@ export default function CrewInfoPage(pageProps: {
         ...query,
       })
       if (res?.status === 200) {
+        const resData = res.data.data as UserInfoData[]
+
         setUserList(res.data.data)
         setTotalPage(res.data.total_page)
+        if (resData[0]) {
+          setUserId(Number(resData[0].id))
+        }
       }
     }
 

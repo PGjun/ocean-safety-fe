@@ -143,32 +143,4 @@ export const SliderDropDown = ({
   )
 }
 
-//? 컨트롤러 필요하면 사용
-//   export const DropDownController = ({
-//     dropId,
-//     control,
-//     name,
-//     dropData,
-//   }: {
-//     dropId: string
-//     control: any
-//     name: string
-//     dropData: DropItem[]
-//   }) => {
-//     return (
-//       <Controller
-//         name={name}
-//         control={control}
-//         render={({ field }) => {
-//           return (
-//             <SmallSlideDropDown
-//               id={dropId}
-//               fieldValue={field.value}
-//               fieldOnChange={field.onChange}
-//               dropData={dropData}
-//             />
-//           )
-//         }}
-//       />
-//     )
-//   }
+//? 컨트롤러 필요하면 추가

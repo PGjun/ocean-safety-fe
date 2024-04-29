@@ -5,7 +5,7 @@ import { PATHS } from '@/constants/paths'
 import { postAddShip } from '@/services/api/user'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { ShipDrawing } from './components/ShipDrawing'
 import { ShipAddForm, groupFields } from './components/ShipAddForm'
@@ -212,6 +212,7 @@ export default function GroupAddPage() {
     </form>
   )
 }
+
 const formatPhoneNumber = (value: string) => {
   if (!value) return value
 

@@ -31,6 +31,10 @@ export const PATHS = {
     const query = getQueryString(params)
     return `/sos/detail?${query}`
   },
+  FALL_DETAIL: (params = { sos_id: '1' }) => {
+    const query = getQueryString(params)
+    return `/fall/detail?${query}`
+  },
   HEALTH_INFO: (params = { page_num: '1' }) => {
     const query = getQueryString(params)
     return `/healthinfo?${query}`

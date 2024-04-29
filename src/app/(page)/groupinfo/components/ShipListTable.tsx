@@ -34,11 +34,14 @@ export const ShipListTable = ({
       if (res?.status === 200) {
         setShipList(res.data.data)
         setTotlaPage(res.data.total_page)
+        if (res.data.data[0]) {
+          setShipId(res.data.data[0].id)
+        }
       }
     }
 
     getShipListData()
-  }, [searchParams, query, user])
+  }, [searchParams, query, user, setShipId])
 
   return (
     <div className="flex-1">

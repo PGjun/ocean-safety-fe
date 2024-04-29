@@ -52,6 +52,7 @@ export default function HealthInfoPage(pageProps: {
   const router = useRouter()
 
   const [userIndex, setUserIndex] = useState<number | null>(null)
+  const [userName, setUserName] = useState('')
 
   const { control, handleSubmit } = useForm()
 
@@ -115,8 +116,13 @@ export default function HealthInfoPage(pageProps: {
         searchParams={searchParams}
         query={query}
         setUserIndex={setUserIndex}
+        setUserName={setUserName}
       />
-      <div className="mt-[20px] text-[18px] font-bold">건강정보 상세</div>
+
+      <div className="mt-[20px] text-[18px] font-bold">
+        건강정보 상세{' '}
+        <span className="text-[16px] font-normal">({userName})</span>
+      </div>
       <HealthChartDetailTab userIndex={userIndex} />
     </div>
   )

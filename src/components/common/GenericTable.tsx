@@ -18,6 +18,7 @@ interface GenericTableProps {
   onRowClick: onRowClick
   hover?: boolean
   mobileContents: (item: any, idx: number) => ReactNode
+  loading?: boolean
 }
 
 export const GenericTable = ({
@@ -26,6 +27,7 @@ export const GenericTable = ({
   onRowClick,
   hover = true,
   mobileContents,
+  loading = false,
 }: GenericTableProps) => {
   const isMobile = useMediaQuery('768')
 
@@ -52,7 +54,7 @@ export const GenericTable = ({
   const renderRow = (item: any, idx: number) => (
     <div
       key={idx}
-      className={`grid border-b px-[20px] py-[16px] text-center  ${hover && 'cursor-pointer hover:bg-slate-50'}`}
+      className={`grid border-b px-[20px] py-[16px] text-center ${hover && 'cursor-pointer hover:bg-slate-50'}`}
       style={{ gridTemplateColumns }}
       onClick={() => onRowClick(item)}
     >
@@ -87,7 +89,9 @@ export const GenericTable = ({
       ) : (
         <>
           {renderHeader()}
-          {data.map(renderRow)}
+          <div style={{ height: 57 * data.length }}>
+            {!loading && <>{data.map(renderRow)}</>}
+          </div>
         </>
       )}
     </div>

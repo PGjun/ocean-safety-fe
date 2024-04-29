@@ -1,6 +1,5 @@
 import { Pagination } from '@/components/common/Pagination'
 import { Fragment, useState } from 'react'
-import { SosMessage } from './SosMessage'
 import { HealthInfo } from './HealthInfo'
 import { UserOwnEmergencyList } from '@/components/common/UserOwnEmergencyList'
 
@@ -42,6 +41,7 @@ export const MonitoringTab = ({
             <Fragment key={idx}>
               <button
                 key={idx}
+                disabled={!userHealthList}
                 className={`${activeTab === tab.tabId ? Active : Default} cursor-pointer rounded-t-[8px] px-[26px] py-[10px]`}
                 onClick={() => setActiveTab(tab.tabId)}
               >

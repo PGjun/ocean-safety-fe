@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useUser } from '@/hooks/useUser'
 import { UserEmergencyData } from '@/types/responseData'
+import { SosStatus } from '@/components/common/SosStatus'
 
 export const SosListTable = ({
   searchParams,
@@ -26,10 +27,13 @@ export const SosListTable = ({
 
   const [totalPage, setTotalPage] = useState(1)
 
+  const [loading, setLoading] = useState(false)
+
   //todo 임시 처리 sosData 초기화
   useEffect(() => {
     if (!user) return
     const fetcEmergencyListData = async () => {
+      setLoading(true)
       const res = await fetchUserEmergencyList({
         group_id: user?.group_id,
         ship_id: user?.ship_id,
@@ -41,12 +45,15 @@ export const SosListTable = ({
       if (res?.status === 200) {
         setSosList(res.data.data)
         setTotalPage(res.data.total_page)
-        setSosData(res.data.data[0])
-        setLocation({
-          lng: res.data.data[0].longitude,
-          lat: res.data.data[0].latitude,
-        })
+        if (res.data.data[0]) {
+          setSosData(res.data.data[0])
+          setLocation({
+            lng: res.data.data[0].longitude,
+            lat: res.data.data[0].latitude,
+          })
+        }
       }
+      setLoading(false)
     }
 
     fetcEmergencyListData()
@@ -54,13 +61,13 @@ export const SosListTable = ({
 
   return (
     <div className="flex-1">
-      {/* 클릭 에러방지 */}
-      {sosList.length === 0 ? (
-        <div className="fixed left-0 top-0 z-50 h-full w-full" />
-      ) : null}
       <GenericTable
+        loading={loading}
         mobileContents={(item: UserEmergencyData, idx) => (
-          <Link key={idx} href={PATHS.SOS_DETAIL()}>
+          <Link
+            key={idx}
+            href={type === 'SOS' ? PATHS.SOS_DETAIL() : PATHS.FALL_DETAIL()}
+          >
             <div className="space-x-1">
               <span>No. {item.id}</span>
               <span>이름 : {item.name}</span>
@@ -73,10 +80,7 @@ export const SosListTable = ({
             </div>
             <div>비상연락처 : {item.phone}</div>
             <div>기록일시 : {item.sos_date}</div>
-            <div className="inline-flex items-center gap-[4px] rounded bg-[#FFF0F0] px-[20px] py-[2px]">
-              <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]" />
-              {item.emergency_status_code}
-            </div>
+            <SosStatus status={item.emergency_status_code} />
           </Link>
         )}
         columns={[
@@ -106,13 +110,8 @@ export const SosListTable = ({
             field: 'emergency_status_code',
             title: '처리현황',
             width: '2fr',
-            render: (code) => {
-              return (
-                <div className="flex items-center justify-center gap-2">
-                  <div className="h-[10px] w-[10px] rounded-full bg-[#FF3819]" />
-                  {code}
-                </div>
-              )
+            render: (status) => {
+              return <SosStatus status={status} />
             },
           },
         ]}
@@ -124,7 +123,7 @@ export const SosListTable = ({
       />
       <div className="mt-[20px] flex w-full justify-center">
         <Pagination
-          path={PATHS.SOS}
+          path={type === 'SOS' ? PATHS.SOS : PATHS.FALL}
           totalPage={totalPage}
           searchParams={searchParams}
         />

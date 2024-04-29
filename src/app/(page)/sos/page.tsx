@@ -49,6 +49,7 @@ const DropController = ({
               id={name}
               dropData={dropData}
               placeholder={placeholder}
+              type="between"
             />
           </div>
         </label>
@@ -80,17 +81,6 @@ const searchFields: SearchFields = [
     component: SearchController,
     width: 166,
   },
-  // {
-  //   name: 'search_code',
-  //   label: '응급코드',
-  //   placeholder: '==선택==',
-  //   component: DropController,
-  //   width: 129,
-  //   dropData: [
-  //     { value: '0', label: 'SOS' },
-  //     { value: '1', label: '낙상감지' },
-  //   ],
-  // },
   {
     name: 'search_status',
     label: '처리현황',
@@ -98,8 +88,9 @@ const searchFields: SearchFields = [
     component: DropController,
     width: 129,
     dropData: [
-      { value: '0', label: '이상보고' },
-      { value: '1', label: '처리완료' },
+      { value: '1', label: '이상보고' },
+      { value: '2', label: '처리중' },
+      { value: '3', label: '처리완료' },
     ],
   },
 ]
@@ -135,7 +126,6 @@ export default function SosPage(pageProps: {
 
   const onSubmit = (data: SearchData) => {
     const { search_date, search_code, search_status, ...rest } = data
-    console.log('🚀 ~ onSubmit ~ data:', data)
 
     let updatedQuery: SearchData = { ...rest }
 

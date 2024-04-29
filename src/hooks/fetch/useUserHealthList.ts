@@ -3,7 +3,6 @@ import { fetchUserHealthList } from '@/services/api/user'
 import { useUser } from '../useUser'
 
 interface UserHealthList {
-  setData: any
   shipId: string
   userIndex: string
   pageNum: string
@@ -11,9 +10,10 @@ interface UserHealthList {
 
 export const useUserHealthList = () => {
   const { user } = useUser()
+  const [userHealthList, setUserHealthList] = useState()
 
   const getUserHealthList = useCallback(
-    async ({ setData, shipId, userIndex, pageNum }: UserHealthList) => {
+    async ({ shipId, userIndex, pageNum }: UserHealthList) => {
       if (!user) return
       const res = await fetchUserHealthList({
         group_id: user?.group_id.toString(),
@@ -23,10 +23,10 @@ export const useUserHealthList = () => {
         page_num: pageNum,
         noFilter: true,
       })
-      setData(res?.data)
+      setUserHealthList(res?.data)
     },
     [user],
   ) // 의존성 배열에 user 추가
 
-  return { getUserHealthList }
+  return { userHealthList, getUserHealthList }
 }

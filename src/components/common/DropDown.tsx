@@ -17,7 +17,6 @@ interface DropDownProps {
 
 // Container 컴포넌트
 const Container = ({ type, children }: any) => {
-  // 여기서 'type'과 'children'을 사용하여 컴포넌트를 커스터마이징할 수 있습니다.
   return (
     <div className="flex w-full rounded border border-[#C4C4C4] py-[10px]">
       {children}

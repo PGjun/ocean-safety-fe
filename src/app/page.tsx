@@ -1,8 +1,7 @@
 'use client'
 
-import { CrewFall } from '@/components/main/CrewFall'
 import { CrewHealthInfo } from '@/components/main/CrewHealthInfo'
-import { CrewSos } from '@/components/main/CrewSos'
+import { CrewSosFall } from '@/components/main/CrewSosFall'
 import { CrewStatus } from '@/components/main/CrewStatus'
 import { useState } from 'react'
 
@@ -18,8 +17,8 @@ export default function Home() {
         setSelectedDrop={setSelectedDrop}
       />
       <CrewHealthInfo selectedShipId={selectedDrop?.value} />
-      <CrewSos title="SOS 내역" type="SOS" />
-      <CrewSos title="낙상감지 내역" type="낙상" />
+      <CrewSosFall title="SOS 내역" type="SOS" />
+      <CrewSosFall title="낙상감지 내역" type="낙상" />
     </main>
   )
 }
