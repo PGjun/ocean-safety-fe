@@ -1,12 +1,17 @@
 'use client'
 
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { CommonIcon } from '@/icons/common'
 import { signIn } from 'next-auth/react'
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import logo from '/public/temp-logo.jpg'
 
 export default function LoginPage() {
   const { register, handleSubmit } = useForm()
+
+  const isMobile = useMediaQuery('768')
 
   const [showPw, setShowPw] = useState(false)
   const [keepLogin, setKeepLogin] = useState(false)
@@ -50,10 +55,21 @@ export default function LoginPage() {
     >
       <div className="h-[539px] w-[310px] rounded-[20px] bg-white px-[20px] py-[56px] shadow md:h-[654px] md:w-[754px] md:px-[84px]">
         <div className="text-center">
-          <div className="text-[32px] font-bold text-blue-600 md:text-[56px]">
-            OCEAN SAFETY
+          <div className="flex justify-center text-[32px] font-bold text-blue-600 md:text-[56px]">
+            {isMobile ? (
+              <div className="w-[200px]">
+                <Image src={logo} alt="temp-logo" />
+              </div>
+            ) : (
+              <div className="w-[400px]">
+                <Image src={logo} alt="temp-logo" />
+              </div>
+            )}
           </div>
-          <div className="text-[18px]">승선원 안전관리 시스템</div>
+          {/* 오션세이프티 */}
+          <div className="mt-[20px] text-[16px] md:text-[18px]">
+            승선원 안전관리 시스템
+          </div>
         </div>
 
         <div className="group relative mt-[50px] flex w-full items-center rounded-[12px] border border-[#666666] px-[24px] text-[14px] shadow-sm focus-within:border-blue-500 focus-within:outline focus-within:outline-2 focus-within:outline-blue-500 md:text-[18px]">

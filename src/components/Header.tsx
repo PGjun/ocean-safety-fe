@@ -4,8 +4,9 @@ import { PATHS } from '@/constants/paths'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import useWebSocket from '@/hooks/useWebSocket'
 import { signOut } from 'next-auth/react'
-import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import logo from '/public/temp-logo.jpg'
 
 export const Header = () => {
   useWebSocket()
@@ -26,7 +27,9 @@ export const Header = () => {
       {!isMobile && <div className="h-3 rounded-bl-full bg-slate-100"></div>}
       {isMobile ? (
         <div className="flex h-[60px] flex-1 items-center justify-center">
-          <div>LOGO</div>
+          <div className="w-[100px]">
+            <Image src={logo} alt="temp-logo" />
+          </div>
           <div className="fixed right-[30px] top-[20px] text-[12px]">
             <button onClick={logout}>로그아웃</button>
           </div>

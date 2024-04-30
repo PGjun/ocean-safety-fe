@@ -9,6 +9,7 @@ import { NavIcon } from './SvgIcons'
 import { PATHS } from '@/constants/paths'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useUser } from '@/hooks/useUser'
+import logo from '/public/temp-logo.jpg'
 
 const ACCESS_ALLOW = {
   ADMIN: ['A', 'B', 'C'],
@@ -122,7 +123,9 @@ export const MainNavbar = () => {
         }`}
       >
         <div className="h-[112px] bg-white p-[32px] text-center text-[32px] font-bold">
-          LOGO
+          <div className="w-[190px]">
+            <Image src={logo} alt="temp-logo" />
+          </div>
         </div>
         <nav className="flex h-full w-[293px] flex-col gap-[24px] rounded-tr-[68px] bg-sidebarback-gradient py-[40px] pl-[24px] pr-[40px]">
           {role &&
