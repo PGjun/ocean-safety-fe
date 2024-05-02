@@ -109,6 +109,7 @@ export default function FallPage(pageProps: {
   const [location, setLocation] = useState<
     { lng: number; lat: number } | undefined
   >()
+  const [numOfItems, setNumOfItems] = useState(0)
 
   const { control, handleSubmit } = useForm()
 
@@ -163,13 +164,14 @@ export default function FallPage(pageProps: {
       />
 
       <div className="mt-[20px] text-[18px] text-[#333333]">
-        검색결과 <span className="font-bold">{22}</span>건
+        검색결과 <span className="font-bold">{numOfItems}</span>건
       </div>
       <div className="flex gap-[20px]">
         <SosListTable
           searchParams={searchParams}
           setSosData={setSosData}
           setLocation={setLocation}
+          setNumOfItems={setNumOfItems}
           query={query}
           type="낙상"
         />

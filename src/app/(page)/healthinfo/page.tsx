@@ -53,6 +53,7 @@ export default function HealthInfoPage(pageProps: {
 
   const [userIndex, setUserIndex] = useState<number | null>(null)
   const [userName, setUserName] = useState('')
+  const [numOfItems, setNumOfItems] = useState(0)
 
   const { control, handleSubmit } = useForm()
 
@@ -98,10 +99,8 @@ export default function HealthInfoPage(pageProps: {
       />
 
       <div className="mb-[10px] mt-[20px] flex items-end justify-between">
-        <div>
-          검색결과
-          <span className="text-[18px] font-bold leading-[18px]">{` 22`}</span>
-          건
+        <div className="mt-[20px] text-[18px] text-[#333333]">
+          검색결과 <span className="font-bold">{numOfItems}</span>건
         </div>
         {role && role !== ROLES.CREW ? (
           <Link href={PATHS.SOS_SETTINGS}>
@@ -117,6 +116,7 @@ export default function HealthInfoPage(pageProps: {
         query={query}
         setUserIndex={setUserIndex}
         setUserName={setUserName}
+        setNumOfItems={setNumOfItems}
       />
 
       <div className="mt-[20px] text-[18px] font-bold">

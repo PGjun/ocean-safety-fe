@@ -3,8 +3,7 @@ import React, { useRef, useEffect, useCallback } from 'react'
 interface Dot {
   x: number
   y: number
-  user_index: string
-  user_name: string
+  name: string
 }
 
 interface Canvas {
@@ -14,7 +13,7 @@ interface Canvas {
   height: number
 }
 
-function CrewLocationDots({
+function LocationDots({
   dots,
   onSelectDot,
   width = 400,
@@ -44,7 +43,7 @@ function CrewLocationDots({
         ctx.shadowBlur = 3
         ctx.shadowOffsetX = 1
         ctx.shadowOffsetY = 0
-        ctx.fillText(dot.user_name, dot.x, dot.y - 15) // 이름을 도트 위에 표시
+        ctx.fillText(dot.name, dot.x, dot.y - 15) // 이름을 도트 위에 표시
         // 그림자 리셋
         ctx.shadowColor = 'transparent'
         ctx.shadowBlur = 0
@@ -113,4 +112,4 @@ function CrewLocationDots({
   )
 }
 
-export default CrewLocationDots
+export default LocationDots

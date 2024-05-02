@@ -11,8 +11,6 @@ const initData = {
   id: 0,
   min_heartrate: 0,
   max_heartrate: 0,
-  min_blood_pressure: 0,
-  max_blood_pressure: 0,
   min_skin_temperature: 0,
   max_skin_temperature: 0,
   min_battery: 0,
@@ -78,27 +76,6 @@ export default function SosSettingsPage() {
                 min={80}
                 max={150}
                 settingName={'max_heartrate'}
-                setNewSettings={setNewSettings}
-              />
-            </div>
-          </div>
-          <div className="rounded-[8px] border-[#E9ECEF] md:border md:p-[28px]">
-            <div className="text-[18px] font-bold">혈압 SOS 설정</div>
-            <div className="grid md:grid-cols-2 md:gap-[48px] md:p-[8px]">
-              <Slider
-                title="최저 혈압"
-                current={settings.min_blood_pressure}
-                min={40}
-                max={80}
-                settingName={'min_blood_pressure'}
-                setNewSettings={setNewSettings}
-              />
-              <Slider
-                title="최대 혈압"
-                current={settings.max_blood_pressure}
-                min={80}
-                max={150}
-                settingName={'max_blood_pressure'}
                 setNewSettings={setNewSettings}
               />
             </div>

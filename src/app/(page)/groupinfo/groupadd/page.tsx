@@ -113,7 +113,7 @@ export default function GroupAddPage() {
       beacons: JSON.stringify(dots),
       restrict_areas: JSON.stringify(rects),
       watches: JSON.stringify(validWearables),
-      group_id: user.id,
+      group_id: user.group_id,
     }
 
     // 필드 이름 리스트

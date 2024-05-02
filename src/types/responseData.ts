@@ -117,8 +117,6 @@ export interface HealthWarningData {
   id: number
   min_heartrate: number
   max_heartrate: number
-  min_blood_pressure: number
-  max_blood_pressure: number
   min_skin_temperature: number
   max_skin_temperature: number
   min_battery: number

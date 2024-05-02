@@ -12,12 +12,14 @@ export const SosListTable = ({
   searchParams,
   setSosData,
   setLocation,
+  setNumOfItems,
   query,
   type,
 }: {
   searchParams: SearchParams
   setSosData: (data: UserEmergencyData) => void
   setLocation: ({ lng, lat }: { lng: number; lat: number }) => void
+  setNumOfItems: any
   query: any
   type: 'SOS' | '낙상'
 }) => {
@@ -45,6 +47,7 @@ export const SosListTable = ({
       if (res?.status === 200) {
         setSosList(res.data.data)
         setTotalPage(res.data.total_page)
+        setNumOfItems(res.data.num_of_items)
         if (res.data.data[0]) {
           setSosData(res.data.data[0])
           setLocation({

@@ -80,6 +80,14 @@ export const fetchShipNameList = async (params: { group_id: string }) => {
   })
 }
 
+//* 그룹이름 목록 조회
+export const fetchGroupNameList = async () => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_GROUP_NAME_LIST,
+  })
+}
+
 //* 유저 상세 조회
 export const fetchUserInfo = async (userId: number) => {
   return httpClient({
@@ -297,5 +305,13 @@ export const fetchRestrictAreas = async (params: { ship_id: number }) => {
   return httpClient({
     method: 'get',
     endPoint: END_POINT.USER.GET_RESTRICT_AREAS(params),
+  })
+}
+
+//* 비콘 위치 조회
+export const fetchBeacons = async (params: { ship_id: number }) => {
+  return httpClient({
+    method: 'get',
+    endPoint: END_POINT.USER.GET_BEACONS(params),
   })
 }

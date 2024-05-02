@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import { fetchCrewLocation } from '@/services/api/user'
 
 export const useCrewLocations = () => {
-  const [crewLocations, setCrewLocations] = useState()
+  const [crewLocations, setCrewLocations] = useState<{ [key: string]: any }[]>()
 
   const getCrewLocations = useCallback(
     async ({ ship_id }: { ship_id: string }) => {

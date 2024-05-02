@@ -11,11 +11,13 @@ export const HealthSearchTable = ({
   query,
   setUserIndex,
   setUserName,
+  setNumOfItems,
 }: {
   searchParams: SearchParams
   query: any
   setUserIndex: (userIndex: number) => void
   setUserName: (userName: string) => void
+  setNumOfItems: any
 }) => {
   const { user } = useUser()
 
@@ -41,6 +43,7 @@ export const HealthSearchTable = ({
       if (res?.status === 200) {
         setHealthList(res.data.data)
         setTotalPage(res.data.total_page)
+        setNumOfItems(res.data.num_of_items)
         if (res.data.data[0]) {
           setUserIndex(res.data.data[0].user_index)
           setUserName(res.data.data[0].name)
@@ -68,7 +71,6 @@ export const HealthSearchTable = ({
             </div>
             <div className="space-x-1">
               <span>심박수 : {item.health_rate}</span>
-              <span>혈압 : {item.blood_pressure}</span>
               <span>피부온도 : {item.temperature}</span>
               <span>산소포화도 : {item.oxygen_saturation}</span>
             </div>
@@ -79,7 +81,6 @@ export const HealthSearchTable = ({
           { field: 'id', title: 'No', width: '1fr' },
           { field: 'name', title: '이름', width: '2fr' },
           { field: 'health_rate', title: '심박수', width: '2fr' },
-          { field: 'blood_pressure', title: '혈압', width: '2fr' },
           { field: 'temperature', title: '피부온도', width: '2fr' },
           { field: 'oxygen_saturation', title: '산소포화도', width: '3fr' },
           { field: 'health_date', title: '기록 일시', width: '5fr' },

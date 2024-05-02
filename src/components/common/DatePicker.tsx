@@ -42,6 +42,10 @@ export const DatePickerSingle = ({
       dateFormat={'yyyy-MM-dd'}
       selected={field.value ? moment(field.value, 'YYYY-MM-DD').toDate() : null}
       onChange={(date: any) => field.onChange(date)}
+      peekNextMonth
+      showMonthDropdown
+      showYearDropdown
+      dropdownMode="select"
     />
   )
 }

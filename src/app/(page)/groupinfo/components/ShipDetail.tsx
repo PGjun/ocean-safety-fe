@@ -1,7 +1,18 @@
-import { useEffect, useState } from 'react'
+import { CSSProperties, useEffect, useState } from 'react'
 import { fetchRestrictAreas, fetchShipInfo } from '@/services/api/user'
 import Image from 'next/image'
 import RestrictRects from '@/components/common/RestrictAreaRects'
+import { useBeacons } from '@/hooks/fetch/useBeacons'
+import LocationDots from '@/components/common/LocationDots'
+
+const wrapperStyles: CSSProperties = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  zIndex: 1,
+  width: '100%',
+  height: '100%',
+}
 
 const shipDetails = [
   { name: 'ship_number', title: '선박번호', content: '191-' },
@@ -34,6 +45,13 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
   const [shipImg, setShipImg] = useState('')
 
   const [loading, setLoading] = useState(true)
+
+  const { beacons, getBeacons } = useBeacons()
+
+  useEffect(() => {
+    if (!shipId) return
+    getBeacons({ ship_id: shipId })
+  }, [shipId, getBeacons])
 
   useEffect(() => {
     const getShipInfo = async () => {
@@ -85,20 +103,54 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
             )
           })}
       </div>
-      <div className="mt-[50px] text-[18px] font-bold">제한구역</div>
+      <div className="mt-[50px] text-[18px] font-bold">비콘 위치</div>
 
       <div className="mt-[5px] rounded bg-[#F3F2F8]">
         <div className="relative h-[92px] md:h-[270px] md:w-[1100px]">
-          {restricts && (
-            <div>
+          {beacons && (
+            <>
               <div
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
+                  ...wrapperStyles,
                   zIndex: 2,
-                  width: '100%',
-                  height: '100%',
+                }}
+              >
+                <LocationDots
+                  width={1100}
+                  height={270}
+                  dots={beacons.map((item) => ({
+                    ...item,
+                    x: item.location_y,
+                    y: item.location_x,
+                    name: item.name,
+                  }))}
+                  onSelectDot={() => {}}
+                />
+              </div>
+              <div style={wrapperStyles}>
+                {shipImg && shipImg !== 'None' && (
+                  <Image
+                    src={process.env.NEXT_PUBLIC_API_URL + '/' + shipImg}
+                    alt="선박 도면 미리보기"
+                    layout="fill"
+                    objectFit="fill"
+                  />
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-[50px] text-[18px] font-bold">제한구역</div>
+      <div className="mt-[5px] rounded bg-[#F3F2F8]">
+        <div className="relative h-[92px] md:h-[270px] md:w-[1100px]">
+          {restricts && (
+            <>
+              <div
+                style={{
+                  ...wrapperStyles,
+                  zIndex: 2,
                 }}
               >
                 <RestrictRects
@@ -113,16 +165,7 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
                   }))}
                 />
               </div>
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  zIndex: 1,
-                  width: '100%',
-                  height: '100%',
-                }}
-              >
+              <div style={wrapperStyles}>
                 {shipImg && shipImg !== 'None' && (
                   <Image
                     src={process.env.NEXT_PUBLIC_API_URL + '/' + shipImg}
@@ -132,7 +175,7 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
                   />
                 )}
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>

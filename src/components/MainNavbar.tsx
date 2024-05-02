@@ -65,12 +65,12 @@ export const navMenuList = [
     path: PATHS.NOTICE(),
     role: ACCESS_ALLOW.CREW,
   },
-  {
-    IconComponent: NavIcon.Notice,
-    name: 'test',
-    path: '/test',
-    role: ACCESS_ALLOW.ADMIN,
-  },
+  // {
+  //   IconComponent: NavIcon.Notice,
+  //   name: 'test',
+  //   path: '/test',
+  //   role: ACCESS_ALLOW.ADMIN,
+  // },
 ]
 
 export const MainNavbar = () => {
@@ -122,7 +122,7 @@ export const MainNavbar = () => {
           openNav ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="h-[112px] bg-white p-[32px] text-center text-[32px] font-bold">
+        <div className="flex h-[112px] justify-center p-[32px]">
           <div className="w-[190px]">
             <Image src={logo} alt="temp-logo" />
           </div>

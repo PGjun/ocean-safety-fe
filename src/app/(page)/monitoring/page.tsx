@@ -4,8 +4,8 @@ import Image from 'next/image'
 import { Suspense, useEffect } from 'react'
 import { SliderDropDown } from '@/components/common/SliderDropDown'
 import { MonitoringTab } from './components/MonitoringTab'
-import CrewLocationDots from '@/components/common/CrewLocationDots'
 import { useMonitoringLogic } from '@/hooks/logic/useMonitoringLogic'
+import LocationDots from '@/components/common/LocationDots'
 
 const Monitoring = () => {
   const {
@@ -22,10 +22,6 @@ const Monitoring = () => {
     shipNames,
     userHealthList,
   } = useMonitoringLogic()
-
-  useEffect(() => {
-    console.log(userHealthList)
-  }, [userHealthList])
 
   return (
     <div className="md:mx-[40px]">
@@ -80,10 +76,15 @@ const Monitoring = () => {
               height: '100%',
             }}
           >
-            <CrewLocationDots
+            <LocationDots
               width={isMobile ? 310 : 1100}
               height={isMobile ? 92 : 270}
-              dots={crewLocations}
+              dots={crewLocations.map((item) => ({
+                ...item,
+                x: item.x,
+                y: item.y,
+                name: item.user_name,
+              }))}
               onSelectDot={(dot) => {
                 {
                   console.log(dot)

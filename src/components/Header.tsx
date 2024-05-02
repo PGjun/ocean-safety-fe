@@ -24,7 +24,9 @@ export const Header = () => {
   if (isLoginPage) return null
   return (
     <header className="sticky top-0 z-40 bg-white">
-      {!isMobile && <div className="h-3 rounded-bl-full bg-slate-100"></div>}
+      {!isMobile && (
+        <div className="ml-9 h-3 rounded-bl-full bg-slate-100"></div>
+      )}
       {isMobile ? (
         <div className="flex h-[60px] flex-1 items-center justify-center">
           <div className="w-[100px]">

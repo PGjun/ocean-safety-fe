@@ -1,7 +1,7 @@
 import { useUserInfoLogic } from '@/hooks/logic/useCrewDetailLogic'
 
-export const GroupInfo = ({ userId }: { userId: number | null }) => {
-  const { userInfos, loading } = useUserInfoLogic({ userId, type: 'group' })
+export const CrewInfo = ({ userId }: { userId: number | null }) => {
+  const { userInfos, loading } = useUserInfoLogic({ userId, type: 'crew' })
 
   if (loading) return null
   return (

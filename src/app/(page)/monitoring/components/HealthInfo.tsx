@@ -21,7 +21,6 @@ export const HealthInfo = ({
             </div>
             <div className="space-x-1">
               <span>심박수 : {item.health_rate}</span>
-              <span>혈압 : {item.blood_pressure}</span>
               <span>피부온도 : {item.temperature}</span>
               <span>산소포화도 : {item.oxygen_saturation}</span>
             </div>
@@ -32,7 +31,6 @@ export const HealthInfo = ({
           { field: 'id', title: 'No', width: '1fr' },
           { field: 'name', title: '이름', width: '2fr' },
           { field: 'health_rate', title: '심박수', width: '2fr' },
-          { field: 'blood_pressure', title: '혈압', width: '2fr' },
           { field: 'temperature', title: '피부온도', width: '2fr' },
           { field: 'oxygen_saturation', title: '산소포화도', width: '3fr' },
           { field: 'health_date', title: '기록 일시', width: '5fr' },

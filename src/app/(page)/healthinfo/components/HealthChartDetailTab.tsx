@@ -14,14 +14,10 @@ const tabGroup = [
   },
   {
     tabId: 'tab3',
-    tabName: '혈압',
-  },
-  {
-    tabId: 'tab4',
     tabName: '피부온도',
   },
   {
-    tabId: 'tab5',
+    tabId: 'tab4',
     tabName: '산소포화도',
   },
 ]
@@ -53,17 +49,16 @@ export const HealthChartDetailTab = ({
     const getUserSpecificHealthList = async () => {
       const res = await fetchUserSpecificHealth({
         user_id: userIndex,
-        search_start_datetime: '2020-01-01 00:00:00',
-        search_end_datetime: '2025-01-01 00:00:00',
+        search_start_datetime: moment()
+          .subtract(24, 'hours')
+          .format('YYYY-MM-DD HH:mm:ss'),
+        search_end_datetime: moment().format('YYYY-MM-DD HH:mm:ss'),
       })
 
       if (res?.status === 200) {
         const resData = res.data.data
         const labels = resData.map((item: any) =>
           moment(item.health_date).format('HH:mm'),
-        )
-        const bloodPressureData = resData.map((item: any) =>
-          Number(item.blood_pressure),
         )
         const healthRateData = resData.map((item: any) => item.health_rate)
         const oxygenSaturationData = resData.map((item: any) =>
@@ -76,12 +71,6 @@ export const HealthChartDetailTab = ({
         setChartData({
           labels,
           datasets: [
-            {
-              label: '혈압',
-              data: bloodPressureData,
-              borderColor: 'rgb(255, 99, 132)',
-              backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            },
             {
               label: '심박수',
               data: healthRateData,

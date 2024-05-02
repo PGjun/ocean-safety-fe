@@ -1,9 +1,7 @@
 import { useState } from 'react'
-import { CrewDetail } from './CrewDetail'
+import { CrewInfo } from './CrewInfo'
 import { WearableInfo } from './WearableInfo'
-import { AreaSettings } from './AreaSettings'
 import { GroupInfo } from './GroupInfo'
-import { SosInfo } from './SosInfo'
 import { UserOwnEmergencyList } from '@/components/common/UserOwnEmergencyList'
 
 const tabGroup = [
@@ -15,16 +13,12 @@ const tabGroup = [
     tabId: 'tab2',
     tabName: '웨어러블 정보',
   },
-  // {
-  //   tabId: 'tab3',
-  //   tabName: '제한구역 설정',
-  // },
   {
-    tabId: 'tab4',
+    tabId: 'tab3',
     tabName: '소속 그룹 정보',
   },
   {
-    tabId: 'tab5',
+    tabId: 'tab4',
     tabName: 'SOS 내역',
   },
 ]
@@ -50,11 +44,10 @@ export const CrewDetailTab = ({ userId }: { userId: number | null }) => {
         })}
       </div>
 
-      {activeTab === 'tab1' && <CrewDetail userId={userId} />}
+      {activeTab === 'tab1' && <CrewInfo userId={userId} />}
       {activeTab === 'tab2' && <WearableInfo userId={userId} />}
-      {/* {activeTab === 'tab3' && <AreaSettings />} */}
-      {activeTab === 'tab4' && <GroupInfo />}
-      {activeTab === 'tab5' && <UserOwnEmergencyList userId={userId} />}
+      {activeTab === 'tab3' && <GroupInfo userId={userId} />}
+      {activeTab === 'tab4' && <UserOwnEmergencyList userId={userId} />}
     </>
   )
 }

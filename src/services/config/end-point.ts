@@ -34,6 +34,8 @@ const USER = {
     const query = getQueryString(params)
     return `${API_USER}/getShipNameList?${query}`
   },
+  // 그룹이름 목록 조회
+  GET_GROUP_NAME_LIST: `${API_USER}/getGroupNameList`,
   // 유저 상세 조회
   GET_USER_INFO: (user_id: number) =>
     `${API_USER}/getUserInfo?user_id=${user_id}`,
@@ -126,6 +128,11 @@ const USER = {
   GET_RESTRICT_AREAS: (params: { ship_id: number }) => {
     const query = getQueryString(params)
     return `${API_USER}/getRestrictAreas?${query}`
+  },
+  // 비콘 위치 조회
+  GET_BEACONS: (params: { ship_id: number }) => {
+    const query = getQueryString(params)
+    return `${API_USER}/getBeacons?${query}`
   },
 }
 

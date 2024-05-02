@@ -50,8 +50,8 @@ export interface FetchUserNameListParams {
 
 export interface UserHealthListParams {
   group_id: string
-  ship_id: string
-  user_id: string
+  ship_id?: string
+  user_id?: string
   page_num: string
   item_count: string
   search_group?: string
@@ -72,8 +72,6 @@ export interface HealthWarningParams {
   ship_id: number
   min_heartrate: number
   max_heartrate: number
-  min_blood_pressure: number
-  max_blood_pressure: number
   min_skin_temperature: number
   max_skin_temperature: number
   min_battery: number
