@@ -104,8 +104,8 @@ export interface ModifyEmergencyCall {
 }
 
 export interface NoticeListParams {
-  group_id: string
-  ship_id: string
+  group_id?: string
+  ship_id?: string
   page_num: string
   item_count: string
 }

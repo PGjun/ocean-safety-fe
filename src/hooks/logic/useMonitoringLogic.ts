@@ -25,7 +25,7 @@ export const useMonitoringLogic = () => {
   const isMobile = useMediaQuery('768')
 
   // 호출 훅
-  const { shipNames, getShipNames } = useShipNames()
+  // const { shipNames, getShipNames } = useShipNames()
   const { crewNames, getCrewNames } = useCrewNames()
   const { shipInfo, getShipInfo } = useShipInfo()
   const { crewLocations, getCrewLocations } = useCrewLocations()
@@ -33,19 +33,19 @@ export const useMonitoringLogic = () => {
   const { userHealthList, getUserHealthList } = useUserHealthList()
 
   // 첫 랜더링 시 선박이름 목록 업데이트 (user 의존)
-  useEffect(() => {
-    getShipNames()
-  }, [getShipNames])
+  // useEffect(() => {
+  //   getShipNames()
+  // }, [getShipNames])
 
-  // 첫 랜더링 시 선박 선택 업데이트 (user 의존)
-  useEffect(() => {
-    // user에서 ship_id로 shipDrops 목록을 필터링
-    if (!user || !shipNames) return
+  // // 첫 랜더링 시 선박 선택 업데이트 (user 의존)
+  // useEffect(() => {
+  //   // user에서 ship_id로 shipDrops 목록을 필터링
+  //   if (!user || !shipNames) return
 
-    const foundShip = shipNames.find((s) => s.value === user.ship_id.toString())
+  //   const foundShip = shipNames.find((s) => s.value === user.ship_id.toString())
 
-    setSelectedShip(foundShip)
-  }, [user, shipNames])
+  //   setSelectedShip(foundShip)
+  // }, [user, shipNames])
 
   // 첫 랜더링 시 승선원 선택 업데이트 (ship_id 의존)
   useEffect(() => {
@@ -93,7 +93,7 @@ export const useMonitoringLogic = () => {
   return {
     pageNums,
     isMobile,
-    shipNames,
+    // shipNames,
     crewNames,
     shipInfo,
     crewLocations,

@@ -36,8 +36,9 @@ export default function NoticePage(pageProps: {
 
     const getNoticeListData = async () => {
       const res = await fetchNoticeList({
-        group_id: user?.group_id.toString(),
-        ship_id: user?.ship_id.toString(),
+        ...(role !== ROLES.ADMIN && { group_id: user.group_id.toString() }),
+        ...(role !== ROLES.ADMIN &&
+          role !== ROLES.GROUP && { ship_id: user.ship_id.toString() }),
         item_count: '5',
         ...searchParams,
       })

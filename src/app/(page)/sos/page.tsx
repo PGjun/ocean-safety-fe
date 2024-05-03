@@ -16,6 +16,7 @@ import moment from 'moment'
 import { GenericSearchForm } from '@/components/common/GenericSearchForm'
 import { SearchFields } from '@/types/common'
 import { UserEmergencyData } from '@/types/responseData'
+import { useGroupShipDropDown } from '@/hooks/useGroupShipDropDown'
 
 const DropController = ({
   placeholder,
@@ -58,62 +59,68 @@ const DropController = ({
   )
 }
 
-// 필드 설정을 포함한 배열 정의
-const searchFields: SearchFields = [
-  {
-    name: 'search_ship',
-    label: '선박명',
-    placeholder: '선박명을 입력해 주세요.',
-    component: SearchController,
-    width: 176,
-  },
-  {
-    name: 'search_date',
-    label: '기록일',
-    placeholder: 'YY.MM.DD ~ YY.MM.DD',
-    component: DatePickerRangeController,
-    width: 245,
-  },
-  {
-    name: 'search_name',
-    label: '이름',
-    placeholder: '이름을 입력해 주세요.',
-    component: SearchController,
-    width: 166,
-  },
-  {
-    name: 'search_status',
-    label: '처리현황',
-    placeholder: '==선택==',
-    component: DropController,
-    width: 129,
-    dropData: [
-      { value: '1', label: '이상보고' },
-      { value: '2', label: '처리중' },
-      { value: '3', label: '처리완료' },
-    ],
-  },
-]
-
 export default function SosPage(pageProps: {
   params: {}
   searchParams: SearchParams
 }) {
+  const isMobile = useMediaQuery('768')
   const searchParams = pageProps.searchParams
-
   const router = useRouter()
 
-  const isMobile = useMediaQuery('768')
+  const { handleSubmit, control, setValue } = useForm()
+  const { DropDownFC } = useGroupShipDropDown()
 
   const [sosData, setSosData] = useState<UserEmergencyData | null>(null)
+  const [numOfItems, setNumOfItems] = useState(0)
   const [location, setLocation] = useState<
     { lng: number; lat: number } | undefined
   >()
-  const [numOfItems, setNumOfItems] = useState(0)
-
-  const { control, handleSubmit } = useForm()
-
   const [query, setQuery] = useState<any>()
+
+  // 필드 설정을 포함한 배열 정의
+  const searchFields: SearchFields = [
+    {
+      name: 'groupDrop',
+      label: '그룹',
+      placeholder: '==선택==',
+      component: DropDownFC.GroupSearchController,
+      setValue,
+      width: 180,
+    },
+    {
+      name: 'shipDrop',
+      label: '선박',
+      placeholder: '==선택==',
+      component: DropDownFC.ShipSearchController,
+      width: 180,
+    },
+    {
+      name: 'search_date',
+      label: '기록일',
+      placeholder: 'YY.MM.DD ~ YY.MM.DD',
+      component: DatePickerRangeController,
+      width: 245,
+    },
+    {
+      name: 'search_name',
+      label: '이름',
+      placeholder: '이름을 입력해 주세요.',
+      component: SearchController,
+      width: 166,
+    },
+    {
+      name: 'search_status',
+      label: '처리현황',
+      placeholder: '==선택==',
+      component: DropController,
+      width: 129,
+      dropData: [
+        { value: '1', label: '이상보고' },
+        { value: '2', label: '처리중' },
+        { value: '3', label: '처리완료' },
+      ],
+    },
+  ]
 
   interface SearchData {
     search_ship?: string
@@ -123,21 +130,30 @@ export default function SosPage(pageProps: {
     search_code?: string | { value: string; label: string }
     search_status?: string | { value: string; label: string }
     search_date?: { start: string; end: string }
+    group_id?: any
+    groupDrop?: any
+    ship_id?: any
+    shipDrop?: any
   }
 
   const onSubmit = (data: SearchData) => {
-    const { search_date, search_code, search_status, ...rest } = data
+    const {
+      groupDrop,
+      shipDrop,
+      search_date,
+      search_code,
+      search_status,
+      ...rest
+    } = data
 
     let updatedQuery: SearchData = { ...rest }
 
     if (typeof search_code === 'object' && search_code.label !== '') {
       updatedQuery.search_code = search_code.label
     }
-
     if (typeof search_status === 'object' && search_status.label !== '') {
       updatedQuery.search_status = search_status.label
     }
-
     if (search_date && search_date.start !== '' && search_date.end !== '') {
       updatedQuery.search_start_date = moment(search_date.start).format(
         'YYYY-MM-DD',
@@ -145,6 +161,12 @@ export default function SosPage(pageProps: {
       updatedQuery.search_end_date = moment(search_date.end).format(
         'YYYY-MM-DD',
       )
+    }
+    if (groupDrop && groupDrop.value !== '0') {
+      updatedQuery.group_id = groupDrop.value
+    }
+    if (shipDrop && shipDrop.value !== '0') {
+      updatedQuery.ship_id = shipDrop.value
     }
 
     setQuery(updatedQuery)

@@ -17,8 +17,18 @@ export default function Home() {
       <div className="mt-[10px] grid gap-[56px] md:grid-cols-2">
         <CrewStatus />
         <CrewHealthInfo groupId={groupId} shipId={shipId} />
-        <CrewSosFall title="SOS 내역" type="SOS" />
-        <CrewSosFall title="낙상감지 내역" type="낙상" />
+        <CrewSosFall
+          groupId={groupId}
+          shipId={shipId}
+          title="SOS 내역"
+          type="SOS"
+        />
+        <CrewSosFall
+          groupId={groupId}
+          shipId={shipId}
+          title="낙상감지 내역"
+          type="낙상"
+        />
       </div>
     </main>
   )

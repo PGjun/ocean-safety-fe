@@ -15,49 +15,56 @@ import { GenericSearchForm } from '@/components/common/GenericSearchForm'
 import { SearchFields } from '@/types/common'
 import { useUser } from '@/hooks/useUser'
 import { ROLES } from '@/constants/roles'
-
-// 필드 설정을 포함한 배열 정의
-const searchFields: SearchFields = [
-  // {
-  //   name: 'search_ship',
-  //   label: '선박명',
-  //   placeholder: '선박명을 입력해 주세요.',
-  //   component: SearchController,
-  //   width: 176,
-  // },
-  {
-    name: 'search_date',
-    label: '기록일',
-    placeholder: 'YY.MM.DD ~ YY.MM.DD',
-    component: DatePickerRangeController,
-    width: 245,
-  },
-  {
-    name: 'search_name',
-    label: '이름',
-    placeholder: '이름을 입력해 주세요.',
-    component: SearchController,
-    width: 166,
-  },
-]
+import { useGroupShipDropDown } from '@/hooks/useGroupShipDropDown'
 
 export default function HealthInfoPage(pageProps: {
   params: {}
   searchParams: SearchParams
 }) {
+  const searchParams = pageProps.searchParams
+  const router = useRouter()
   const { role } = useUser()
 
-  const searchParams = pageProps.searchParams
-
-  const router = useRouter()
+  const { handleSubmit, control, setValue } = useForm()
+  const { DropDownFC } = useGroupShipDropDown()
 
   const [userIndex, setUserIndex] = useState<number | null>(null)
   const [userName, setUserName] = useState('')
   const [numOfItems, setNumOfItems] = useState(0)
-
-  const { control, handleSubmit } = useForm()
-
   const [query, setQuery] = useState<SearchData>()
+
+  // 필드 설정을 포함한 배열 정의
+  const searchFields: SearchFields = [
+    {
+      name: 'groupDrop',
+      label: '그룹',
+      placeholder: '==선택==',
+      component: DropDownFC.GroupSearchController,
+      setValue,
+      width: 180,
+    },
+    {
+      name: 'shipDrop',
+      label: '선박',
+      placeholder: '==선택==',
+      component: DropDownFC.ShipSearchController,
+      width: 180,
+    },
+    {
+      name: 'search_date',
+      label: '기록일',
+      placeholder: 'YY.MM.DD ~ YY.MM.DD',
+      component: DatePickerRangeController,
+      width: 245,
+    },
+    {
+      name: 'search_name',
+      label: '이름',
+      placeholder: '이름을 입력해 주세요.',
+      component: SearchController,
+      width: 166,
+    },
+  ]
 
   interface SearchData {
     search_group?: string
@@ -66,10 +73,14 @@ export default function HealthInfoPage(pageProps: {
     search_start_date?: string
     search_end_date?: string
     search_date?: { start: string; end: string }
+    group_id?: any
+    groupDrop?: any
+    ship_id?: any
+    shipDrop?: any
   }
 
   const onSubmit = (data: SearchData) => {
-    const { search_date, ...rest } = data
+    const { groupDrop, shipDrop, search_date, ...rest } = data
 
     let updatedQuery = { ...rest }
 
@@ -80,6 +91,12 @@ export default function HealthInfoPage(pageProps: {
       updatedQuery.search_end_date = moment(search_date.end).format(
         'YYYY-MM-DD',
       )
+    }
+    if (groupDrop && groupDrop.value !== '0') {
+      updatedQuery.group_id = groupDrop.value
+    }
+    if (shipDrop && shipDrop.value !== '0') {
+      updatedQuery.ship_id = shipDrop.value
     }
 
     setQuery(updatedQuery)

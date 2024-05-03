@@ -5,6 +5,7 @@ import { fetchShipList } from '@/services/api/user'
 import { useEffect, useState } from 'react'
 import { useUser } from '@/hooks/useUser'
 import { ShipInfoData } from '@/types/responseData'
+import { ROLES } from '@/constants/roles'
 
 export const ShipListTable = ({
   query,
@@ -15,7 +16,7 @@ export const ShipListTable = ({
   searchParams: SearchParams
   setShipId: (ship_id: number) => void
 }) => {
-  const { user } = useUser()
+  const { user, role } = useUser()
 
   const [shipList, setShipList] = useState([])
 
@@ -25,8 +26,9 @@ export const ShipListTable = ({
     if (!user) return
     const getShipListData = async () => {
       const res = await fetchShipList({
-        group_id: user?.group_id,
-        ship_id: user?.ship_id,
+        ...(role !== ROLES.ADMIN && { group_id: user.group_id }),
+        ...(role !== ROLES.ADMIN &&
+          role !== ROLES.GROUP && { ship_id: user.ship_id }),
         item_count: '5',
         ...searchParams,
         ...query,
@@ -41,7 +43,7 @@ export const ShipListTable = ({
     }
 
     getShipListData()
-  }, [searchParams, query, user, setShipId])
+  }, [searchParams, query, user, role, setShipId])
 
   return (
     <div className="flex-1">

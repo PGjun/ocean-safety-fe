@@ -10,49 +10,58 @@ import { ShipListTable } from './components/ShipListTable'
 import { ShipDetailTab } from './components/ShipDetailTab'
 import { GenericSearchForm } from '@/components/common/GenericSearchForm'
 import { SearchFields } from '@/types/common'
-import { SearchController } from '@/components/common/SearchController'
 import { useUser } from '@/hooks/useUser'
 import { ROLES } from '@/constants/roles'
-
-const searchFields: SearchFields = [
-  {
-    name: 'search_group',
-    label: '그룹명',
-    placeholder: '그룹명을 입력해 주세요.',
-    component: SearchController,
-    width: 312,
-  },
-  {
-    name: 'search_ship',
-    label: '선박명',
-    placeholder: '선박명을 입력해 주세요.',
-    component: SearchController,
-    width: 312,
-  },
-]
+import { useGroupShipDropDown } from '@/hooks/useGroupShipDropDown'
 
 export default function GroupInfoPage(pageProps: {
   params: {}
   searchParams: SearchParams
 }) {
-  const { role } = useUser()
   const searchParams = pageProps.searchParams
-
   const router = useRouter()
 
-  const { handleSubmit, control } = useForm()
+  const { role } = useUser()
+  const { handleSubmit, control, setValue } = useForm()
+  const { DropDownFC } = useGroupShipDropDown()
+
+  const searchFields: SearchFields = [
+    {
+      name: 'groupDrop',
+      label: '그룹',
+      placeholder: '==선택==',
+      component: DropDownFC.GroupSearchController,
+      setValue,
+      width: 200,
+    },
+    {
+      name: 'shipDrop',
+      label: '선박',
+      placeholder: '==선택==',
+      component: DropDownFC.ShipSearchController,
+      width: 200,
+    },
+  ]
 
   const [query, setQuery] = useState<any>()
-
   const [shipId, setShipId] = useState<number | null>(null)
 
   interface SearchData {
     search_group?: string
     search_ship?: string
+    groupDrop?: any
+    shipDrop?: any
   }
 
   const onSubmit = (data: SearchData) => {
-    setQuery(data)
+    const { groupDrop, shipDrop, ...rest } = data
+    const queryData = {
+      ...rest,
+      ...(groupDrop &&
+        groupDrop.value !== '0' && { group_id: groupDrop.value }),
+      ...(shipDrop && shipDrop.value !== '0' && { ship_id: shipDrop.value }),
+    }
+    setQuery(queryData)
 
     router.push(PATHS.GROUP_INFO({ page_num: '1' }))
   }
@@ -60,13 +69,15 @@ export default function GroupInfoPage(pageProps: {
   return (
     <div className="md:mx-[40px]">
       <div className="text-[26px] font-bold">그룹(선박) 정보</div>
-      <GenericSearchForm
-        control={control}
-        handleSubmit={handleSubmit}
-        onSubmit={onSubmit}
-        searchFields={searchFields}
-        searchParams={searchParams}
-      />
+      {role !== ROLES.SHIP && (
+        <GenericSearchForm
+          control={control}
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
+          searchFields={searchFields}
+          searchParams={searchParams}
+        />
+      )}
 
       <div className="mb-[10px] mt-[40px] flex items-center justify-between">
         <div className="text-[18px] font-bold">선박 정보</div>

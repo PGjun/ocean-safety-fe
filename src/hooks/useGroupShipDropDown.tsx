@@ -6,12 +6,12 @@ import { useShipNames } from './fetch/useShipNames'
 import { SliderDropDown } from '@/components/common/SliderDropDown'
 import { ROLES } from '@/constants/roles'
 import { DropItem } from '@/types/common'
+import DropDown from '@/components/common/DropDown'
+import { Control, Controller } from 'react-hook-form'
 
 export const useGroupShipDropDown = (
   type: 'default' | 'preload' = 'default',
 ) => {
-  const isMobile = useMediaQuery('768')
-
   const { user, role } = useUser()
   const { groupNames, getGroupNames } = useGroupNames()
   const { shipNames, getShipNames } = useShipNames()
@@ -52,7 +52,7 @@ export const useGroupShipDropDown = (
 
   const renderGroupMain = () => (
     <div className={role !== ROLES.ADMIN ? 'hidden' : ''}>
-      {isMobile ? null : <div>그룹 선택</div>}
+      <span className="text-[14px] md:text-[16px]">그룹 선택</span>
       <SliderDropDown
         id="main_group_dropdown"
         dropData={groupNames}
@@ -63,27 +63,134 @@ export const useGroupShipDropDown = (
     </div>
   )
 
-  const renderShipMain = () => (
+  const renderShipMain = ({ handleShipChange }: { handleShipChange?: any }) => (
     <div
       className={role !== ROLES.ADMIN && role !== ROLES.GROUP ? 'hidden' : ''}
     >
-      {isMobile ? null : <div>선박 선택</div>}
+      <span className="text-[14px] md:text-[16px]">선박 선택</span>
       <SliderDropDown
         id="main_ship_dropdown"
         dropData={shipNames}
         fieldValue={selShipDrop}
         placeholder="선박 선택"
-        fieldOnChange={setSelShipDrop}
+        fieldOnChange={(value) => {
+          if (handleShipChange) {
+            handleShipChange(value)
+          }
+          setSelShipDrop(value)
+        }}
       />
     </div>
+  )
+
+  const renderSearchGroupController = ({
+    placeholder,
+    control,
+    name,
+    label,
+    setValue,
+  }: {
+    placeholder?: string
+    control: Control
+    name: string
+    label?: string
+    setValue: any
+  }) => (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => {
+        const wrapGroupNames =
+          groupNames?.length !== 0
+            ? [{ value: '0', label: '전체' }, ...(groupNames || [])]
+            : []
+        return (
+          <label
+            htmlFor={name}
+            className="flex flex-col rounded border border-[#DEE2E6] bg-white py-[0.7rem]"
+          >
+            <div className="px-[16px] text-[14px] font-bold md:text-[12px]">
+              {label}
+            </div>
+            <div className="h-[21px]">
+              <DropDown.Content
+                fieldValue={field.value}
+                fieldOnChange={(value) => {
+                  handleGroup(value)
+                  setValue('shipDrop', '')
+                  field.onChange(value)
+                }}
+                id={name}
+                dropData={wrapGroupNames}
+                placeholder={placeholder}
+                type="between"
+              />
+            </div>
+          </label>
+        )
+      }}
+    />
+  )
+
+  const renderSearchShipController = ({
+    placeholder,
+    control,
+    name,
+    label,
+  }: {
+    placeholder?: string
+    control: Control
+    name: string
+    label?: string
+  }) => (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => {
+        const wrapShipNames =
+          shipNames?.length !== 0
+            ? [{ value: '0', label: '전체' }, ...(shipNames || [])]
+            : []
+
+        const validDropData =
+          role === ROLES.ADMIN && control._getWatch('groupDrop') === undefined
+            ? []
+            : wrapShipNames
+        return (
+          <label
+            htmlFor={name}
+            className="flex flex-col rounded border border-[#DEE2E6] bg-white py-[0.7rem]"
+          >
+            <div className="px-[16px] text-[14px] font-bold md:text-[12px]">
+              {label}
+            </div>
+            <div className="h-[21px]">
+              <DropDown.Content
+                fieldValue={field.value}
+                fieldOnChange={(value) => {
+                  field.onChange(value)
+                }}
+                id={name}
+                dropData={validDropData}
+                placeholder={placeholder}
+                type="between"
+              />
+            </div>
+          </label>
+        )
+      }}
+    />
   )
 
   return {
     groupId: selGroupDrop?.value,
     shipId: selShipDrop?.value,
+    shipDrop: selShipDrop,
     DropDownFC: {
       GroupMain: renderGroupMain,
       ShipMain: renderShipMain,
+      GroupSearchController: renderSearchGroupController,
+      ShipSearchController: renderSearchShipController,
     },
   }
 }

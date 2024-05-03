@@ -5,6 +5,7 @@ import { fetchUserHealthList } from '@/services/api/user'
 import { useEffect, useState } from 'react'
 import { useUser } from '@/hooks/useUser'
 import { UserHealthData } from '@/types/responseData'
+import { ROLES } from '@/constants/roles'
 
 export const HealthSearchTable = ({
   searchParams,
@@ -19,23 +20,21 @@ export const HealthSearchTable = ({
   setUserName: (userName: string) => void
   setNumOfItems: any
 }) => {
-  const { user } = useUser()
+  const { user, role } = useUser()
 
   const [healthList, setHealthList] = useState([])
 
   const pageSize = '5'
   const [totalPage, setTotalPage] = useState(1)
 
-  const [loading, setLoading] = useState(false)
-
   useEffect(() => {
     if (!user) return
     const fetchHealthList = async () => {
-      setLoading(true)
       const res = await fetchUserHealthList({
-        group_id: user?.group_id,
-        ship_id: user?.ship_id,
-        user_id: user?.id,
+        ...(role !== ROLES.ADMIN && { group_id: user.group_id }),
+        ...(role !== ROLES.ADMIN &&
+          role !== ROLES.GROUP && { ship_id: user.ship_id }),
+        ...(role === ROLES.CREW && { user_id: user?.id }),
         item_count: pageSize,
         ...searchParams,
         ...query,
@@ -49,7 +48,6 @@ export const HealthSearchTable = ({
           setUserName(res.data.data[0].name)
         }
       }
-      setLoading(false)
     }
 
     // 함수를 즉시 실행한 다음, 5초마다 반복 실행합니다.
@@ -58,7 +56,7 @@ export const HealthSearchTable = ({
 
     // setInterval에 의해 설정된 타이머를 해제합니다.
     return () => clearInterval(intervalId)
-  }, [pageSize, searchParams, query, user, setUserIndex, setUserName])
+  }, [pageSize, searchParams, query, user, role, setUserIndex, setUserName])
 
   return (
     <div className="flex-1">

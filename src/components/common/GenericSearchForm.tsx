@@ -3,6 +3,8 @@ import { FormEventHandler, ReactNode } from 'react'
 import { CommonIcon } from '../SvgIcons'
 import { Control } from 'react-hook-form'
 import { SearchParams } from './Pagination'
+import { useUser } from '@/hooks/useUser'
+import { ROLES } from '@/constants/roles'
 
 interface GenericSearchForm {
   searchFields: {
@@ -23,6 +25,8 @@ export const GenericSearchForm = ({
   onSubmit,
   control,
 }: GenericSearchForm) => {
+  const { role } = useUser()
+
   const isMobile = useMediaQuery('768')
 
   return (
@@ -31,6 +35,16 @@ export const GenericSearchForm = ({
         <div className="grid gap-[8px] md:grid-cols-[repeat(6,auto)]">
           {searchFields.map((field, index) => {
             const value = searchParams[field.name]
+            if (role !== ROLES.ADMIN) {
+              if (field.name === 'groupDrop') {
+                return
+              }
+              if (role !== ROLES.GROUP) {
+                if (field.name === 'shipDrop') {
+                  return
+                }
+              }
+            }
             return (
               <div
                 key={index}

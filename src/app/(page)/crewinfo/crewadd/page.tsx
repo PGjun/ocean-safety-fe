@@ -16,6 +16,7 @@ import moment from 'moment'
 import { useUser } from '@/hooks/useUser'
 import { SliderDropDown } from '@/components/common/SliderDropDown'
 import { useRouter } from 'next/navigation'
+import { ROLES } from '@/constants/roles'
 
 interface Field {
   control: Control<any>
@@ -63,6 +64,39 @@ const PhoneController = ({ control, name, label, placeholder }: Field) => (
           }}
           id={name}
           type="text"
+          className="block w-full rounded border border-[#C4C4C4] px-[15px] py-[10px] text-[14px]"
+          placeholder={placeholder}
+        />
+      </div>
+    )}
+  />
+)
+
+const AgeField = ({ control, name, label, placeholder, maxLength }: Field) => (
+  <Controller
+    control={control}
+    name={name}
+    rules={{ required: true }}
+    render={({ field }) => (
+      <div>
+        <label htmlFor={name} className="text-[12px] font-bold">
+          {label}
+        </label>
+        <input
+          {...field}
+          value={field.value || ''}
+          onChange={(e) => {
+            if (!maxLength) return
+            const newValue = e.target.value.replace(/\D/g, '') // 숫자만 허용
+            if (newValue !== field.value && newValue.length <= maxLength) {
+              // 길이 제한 검사
+              field.onChange(newValue)
+            }
+          }}
+          id={name}
+          disabled
+          maxLength={maxLength}
+          type="number"
           className="block w-full rounded border border-[#C4C4C4] px-[15px] py-[10px] text-[14px]"
           placeholder={placeholder}
         />
@@ -300,10 +334,10 @@ const crewInfoInit = [
   {
     name: 'age',
     label: '나이',
-    placeholder: '나이를 입력하세요',
+    placeholder: '',
     defaultValue: '',
     maxLength: 3,
-    component: NumberFieldController,
+    component: AgeField,
   },
   {
     name: 'gender',
@@ -336,7 +370,7 @@ const crewInfoInit = [
   {
     name: 'company_id',
     label: '소속 업체',
-    placeholder: '소속 업체를 입력하세요',
+    placeholder: '소속 업체 선택',
     defaultValue: '',
     component: CompanyDropController,
   },
@@ -356,7 +390,7 @@ const crewInfoInit = [
   {
     name: 'crewlevel',
     label: '승선원 구분',
-    placeholder: '승선원 구분을 입력하세요',
+    placeholder: '승선원 구분 선택',
     defaultValue: '',
     component: CrewLevelDropController,
   },
@@ -367,13 +401,6 @@ const crewInfoInit = [
     defaultValue: '',
     component: DatePickerSingleController,
   },
-  // {
-  //   name: 'group',
-  //   label: '소속 그룹',
-  //   placeholder: '소속 그룹을 입력하세요',
-  //   defaultValue: '',
-  //   component: Field,
-  // },
   {
     name: 'personal_agreement',
     label: '개인정보제공 동의 여부',
@@ -447,9 +474,13 @@ const GroupDropBoxs = ({
   )
 }
 
-export default function CrewAdd() {
-  const router = useRouter()
-  const { user } = useUser()
+export default function CrewAddPage({
+  userInfo,
+  type = '추가',
+}: {
+  userInfo: any
+  type: '추가' | '수정'
+}) {
   // useForm에서 defaultValues를 동적으로 생성
   const defaultValues1 = crewInfoInit.reduce(
     (acc: { [key: string]: any }, field) => {
@@ -459,6 +490,9 @@ export default function CrewAdd() {
     {},
   )
 
+  const router = useRouter()
+  const { user, role } = useUser()
+
   const [crewLevels, setCrewLevels] = useState()
   const [companies, setCompanies] = useState()
   const [ships, setShips] = useState()
@@ -467,12 +501,28 @@ export default function CrewAdd() {
     if (!user) return
     const getCrewLevel = async () => {
       const res = await fetchCrewLevel()
-      setCrewLevels(
-        res?.data.data.map((item: any) => ({
-          value: item.id,
-          label: item.crew_level,
-        })),
+
+      const resData = res?.data.data.map((item: any) => ({
+        value: item.id,
+        label: item.crew_level,
+      }))
+
+      let roleFilterData = resData
+
+      if (role === ROLES.SHIP) {
+        roleFilterData = resData.filter((item: any) => item.value === 4)
+      }
+      if (role === ROLES.GROUP) {
+        roleFilterData = resData.filter(
+          (item: any) => item.value !== 1 && item.value !== 2,
+        )
+      }
+
+      const sortLevels = roleFilterData.sort(
+        (a: any, b: any) => a.value - b.value,
       )
+
+      setCrewLevels(sortLevels)
     }
     const getCompanyList = async () => {
       const res = await fetchCompanyList()
@@ -497,11 +547,31 @@ export default function CrewAdd() {
     getCrewLevel()
     getCompanyList()
     getShipList()
-  }, [user])
+  }, [user, role])
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, watch, setValue } = useForm({
     defaultValues: { ...defaultValues1 },
   })
+
+  useEffect(() => {
+    if (userInfo) {
+      // 각 필드를 개별적으로 설정
+      Object.keys(defaultValues1).forEach((key) => {
+        setValue(key, userInfo[key] || defaultValues1[key])
+      })
+    }
+  }, [userInfo, setValue])
+
+  //나이 자동 설정
+  const brith = watch('birth')
+  useEffect(() => {
+    const today = moment()
+    const age = today.diff(brith, 'years')
+
+    if (brith) {
+      setValue('age', age)
+    }
+  }, [setValue, brith])
 
   const onSubmit = async (data: any) => {
     const formattedData = {
@@ -539,13 +609,11 @@ export default function CrewAdd() {
       alert('유저 생성 성공!')
       router.push(PATHS.CREW_INFO())
     }
-
-    console.log('!!!!!!!!!!!!!!!!', formattedData)
   }
   return (
     <div className="md:mx-[40px]">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="text-[22px] font-bold">승선원 추가</div>
+        <div className="text-[22px] font-bold">승선원 {type}</div>
         <div className="mt-[20px] font-bold">승선원 내역</div>
         <CrewInfoForm control={control} dropDatas={{ crewLevels, companies }} />
         <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
@@ -557,7 +625,7 @@ export default function CrewAdd() {
             </button>
           </Link>
           <button className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]">
-            추가
+            {type}
           </button>
         </div>
       </form>

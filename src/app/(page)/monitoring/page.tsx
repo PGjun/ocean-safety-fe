@@ -6,22 +6,29 @@ import { SliderDropDown } from '@/components/common/SliderDropDown'
 import { MonitoringTab } from './components/MonitoringTab'
 import { useMonitoringLogic } from '@/hooks/logic/useMonitoringLogic'
 import LocationDots from '@/components/common/LocationDots'
+import { useGroupShipDropDown } from '@/hooks/useGroupShipDropDown'
 
 const Monitoring = () => {
+  const { shipDrop, DropDownFC } = useGroupShipDropDown('preload')
+
   const {
     isMobile,
     pageNums,
     crewLocations,
     crewMessages,
     crewNames,
-    selectedShip,
+    // selectedShip,
     selectedUser,
     handleShipChange,
     handleUserChange,
     shipInfo,
-    shipNames,
+    // shipNames,
     userHealthList,
   } = useMonitoringLogic()
+
+  useEffect(() => {
+    if (shipDrop) handleShipChange(shipDrop)
+  }, [shipDrop, handleShipChange])
 
   return (
     <div className="md:mx-[40px]">
@@ -29,14 +36,8 @@ const Monitoring = () => {
         선내 위치 모니터링
       </div>
       <div className="flex flex-col items-start justify-end gap-2 md:flex-row md:items-center">
-        <span className="text-[14px] md:text-[16px]">선박 선택</span>
-        <SliderDropDown
-          id="monitoring_ship"
-          dropData={shipNames}
-          fieldValue={selectedShip}
-          fieldOnChange={handleShipChange}
-          placeholder="선박 선택"
-        />
+        <DropDownFC.GroupMain />
+        <DropDownFC.ShipMain handleShipChange={handleShipChange} />
       </div>
 
       <div className="relative mt-[10px] h-[92px] outline outline-1 md:h-[270px] md:w-[1100px]">

@@ -12,9 +12,13 @@ import { SosStatus } from '../common/SosStatus'
 export const CrewSosFall = ({
   title,
   type,
+  groupId,
+  shipId,
 }: {
   title: string
   type: 'SOS' | '낙상'
+  groupId?: string
+  shipId?: string
 }) => {
   const { user } = useUser()
 
@@ -23,14 +27,16 @@ export const CrewSosFall = ({
   const [sosList, setSosList] = useState([])
 
   useEffect(() => {
-    if (!user) return
+    if (!groupId || !shipId) return
+
     const fetcEmergencyListData = async () => {
       const res = await fetchUserEmergencyList({
-        group_id: user?.group_id.toString(),
-        ship_id: user?.ship_id.toString(),
+        group_id: groupId,
+        ship_id: shipId,
         item_count: '5',
         page_num: '1',
         search_code: type,
+        noFilter: !!shipId,
       })
       if (res?.status === 200) {
         setSosList(res.data.data)
@@ -38,7 +44,7 @@ export const CrewSosFall = ({
     }
 
     fetcEmergencyListData()
-  }, [user, type])
+  }, [groupId, shipId, user, type])
 
   return (
     <div className="max-w-[636px]">

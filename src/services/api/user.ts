@@ -65,10 +65,10 @@ export const fetchShipInfo = async (shipId: number) => {
 
 //* 선박 목록 조회
 export const fetchShipList = async (params: FetchShipListParams) => {
-  const filteredParams = await filterParamsByRole({ params })
+  // const filteredParams = await filterParamsByRole({ params })
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_SHIP_LIST(filteredParams),
+    endPoint: END_POINT.USER.GET_SHIP_LIST(params),
   })
 }
 
@@ -99,7 +99,7 @@ export const fetchUserInfo = async (userId: number) => {
 //* 유저 목록 조회
 export const fetchUserList = async (params: FetchUserListParams) => {
   const { noFilter, ...rest } = params
-  let lastParams = await filterParamsByRole({ params })
+  let lastParams = await filterParamsByRole({ params: rest })
   if (noFilter) lastParams = rest
 
   return httpClient({
@@ -133,7 +133,7 @@ export const fetchUserHealthList = async (params: UserHealthListParams) => {
 
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_USER_HEALTH_LIST(lastParams),
+    endPoint: END_POINT.USER.GET_USER_HEALTH_LIST(params),
   })
 }
 
@@ -182,7 +182,7 @@ export const fetchUserEmergencyList = async (
 
   return httpClient({
     method: 'get',
-    endPoint: END_POINT.USER.GET_USER_EMERGENCY_LIST(lastParams),
+    endPoint: END_POINT.USER.GET_USER_EMERGENCY_LIST(params),
   })
 }
 

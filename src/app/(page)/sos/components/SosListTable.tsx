@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { useUser } from '@/hooks/useUser'
 import { UserEmergencyData } from '@/types/responseData'
 import { SosStatus } from '@/components/common/SosStatus'
+import { ROLES } from '@/constants/roles'
 
 export const SosListTable = ({
   searchParams,
@@ -23,7 +24,7 @@ export const SosListTable = ({
   query: any
   type: 'SOS' | '낙상'
 }) => {
-  const { user } = useUser()
+  const { user, role } = useUser()
 
   const [sosList, setSosList] = useState([])
 
@@ -37,8 +38,9 @@ export const SosListTable = ({
     const fetcEmergencyListData = async () => {
       setLoading(true)
       const res = await fetchUserEmergencyList({
-        group_id: user?.group_id,
-        ship_id: user?.ship_id,
+        ...(role !== ROLES.ADMIN && { group_id: user.group_id }),
+        ...(role !== ROLES.ADMIN &&
+          role !== ROLES.GROUP && { ship_id: user.ship_id }),
         item_count: '5',
         search_code: type,
         ...searchParams,
@@ -60,7 +62,7 @@ export const SosListTable = ({
     }
 
     fetcEmergencyListData()
-  }, [searchParams, query, user])
+  }, [searchParams, query, user, role])
 
   return (
     <div className="flex-1">

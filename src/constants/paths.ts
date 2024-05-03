@@ -7,12 +7,15 @@ export const PATHS = {
     return `/crewinfo?${query}`
   },
   CREW_ADD: '/crewinfo/crewadd',
+  CREW_EDIT: (params: { user_id: number }) => {
+    const query = getQueryString(params)
+    return `/crewinfo/crewedit?${query}`
+  },
   GROUP_INFO: (params = { page_num: '1' }) => {
     const query = getQueryString(params)
     return `/groupinfo?${query}`
   },
   GROUP_ADD: '/groupinfo/groupadd',
-  // MONITORING: '/monitoring',
   MONITORING: (
     params: { [key: string]: string } = { s_page_num: '1', h_page_num: '1' },
   ) => {

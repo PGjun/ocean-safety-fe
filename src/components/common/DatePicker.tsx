@@ -29,6 +29,9 @@ const RangeCustomInput = forwardRef((props: any, _: any) => {
 CustomInput.displayName = 'CustomInput'
 RangeCustomInput.displayName = 'RangeCustomInput'
 
+const currentYear = new Date().getFullYear()
+const minYear = currentYear - 100
+
 export const DatePickerSingle = ({
   name,
   placeholder,
@@ -46,6 +49,8 @@ export const DatePickerSingle = ({
       showMonthDropdown
       showYearDropdown
       dropdownMode="select"
+      minDate={new Date(minYear, 0, 1)} // 100년 전 1월 1일
+      maxDate={new Date()} // 100년 후 12월 31일
     />
   )
 }

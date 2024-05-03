@@ -15,55 +15,68 @@ import { GenericSearchForm } from '@/components/common/GenericSearchForm'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/hooks/useUser'
 import { UserInfoData } from '@/types/responseData'
-
-const searchFields: SearchFields = [
-  {
-    name: 'search_name',
-    label: '이름',
-    placeholder: '이름을 입력해 주세요.',
-    component: SearchController,
-    width: 312,
-  },
-  {
-    name: 'search_phone',
-    label: '연락처',
-    placeholder: '연락처를 입력해 주세요.',
-    component: SearchController,
-    width: 312,
-  },
-]
+import { ROLES } from '@/constants/roles'
+import { useGroupShipDropDown } from '@/hooks/useGroupShipDropDown'
 
 export default function CrewInfoPage(pageProps: {
   params: {}
   searchParams: SearchParams
 }) {
-  const { user } = useUser()
-
+  const searchParams = pageProps.searchParams
   const router = useRouter()
 
-  const searchParams = pageProps.searchParams
-  const { handleSubmit, control } = useForm()
+  const { user, role } = useUser()
+  const { handleSubmit, control, setValue } = useForm()
+  const { DropDownFC } = useGroupShipDropDown()
+
   const [query, setQuery] = useState<any>()
-
   const [totalPage, setTotalPage] = useState(1)
-
   const [userList, setUserList] = useState([])
   const [userId, setUserId] = useState<number | null>(null)
 
-  interface SearchData {
-    search_name?: string
-    search_phone?: string
-  }
+  const searchFields: SearchFields = [
+    {
+      name: 'groupDrop',
+      label: '그룹',
+      placeholder: '==선택==',
+      component: DropDownFC.GroupSearchController,
+      setValue,
+      width: 200,
+    },
+    {
+      name: 'shipDrop',
+      label: '선박',
+      placeholder: '==선택==',
+      component: DropDownFC.ShipSearchController,
+      width: 200,
+    },
+    {
+      name: 'search_name',
+      label: '이름',
+      placeholder: '이름을 입력해 주세요.',
+      component: SearchController,
+      width: 200,
+    },
+    {
+      name: 'search_phone',
+      label: '연락처',
+      placeholder: '연락처를 입력해 주세요.',
+      component: SearchController,
+      width: 200,
+    },
+  ]
 
   useEffect(() => {
     if (!user) return
     const fetchUserListData = async () => {
       const res = await fetchUserList({
-        group_id: user.group_id,
-        ship_id: user.ship_id,
+        ...(role !== ROLES.ADMIN && { group_id: user.group_id }),
+        ...(role !== ROLES.ADMIN &&
+          role !== ROLES.GROUP && { ship_id: user.ship_id }),
         item_count: '5',
         ...searchParams,
         ...query,
+        noFilter: true,
       })
       if (res?.status === 200) {
         const resData = res.data.data as UserInfoData[]
@@ -77,10 +90,24 @@ export default function CrewInfoPage(pageProps: {
     }
 
     fetchUserListData()
-  }, [query, searchParams, user])
+  }, [query, searchParams, user, role])
+
+  interface SearchData {
+    search_name?: string
+    search_phone?: string
+    groupDrop?: any
+    shipDrop?: any
+  }
 
   const onSubmit = (data: SearchData) => {
-    setQuery(data)
+    const { groupDrop, shipDrop, ...rest } = data
+    const queryData = {
+      ...rest,
+      ...(groupDrop &&
+        groupDrop.value !== '0' && { group_id: groupDrop.value }),
+      ...(shipDrop && shipDrop.value !== '0' && { ship_id: shipDrop.value }),
+    }
+    setQuery(queryData)
 
     router.push(PATHS.CREW_INFO({ page_num: '1' }))
   }
@@ -128,7 +155,7 @@ export default function CrewInfoPage(pageProps: {
             title: '가입일',
             width: '3fr',
             render: (created_at) =>
-              moment(created_at).format('YYYY-mm-DD') ?? '',
+              moment(created_at).format('YYYY-MM-DD') ?? '',
           },
         ]}
         data={userList}
@@ -148,7 +175,10 @@ export default function CrewInfoPage(pageProps: {
         <div className="relative">
           <div className="mt-[40px] flex items-center justify-between">
             <div className="text-[18px] font-bold">승선원 상세</div>
-            <button className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold">
+            <button
+              onClick={() => router.push(PATHS.CREW_EDIT({ user_id: userId }))}
+              className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold"
+            >
               변경
             </button>
           </div>
