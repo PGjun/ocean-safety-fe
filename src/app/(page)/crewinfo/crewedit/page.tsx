@@ -35,5 +35,6 @@ export default function CrewEditPage(props: PageProps<{ user_id: number }>) {
 
     getUserInfo()
   }, [userId])
+  if (!userInfo) return
   return <CrewAddPage userInfo={userInfo} type="수정" />
 }

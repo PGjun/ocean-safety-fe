@@ -17,6 +17,7 @@ import { useUser } from '@/hooks/useUser'
 import { SliderDropDown } from '@/components/common/SliderDropDown'
 import { useRouter } from 'next/navigation'
 import { ROLES } from '@/constants/roles'
+import { UserData } from 'next-auth/providers/42-school'
 
 interface Field {
   control: Control<any>
@@ -474,13 +475,7 @@ const GroupDropBoxs = ({
   )
 }
 
-export default function CrewAddPage({
-  userInfo,
-  type = '추가',
-}: {
-  userInfo: any
-  type: '추가' | '수정'
-}) {
+export default function CrewAddPage({ userInfo, type = '추가' }: any) {
   // useForm에서 defaultValues를 동적으로 생성
   const defaultValues1 = crewInfoInit.reduce(
     (acc: { [key: string]: any }, field) => {
@@ -555,10 +550,11 @@ export default function CrewAddPage({
 
   useEffect(() => {
     if (userInfo) {
+      const user: any = userInfo
       console.log('🚀 ~ useEffect ~ userInfo:', userInfo)
       // 각 필드를 개별적으로 설정
       Object.keys(defaultValues1).forEach((key) => {
-        setValue(key, userInfo[key] || defaultValues1[key])
+        setValue(key, user[key] || defaultValues1[key])
       })
     }
   }, [userInfo, setValue])
