@@ -74,7 +74,7 @@ export default function LoginPage() {
 
         <div className="group relative mt-[50px] flex w-full items-center rounded-[12px] border border-[#666666] px-[24px] text-[14px] shadow-sm focus-within:border-blue-500 focus-within:outline focus-within:outline-2 focus-within:outline-blue-500 md:text-[18px]">
           <label
-            htmlFor="id"
+            htmlFor="inputID"
             className="absolute -top-[9px] left-[12px] bg-white px-[8px] text-[12px] text-gray-700 group-focus-within:text-blue-500 md:-top-[13px] md:text-[18px]"
           >
             ID
@@ -82,7 +82,7 @@ export default function LoginPage() {
           <input
             {...register('id')}
             type="text"
-            id="id"
+            id="inputID"
             className="flex-1 bg-transparent py-[20px] outline-none placeholder:text-[#888888] md:py-[28px]"
             placeholder="아이디를 입력하세요."
           />
@@ -90,7 +90,7 @@ export default function LoginPage() {
 
         <div className="group relative mt-[23px] flex w-full items-center rounded-[12px] border border-[#666666] px-[24px] text-[14px] shadow-sm focus-within:border-blue-500 focus-within:outline focus-within:outline-2 focus-within:outline-blue-500 md:text-[18px]">
           <label
-            htmlFor="password"
+            htmlFor="inputPW"
             className="absolute -top-[9px] left-[12px] bg-white px-[8px] text-[12px] text-gray-700 group-focus-within:text-blue-500 md:-top-[13px] md:text-[18px]"
           >
             Password
@@ -98,7 +98,7 @@ export default function LoginPage() {
           <input
             {...register('password')}
             type={showPw ? 'text' : 'password'}
-            id="password"
+            id="inputPW"
             className="flex-1 bg-transparent py-[20px] outline-none placeholder:text-[#888888] md:py-[28px]"
             placeholder="비밀번호를 입력하세요."
           />
@@ -136,6 +136,7 @@ export default function LoginPage() {
 
         <button
           type="submit"
+          id="loginBtn"
           className="mt-[40px] w-full rounded bg-[#333333] py-[20px] font-bold text-white md:py-[23px] md:text-[20px]"
         >
           로그인

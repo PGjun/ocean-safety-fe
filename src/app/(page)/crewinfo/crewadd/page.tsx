@@ -555,6 +555,7 @@ export default function CrewAddPage({
 
   useEffect(() => {
     if (userInfo) {
+      console.log('🚀 ~ useEffect ~ userInfo:', userInfo)
       // 각 필드를 개별적으로 설정
       Object.keys(defaultValues1).forEach((key) => {
         setValue(key, userInfo[key] || defaultValues1[key])
