@@ -134,6 +134,8 @@ const USER = {
     const query = getQueryString(params)
     return `${API_USER}/getBeacons?${query}`
   },
+  // 그룹 추가
+  ADD_GROUP: `${API_USER}/addGroup`,
 }
 
 export const END_POINT = { USER }

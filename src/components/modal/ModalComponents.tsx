@@ -6,9 +6,9 @@ import Link from 'next/link'
 import { PATHS } from '@/constants/paths'
 import { useEffect, useState } from 'react'
 import { sosData } from '@/hooks/useWebSocket'
-import { fetchUserSpecificEmergency } from '@/services/api/user'
+import { fetchUserSpecificEmergency, postAddGroup } from '@/services/api/user'
 
-export type ModalType = 'EMERGENCIES' | 'ALERT2'
+export type ModalType = 'EMERGENCIES' | 'GROUP_ADD'
 
 const EmerType: { [key: string]: any } = {
   SOS: { IconComponent: CommonIcon.SosAlarm },
@@ -118,18 +118,55 @@ const Emergencies = ({
   )
 }
 
-const TestAlert2 = ({ message = '중첩테스트', closeModal = () => {} }) => {
+const GroupAdd = ({ closeModal }: { closeModal: () => void }) => {
+  const [groupName, setGroupName] = useState('')
+
+  const updateGroupAdd = async () => {
+    if (groupName.trim() === '') {
+      alert('그룹 이름을 입력하세요')
+      return
+    }
+    const res = await postAddGroup({ group_name: groupName })
+    if (!res) return
+    alert('추가 완료')
+    closeModal()
+  }
   return (
-    <div>
-      <button onClick={closeModal}>x</button>
-      {message}
+    <div className="relative flex flex-col items-center rounded-[12px] bg-white p-[15px] md:p-[46px]">
+      <button onClick={closeModal} className="absolute right-[10px] top-[3px]">
+        x
+      </button>
+      <div className="w-full">
+        <div className="font-bold md:text-[26px]">그룹 추가</div>
+      </div>
+      <input
+        type="text"
+        value={groupName}
+        onChange={(e) => setGroupName(e.target.value)}
+        className="mt-[20px] w-[200px] rounded border p-3 md:w-[300px]"
+        placeholder="그룹 이름을 입력하세요"
+      />
+      <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
+        <button
+          onClick={closeModal}
+          className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]"
+        >
+          취소
+        </button>
+        <button
+          onClick={updateGroupAdd}
+          className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]"
+        >
+          추가
+        </button>
+      </div>
     </div>
   )
 }
 
 const modalComponents: { [key: string]: any } = {
   EMERGENCIES: Emergencies,
-  ALERT2: TestAlert2,
+  GROUP_ADD: GroupAdd,
 }
 
 export default modalComponents

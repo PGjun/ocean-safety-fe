@@ -315,3 +315,12 @@ export const fetchBeacons = async (params: { ship_id: number }) => {
     endPoint: END_POINT.USER.GET_BEACONS(params),
   })
 }
+
+//* 그룹 추가
+export const postAddGroup = async (data: { group_name: string }) => {
+  return httpClient({
+    method: 'post',
+    endPoint: END_POINT.USER.ADD_GROUP,
+    data,
+  })
+}

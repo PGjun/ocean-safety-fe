@@ -13,6 +13,7 @@ import { SearchFields } from '@/types/common'
 import { useUser } from '@/hooks/useUser'
 import { ROLES } from '@/constants/roles'
 import { useGroupShipDropDown } from '@/hooks/useGroupShipDropDown'
+import useModalStore from '@/stores/modalStore'
 
 export default function GroupInfoPage(pageProps: {
   params: {}
@@ -66,6 +67,10 @@ export default function GroupInfoPage(pageProps: {
     router.push(PATHS.GROUP_INFO({ page_num: '1' }))
   }
 
+  const openGroupAdd = () => {
+    const modalId = useModalStore.getState().openModal('GROUP_ADD', {}, false)
+  }
+
   return (
     <div className="md:mx-[40px]">
       <div className="text-[26px] font-bold">그룹(선박) 정보</div>
@@ -81,13 +86,25 @@ export default function GroupInfoPage(pageProps: {
 
       <div className="mb-[10px] mt-[40px] flex items-center justify-between">
         <div className="text-[18px] font-bold">선박 정보</div>
-        {role && role !== ROLES.SHIP ? (
-          <Link href={PATHS.GROUP_ADD}>
-            <button className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold">
-              + 추가
-            </button>
-          </Link>
-        ) : null}
+        {role && (
+          <div className="flex gap-3">
+            {role === ROLES.ADMIN && (
+              <button
+                onClick={openGroupAdd}
+                className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold"
+              >
+                + 그룹 추가
+              </button>
+            )}
+            {role !== ROLES.SHIP ? (
+              <Link href={PATHS.GROUP_ADD}>
+                <button className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold">
+                  + 추가
+                </button>
+              </Link>
+            ) : null}
+          </div>
+        )}
       </div>
 
       <ShipListTable
