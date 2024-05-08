@@ -11,6 +11,7 @@ import { ShipDrawing } from './components/ShipDrawing'
 import { ShipAddForm, groupFields } from './components/ShipAddForm'
 import { useUser } from '@/hooks/useUser'
 import moment from 'moment'
+import { formatPhoneNumber } from '@/utils/formatPhonNumber'
 
 export default function GroupAddPage() {
   // useForm에서 defaultValues(초기값)를 동적으로 생성
@@ -197,11 +198,13 @@ export default function GroupAddPage() {
         handleData={handleWearables}
       />
       <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
-        <Link href={PATHS.GROUP_INFO()}>
-          <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
-            취소
-          </button>
-        </Link>
+        <button
+          onClick={() => router.back()}
+          type="button"
+          className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]"
+        >
+          취소
+        </button>
         <button
           type="submit"
           className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]"
@@ -211,17 +214,4 @@ export default function GroupAddPage() {
       </div>
     </form>
   )
-}
-
-const formatPhoneNumber = (value: string) => {
-  if (!value) return value
-
-  // 숫자만 추출
-  const phoneNumber = value.replace(/[^\d]/g, '')
-
-  // 숫자 길이에 따라 포맷 조정
-  if (phoneNumber.length < 4) return phoneNumber
-  if (phoneNumber.length < 8)
-    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`
-  return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`
 }

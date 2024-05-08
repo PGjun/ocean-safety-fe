@@ -128,8 +128,7 @@ export const DatePickerSingleController = ({
     <Controller
       control={control}
       name={name ? name : ''}
-      rules={{ required: true }}
-      defaultValue={{ start: '', end: '' }}
+      rules={{ required: false }}
       render={({ field }) => {
         return (
           <DatePickerSingleWrapper label={label}>

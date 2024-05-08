@@ -51,6 +51,11 @@ const USER = {
   },
   // 유저 추가
   ADD_USER: `${API_USER}/addUser`,
+  // 유저 수정
+  MODIFY_USER: (params: { user_index: number }) => {
+    const query = getQueryString(params)
+    return `${API_USER}/modifyUser?${query}`
+  },
   // 건강 목록 조회
   GET_USER_HEALTH_LIST: (params: UserHealthListParams) => {
     const query = getQueryString(params)

@@ -17,7 +17,7 @@ import { useUser } from '@/hooks/useUser'
 import { SliderDropDown } from '@/components/common/SliderDropDown'
 import { useRouter } from 'next/navigation'
 import { ROLES } from '@/constants/roles'
-import { UserData } from 'next-auth/providers/42-school'
+import { formatPhoneNumber } from '@/utils/formatPhonNumber'
 
 interface Field {
   control: Control<any>
@@ -28,19 +28,6 @@ interface Field {
   placeholder?: string
   maxLength?: number
   dropDatas?: { crewLevels?: []; companies?: [] }
-}
-
-const formatPhoneNumber = (value: string) => {
-  if (!value) return value
-
-  // 숫자만 추출
-  const phoneNumber = value.replace(/[^\d]/g, '')
-
-  // 숫자 길이에 따라 포맷 조정
-  if (phoneNumber.length < 4) return phoneNumber
-  if (phoneNumber.length < 8)
-    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`
-  return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`
 }
 
 const PhoneController = ({ control, name, label, placeholder }: Field) => (
@@ -475,7 +462,7 @@ const GroupDropBoxs = ({
   )
 }
 
-export default function CrewAddPage({ userInfo, type = '추가' }: any) {
+export default function CrewAddPage() {
   // useForm에서 defaultValues를 동적으로 생성
   const defaultValues1 = crewInfoInit.reduce(
     (acc: { [key: string]: any }, field) => {
@@ -548,17 +535,6 @@ export default function CrewAddPage({ userInfo, type = '추가' }: any) {
     defaultValues: { ...defaultValues1 },
   })
 
-  useEffect(() => {
-    if (userInfo) {
-      const user: any = userInfo
-      console.log('🚀 ~ useEffect ~ userInfo:', userInfo)
-      // 각 필드를 개별적으로 설정
-      Object.keys(defaultValues1).forEach((key) => {
-        setValue(key, user[key] || defaultValues1[key])
-      })
-    }
-  }, [userInfo, setValue])
-
   //나이 자동 설정
   const brith = watch('birth')
   useEffect(() => {
@@ -610,19 +586,24 @@ export default function CrewAddPage({ userInfo, type = '추가' }: any) {
   return (
     <div className="md:mx-[40px]">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="text-[22px] font-bold">승선원 {type}</div>
+        <div className="text-[22px] font-bold">승선원 추가</div>
         <div className="mt-[20px] font-bold">승선원 내역</div>
         <CrewInfoForm control={control} dropDatas={{ crewLevels, companies }} />
         <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
         <GroupDropBoxs control={control} ships={ships} />
         <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
-          <Link href={PATHS.CREW_INFO()}>
-            <button className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]">
-              취소
-            </button>
-          </Link>
-          <button className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]">
-            {type}
+          <button
+            onClick={() => router.back()}
+            type="button"
+            className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]"
+          >
+            취소
+          </button>
+          <button
+            type="submit"
+            className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]"
+          >
+            추가
           </button>
         </div>
       </form>

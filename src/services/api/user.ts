@@ -125,6 +125,15 @@ export const postUser = async (data: any) => {
   })
 }
 
+//* 유저 수정
+export const editUser = async (data: any, params: { user_index: number }) => {
+  return httpClient({
+    method: 'put',
+    endPoint: END_POINT.USER.MODIFY_USER(params),
+    data: data,
+  })
+}
+
 //* 건강 목록 조회
 export const fetchUserHealthList = async (params: UserHealthListParams) => {
   const { noFilter, ...rest } = params

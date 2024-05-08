@@ -15,7 +15,11 @@ export const PATHS = {
     const query = getQueryString(params)
     return `/groupinfo?${query}`
   },
-  GROUP_ADD: '/groupinfo/groupadd',
+  SHIP_ADD: '/groupinfo/shipadd',
+  SHIP_EDIT: (params: { ship_id: number }) => {
+    const query = getQueryString(params)
+    return `/groupinfo/shipedit?${query}`
+  },
   MONITORING: (
     params: { [key: string]: string } = { s_page_num: '1', h_page_num: '1' },
   ) => {

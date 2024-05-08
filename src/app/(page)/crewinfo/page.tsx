@@ -179,7 +179,7 @@ export default function CrewInfoPage(pageProps: {
               onClick={() => router.push(PATHS.CREW_EDIT({ user_id: userId }))}
               className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold"
             >
-              변경
+              수정
             </button>
           </div>
           <CrewDetailTab userId={userId} />

@@ -97,7 +97,7 @@ export default function GroupInfoPage(pageProps: {
               </button>
             )}
             {role !== ROLES.SHIP ? (
-              <Link href={PATHS.GROUP_ADD}>
+              <Link href={PATHS.SHIP_ADD}>
                 <button className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold">
                   + 추가
                 </button>
@@ -117,7 +117,12 @@ export default function GroupInfoPage(pageProps: {
           <div className="mt-[40px] flex items-center justify-between">
             <div className="text-[18px] font-bold">그룹(선박) 정보</div>
             {role && role !== ROLES.SHIP ? (
-              <button className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold">
+              <button
+                onClick={() =>
+                  router.push(PATHS.SHIP_EDIT({ ship_id: shipId }))
+                }
+                className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold"
+              >
                 수정
               </button>
             ) : null}

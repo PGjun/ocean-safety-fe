@@ -46,6 +46,17 @@ export default function LoginPage() {
       window.location.href = '/' // 성공 시 메인 페이지로 이동
     }
     setIsLoading(false) // 처리가 끝난 후 로딩 상태 해제
+
+    //! 웹뷰 실행
+    sendMessageToFlutter()
+  }
+
+  const sendMessageToFlutter = () => {
+    if ((window as any).flutter_inappwebview) {
+      ;(window as any).flutter_inappwebview.callHandler('fromWeb', {
+        message: 'Hello from Next.js!',
+      })
+    }
   }
 
   return (
