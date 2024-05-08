@@ -45,7 +45,7 @@ export default function LoginPage() {
         alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.')
       } else {
         localStorage.setItem('keepLogin', keepLogin.toString()) // 로그인 성공 시 로컬 스토리지에 상태 저장
-        window.location.href = '/' // 성공 시 메인 페이지로 이동
+        router.push('/')
       }
     } catch (error) {
       console.error('로그인 프로세스 중 에러 발생:', error)

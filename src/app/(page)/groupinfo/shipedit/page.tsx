@@ -1,11 +1,12 @@
 'use client'
 
 import { ShipInputForm } from '@/components/form/ShipInputForm'
+import { useShipEditLogic } from '@/hooks/logic/useShipEditLogic'
 import { PageProps } from '@/types/common'
-import { useRouter } from 'next/navigation'
-import { useForm } from 'react-hook-form'
+import { ShipDrawing } from '../shipadd/components/ShipDrawing'
 
 export interface ShipForm {
+  [key: string]: string | number
   ship_number: string
   ship_name: string
   nationality: string
@@ -21,34 +22,23 @@ export interface ShipForm {
 }
 
 export default function ShipEditPage(props: PageProps<{ ship_id: number }>) {
-  const fieldValues: ShipForm = {
-    ship_number: '',
-    ship_name: '',
-    nationality: '',
-    inter_tonnage: '',
-    weight_tonnage: '',
-    reg_classname: '',
-    launch_date: '',
-    shipyard: '',
-    ship_owner: '',
-    business_name: '',
-    ship_lessee: '',
-    rental_period: '',
-  }
+  const { control, handleSubmit, onSubmit, router, shipDrawingProps } =
+    useShipEditLogic({ shipId: props.searchParams.ship_id })
 
-  const router = useRouter()
-  const { control, handleSubmit } = useForm({
-    defaultValues: fieldValues,
-  })
-
-  const onSubmit = async (data: any) => {
-    console.log(data)
-  }
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="md:mx-[40px]">
       <div className="text-[22px] font-bold">그룹(선박) 수정</div>
-      <ShipInputForm control={control} fields={fieldValues} />
+      <ShipInputForm control={control} />
       <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
+      <ShipDrawing
+        file={shipDrawingProps.file}
+        setFile={shipDrawingProps.setFile}
+        dots={shipDrawingProps.dots}
+        rects={shipDrawingProps.rects}
+        setDots={shipDrawingProps.setDots}
+        setRects={shipDrawingProps.setRects}
+        shipDrawingsUrl={shipDrawingProps.shipDrawingsUrl}
+      />
       <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
         <button
           onClick={() => router.back()}

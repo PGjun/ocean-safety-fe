@@ -55,6 +55,40 @@ export const postAddShip = async (params: AddShipParams) => {
   })
 }
 
+//* 선박 수정
+export const editShip = async ({
+  data,
+  shipId,
+}: {
+  data: { [key: string]: string | Blob }
+  shipId: number
+}) => {
+  const formData = new FormData()
+
+  // 텍스트 필드를 FormData에 추가
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined && key !== 'ship_drawing_img') {
+      formData.append(key, value)
+    }
+  })
+
+  // 'ship_drawing_img'가 파일이라면 FormData에 파일로 추가
+  if (data.ship_drawing_img) {
+    // 여기서 params.ship_drawing_img는 실제 파일 객체가 되어야 합니다.
+    formData.append(
+      'ship_drawing_img',
+      data.ship_drawing_img as Blob,
+      data.ship_drawing_img_name as string,
+    )
+  }
+
+  return httpClient({
+    method: 'put',
+    endPoint: END_POINT.USER.EDIT_SHIP({ ship_id: shipId }),
+    data: formData, // FormData 인스턴스를 data로 설정
+  })
+}
+
 //* 선박 상세 조회
 export const fetchShipInfo = async (shipId: number) => {
   return httpClient({

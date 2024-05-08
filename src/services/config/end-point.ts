@@ -21,6 +21,11 @@ const USER = {
   LOGIN: `${API_USER}/login`,
   // 선박 추가
   ADD_SHIP: `${API_USER}/addShip`,
+  // 선박 수정
+  EDIT_SHIP: (params: { ship_id: number }) => {
+    const query = getQueryString(params)
+    return `${API_USER}/modifyShip?${query}`
+  },
   // 선박 상세 조회
   GET_SHIP_INFO: (ship_id: number) =>
     `${API_USER}/getShipInfo?ship_id=${ship_id}`,

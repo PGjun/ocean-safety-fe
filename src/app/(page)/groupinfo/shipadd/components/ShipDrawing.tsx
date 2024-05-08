@@ -3,7 +3,16 @@ import CanvasRect from '@/components/common/CanvasRect'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { CommonIcon } from '@/icons/common'
 import Image from 'next/image'
-import { ChangeEvent, useRef, useState } from 'react'
+import { CSSProperties, ChangeEvent, useRef, useState } from 'react'
+
+const wrapperStyles: CSSProperties = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  zIndex: 1,
+  width: '100%',
+  height: '100%',
+}
 
 const formatMacAddress = (value: string) => {
   if (!value) return value
@@ -82,7 +91,7 @@ const RectInputComponent = ({ rects, setRects }: any) => {
     setRects(newRects)
   }
 
-  // 도트 삭제 핸들러
+  // 네모 삭제 핸들러
   const handleRemoveRect = (index: number) => {
     const newRects = rects.filter((_: any, i: any) => i !== index)
     setRects(newRects)
@@ -124,6 +133,7 @@ export const ShipDrawing = ({
   setDots,
   rects,
   setRects,
+  shipDrawingsUrl,
 }: {
   file: File | null
   setFile: (file: File) => void
@@ -139,6 +149,7 @@ export const ShipDrawing = ({
     location_end_y: number
   }[]
   setRects: any
+  shipDrawingsUrl?: string
 }) => {
   const isMobile = useMediaQuery('768')
 
@@ -146,16 +157,17 @@ export const ShipDrawing = ({
   const fileRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files ? event.target.files[0] : null
-    if (file) {
+    const localFile = event.target.files ? event.target.files[0] : null
+    if (localFile) {
       // 파일이 선택되었을 때만 타입 검사 진행
-      if (file.type === 'image/png' || file.type === 'image/jpeg') {
-        setFile(file)
+      if (localFile.type === 'image/png' || localFile.type === 'image/jpeg') {
+        setFile(localFile)
+
         const reader = new FileReader()
         reader.onloadend = () => {
           setPreview(reader.result as string)
         }
-        reader.readAsDataURL(file)
+        reader.readAsDataURL(localFile)
       } else {
         alert('PNG, JPG, JPEG 파일만 업로드 가능합니다.')
       }
@@ -164,9 +176,10 @@ export const ShipDrawing = ({
 
   const onDotsChange = (dots: { x: number; y: number }[]) => {
     setDots(
-      dots.map((item) => ({
-        location_x: item.x,
-        location_y: item.y,
+      dots.map(({ x, y, ...rest }) => ({
+        ...rest,
+        location_x: x,
+        location_y: y,
       })),
     )
   }
@@ -175,13 +188,21 @@ export const ShipDrawing = ({
     rects: { x1: number; x2: number; y1: number; y2: number }[],
   ) => {
     setRects(
-      rects.map((item) => ({
-        location_start_x: item.x1,
-        location_end_x: item.x2,
-        location_start_y: item.y1,
-        location_end_y: item.y2,
+      rects.map(({ x1, x2, y1, y2, ...rest }) => ({
+        ...rest,
+        location_start_x: x1,
+        location_end_x: x2,
+        location_start_y: y1,
+        location_end_y: y2,
       })),
     )
+  }
+
+  const imgView = () => {
+    if (preview) return preview
+    if (shipDrawingsUrl)
+      return process.env.NEXT_PUBLIC_API_URL + '/' + shipDrawingsUrl
+    return ''
   }
 
   return (
@@ -210,7 +231,7 @@ export const ShipDrawing = ({
           className="hidden"
         />
       </div>
-      {preview && (
+      {(preview || shipDrawingsUrl) && (
         <>
           <div className="mt-[20px] text-[12px] font-bold md:text-[14px]">
             비콘 위치 설정
@@ -219,36 +240,24 @@ export const ShipDrawing = ({
             <div className="relative h-[92px] outline outline-1 md:h-[270px] md:w-[1100px]">
               <div
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
+                  ...wrapperStyles,
                   zIndex: 2,
-                  width: '100%',
-                  height: '100%',
                 }}
               >
                 <CanvasDots
                   width={isMobile ? 310 : 1100}
                   height={isMobile ? 92 : 270}
                   dots={dots.map((item) => ({
+                    ...item,
                     x: item.location_x,
                     y: item.location_y,
                   }))}
                   onDotsChange={onDotsChange}
                 />
               </div>
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  zIndex: 1,
-                  width: '100%',
-                  height: '100%',
-                }}
-              >
+              <div style={wrapperStyles}>
                 <Image
-                  src={preview}
+                  src={imgView()}
                   alt="선박 도면 미리보기"
                   layout="fill"
                   objectFit="fill"
@@ -256,17 +265,14 @@ export const ShipDrawing = ({
               </div>
             </div>
           </div>
-        </>
-      )}
-
-      {dots.length !== 0 && (
-        <>
-          <div className="mb-[5px] mt-[10px]">선택 영역</div>
+          {dots.length !== 0 && (
+            <div className="mb-[5px] mt-[10px]">선택 영역</div>
+          )}
           <DotInputComponent dots={dots} setDots={setDots} />
         </>
       )}
 
-      {preview && (
+      {(preview || shipDrawingsUrl) && (
         <>
           <div className="mt-[20px] text-[12px] font-bold md:text-[14px]">
             제한구역 설정
@@ -275,18 +281,15 @@ export const ShipDrawing = ({
             <div className="relative h-[92px] outline outline-1 md:h-[270px] md:w-[1100px]">
               <div
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
+                  ...wrapperStyles,
                   zIndex: 2,
-                  width: '100%',
-                  height: '100%',
                 }}
               >
                 <CanvasRect
                   width={isMobile ? 310 : 1100}
                   height={isMobile ? 92 : 270}
                   rects={rects.map((item) => ({
+                    ...item,
                     x1: item.location_start_x,
                     x2: item.location_end_x,
                     y1: item.location_start_y,
@@ -295,18 +298,9 @@ export const ShipDrawing = ({
                   onRectsChange={onRectsChange}
                 />
               </div>
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  zIndex: 1,
-                  width: '100%',
-                  height: '100%',
-                }}
-              >
+              <div style={wrapperStyles}>
                 <Image
-                  src={preview}
+                  src={imgView()}
                   alt="선박 도면 미리보기"
                   layout="fill"
                   objectFit="fill"
@@ -314,12 +308,9 @@ export const ShipDrawing = ({
               </div>
             </div>
           </div>
-        </>
-      )}
-
-      {rects.length !== 0 && (
-        <>
-          <div className="mb-[5px] mt-[10px]">선택 영역</div>
+          {rects.length !== 0 && (
+            <div className="mb-[5px] mt-[10px]">선택 영역</div>
+          )}
           <RectInputComponent rects={rects} setRects={setRects} />
         </>
       )}
