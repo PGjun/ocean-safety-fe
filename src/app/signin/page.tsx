@@ -5,16 +5,16 @@ import { CommonIcon } from '@/icons/common'
 import { signIn } from 'next-auth/react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import logo from '/public/temp-logo.jpg'
 
 export default function LoginPage() {
-  const { register, handleSubmit } = useForm()
-
   const isMobile = useMediaQuery('768')
 
+  const [userID, setUserID] = useState('')
+  const [userPW, setUserPW] = useState('')
   const [showPw, setShowPw] = useState(false)
   const [keepLogin, setKeepLogin] = useState(false)
+  const [testMsg, setTestMsg] = useState('123')
 
   useEffect(() => {
     // 로컬 스토리지에서 로그인 유지 상태를 읽어와서 설정
@@ -26,14 +26,13 @@ export default function LoginPage() {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const onSubmit = async (data: any) => {
+  const handleLogin = async () => {
     if (isLoading) return // 로딩 중에는 함수 early return
 
     setIsLoading(true)
-    const { id: username, password } = data
     const result = await signIn('credentials', {
-      username,
-      password,
+      username: userID,
+      password: userPW,
       keepLogin, // 로그인 유지 상태 전송
       redirect: false, // 페이지 리디렉션 방지
     })
@@ -47,9 +46,21 @@ export default function LoginPage() {
     }
     setIsLoading(false) // 처리가 끝난 후 로딩 상태 해제
 
-    //! 웹뷰 실행
+    //! sendMessageToFlutter 실행
     sendMessageToFlutter()
   }
+
+  useEffect(() => {
+    if ((window as any).flutter_inappwebview) {
+      ;(window as any).receiveMessageFromFlutter = (msg: any) => {
+        setTestMsg(msg)
+        console.log('Received from Flutter:', msg)
+      }
+    }
+    return () => {
+      ;(window as any).receiveMessageFromFlutter = undefined
+    }
+  }, [])
 
   const sendMessageToFlutter = () => {
     if ((window as any).flutter_inappwebview) {
@@ -60,10 +71,7 @@ export default function LoginPage() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="m-auto flex min-h-screen items-center justify-center bg-loginback-gradient"
-    >
+    <section className="m-auto flex min-h-screen items-center justify-center bg-loginback-gradient">
       <div className="h-[539px] w-[310px] rounded-[20px] bg-white px-[20px] py-[56px] shadow md:h-[654px] md:w-[754px] md:px-[84px]">
         <div className="text-center">
           <div className="flex justify-center text-[32px] font-bold text-blue-600 md:text-[56px]">
@@ -91,7 +99,8 @@ export default function LoginPage() {
             ID
           </label>
           <input
-            {...register('id')}
+            value={userID}
+            onChange={(e) => setUserID(e.target.value)}
             type="text"
             id="inputID"
             className="flex-1 bg-transparent py-[20px] outline-none placeholder:text-[#888888] md:py-[28px]"
@@ -107,7 +116,8 @@ export default function LoginPage() {
             Password
           </label>
           <input
-            {...register('password')}
+            value={userPW}
+            onChange={(e) => setUserPW(e.target.value)}
             type={showPw ? 'text' : 'password'}
             id="inputPW"
             className="flex-1 bg-transparent py-[20px] outline-none placeholder:text-[#888888] md:py-[28px]"
@@ -146,13 +156,14 @@ export default function LoginPage() {
         </div>
 
         <button
-          type="submit"
+          type="button"
           id="loginBtn"
+          onClick={handleLogin}
           className="mt-[40px] w-full rounded bg-[#333333] py-[20px] font-bold text-white md:py-[23px] md:text-[20px]"
         >
           로그인
         </button>
       </div>
-    </form>
+    </section>
   )
 }

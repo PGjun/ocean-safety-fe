@@ -4,22 +4,31 @@ import { ROLES, roles } from './constants/roles'
 import { PATHS } from './constants/paths'
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  const response = NextResponse.next()
+
   let token: any = null
+
+  if (pathname.startsWith(PATHS.SIGNIN)) {
+  }
+
   try {
-    token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    })
+    if (!pathname.includes('/_next'))
+      token = await getToken({
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET,
+      })
   } catch (error) {
     console.error('토큰 가져오기 실패:', error)
     return NextResponse.redirect(new URL(PATHS.SIGNIN, request.url))
   }
 
-  const { pathname } = request.nextUrl
   const isLoggedIn = token !== null && token.user !== undefined
 
   // 로그인 페이지 접근 시 이미 로그인 상태인 경우, 메인 페이지로 리디렉트
   if (pathname.startsWith(PATHS.SIGNIN) && isLoggedIn) {
+    console.log('로그인 페이지 접근제한됌!')
+
     return NextResponse.redirect(new URL('/', request.url))
   }
 
@@ -53,5 +62,5 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next()
+  return response
 }
