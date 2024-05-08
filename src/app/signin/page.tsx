@@ -27,27 +27,31 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleLogin = async () => {
-    if (isLoading) return // 로딩 중에는 함수 early return
-
+    if (isLoading) return // 로딩 중에는 함수 early return 중복 요청 방지
     setIsLoading(true)
-    const result = await signIn('credentials', {
-      username: userID,
-      password: userPW,
-      keepLogin, // 로그인 유지 상태 전송
-      redirect: false, // 페이지 리디렉션 방지
-    })
 
-    if (result?.error) {
-      // 로그인 실패 처리
-      alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.')
-    } else {
-      localStorage.setItem('keepLogin', keepLogin.toString()) // 로그인 성공 시 로컬 스토리지에 상태 저장
-      window.location.href = '/' // 성공 시 메인 페이지로 이동
+    try {
+      const result = await signIn('credentials', {
+        username: userID,
+        password: userPW,
+        keepLogin, // 로그인 유지 상태 전송
+        redirect: false, // 페이지 리디렉션 방지
+      })
+
+      if (result?.error) {
+        alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해 주세요.')
+      } else {
+        localStorage.setItem('keepLogin', keepLogin.toString()) // 로그인 성공 시 로컬 스토리지에 상태 저장
+        window.location.href = '/' // 성공 시 메인 페이지로 이동
+      }
+    } catch (error) {
+      console.error('로그인 프로세스 중 에러 발생:', error)
+      alert('로그인 처리 중 문제가 발생했습니다.')
+    } finally {
+      setIsLoading(false) // 처리가 끝난 후 로딩 상태 해제
+      //! sendMessageToFlutter 실행
+      sendMessageToFlutter()
     }
-    setIsLoading(false) // 처리가 끝난 후 로딩 상태 해제
-
-    //! sendMessageToFlutter 실행
-    sendMessageToFlutter()
   }
 
   useEffect(() => {

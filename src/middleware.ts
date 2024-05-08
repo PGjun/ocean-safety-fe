@@ -9,7 +9,9 @@ export async function middleware(request: NextRequest) {
 
   let token: any = null
 
+  // /signin 경로에 대해 캐시를 완전히 비활성화
   if (pathname.startsWith(PATHS.SIGNIN)) {
+    response.headers.set('Cache-Control', 'no-store, max-age=0')
   }
 
   try {
