@@ -4,12 +4,13 @@ import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { CommonIcon } from '@/icons/common'
 import { signIn } from 'next-auth/react'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { SyntheticEvent, useEffect, useState } from 'react'
 import logo from '/public/temp-logo.jpg'
+import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
   const isMobile = useMediaQuery('768')
-
+  const router = useRouter()
   const [userID, setUserID] = useState('')
   const [userPW, setUserPW] = useState('')
   const [showPw, setShowPw] = useState(false)
@@ -26,7 +27,9 @@ export default function LoginPage() {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: SyntheticEvent) => {
+    e.preventDefault()
+
     if (isLoading) return // 로딩 중에는 함수 early return 중복 요청 방지
     setIsLoading(true)
 
@@ -75,7 +78,10 @@ export default function LoginPage() {
   }
 
   return (
-    <section className="m-auto flex min-h-screen items-center justify-center bg-loginback-gradient">
+    <form
+      onSubmit={handleLogin}
+      className="m-auto flex min-h-screen items-center justify-center bg-loginback-gradient"
+    >
       <div className="h-[539px] w-[310px] rounded-[20px] bg-white px-[20px] py-[56px] shadow md:h-[654px] md:w-[754px] md:px-[84px]">
         <div className="text-center">
           <div className="flex justify-center text-[32px] font-bold text-blue-600 md:text-[56px]">
@@ -160,14 +166,13 @@ export default function LoginPage() {
         </div>
 
         <button
-          type="button"
+          type="submit"
           id="loginBtn"
-          onClick={handleLogin}
           className="mt-[40px] w-full rounded bg-[#333333] py-[20px] font-bold text-white md:py-[23px] md:text-[20px]"
         >
           로그인
         </button>
       </div>
-    </section>
+    </form>
   )
 }
