@@ -6,6 +6,7 @@ import { PATHS } from '@/constants/paths'
 import { ROLES } from '@/constants/roles'
 import { useUser } from '@/hooks/useUser'
 import { fetchNoticeList } from '@/services/api/user'
+import { getRowNum } from '@/utils/getRowNum'
 import moment from 'moment'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -29,6 +30,7 @@ export default function NoticePage(pageProps: {
 
   const [noticeList, setNoticeList] = useState([])
   const [totalPage, setTotlaPage] = useState(1)
+  const [numOfItems, setNumOfItems] = useState(0)
 
   const searchParams = pageProps.searchParams
   useEffect(() => {
@@ -45,6 +47,7 @@ export default function NoticePage(pageProps: {
       if (res?.status === 200) {
         setNoticeList(res.data.data)
         setTotlaPage(res.data.total_page)
+        setNumOfItems(res.data.num_of_items)
       }
     }
 
@@ -56,6 +59,11 @@ export default function NoticePage(pageProps: {
       <div className="text-[22px] font-bold md:text-[26px]">공지사항</div>
       <div className="mt-[30px] border-t-[2px] border-[#888888]">
         {noticeList.map((item: NoticeList, idx) => {
+          const number = getRowNum(
+            numOfItems,
+            Number(searchParams.page_num),
+            idx,
+          )
           return (
             <Link
               href={PATHS.NOTICE_DETAIL({ notice_id: item.id })}
@@ -66,7 +74,7 @@ export default function NoticePage(pageProps: {
                 <div className="group-hover:font-bold">
                   <div className="inline-block">
                     <div className="mr-3 inline-block group-hover:font-normal">
-                      {item.id}
+                      {number}
                     </div>
                     {item.title.slice(0, 27)}
                     {item.num_of_files !== 0 && (

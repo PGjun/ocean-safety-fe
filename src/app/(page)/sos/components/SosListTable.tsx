@@ -8,11 +8,13 @@ import { useUser } from '@/hooks/useUser'
 import { UserEmergencyData } from '@/types/responseData'
 import { SosStatus } from '@/components/common/SosStatus'
 import { ROLES } from '@/constants/roles'
+import { getRowNum } from '@/utils/getRowNum'
 
 export const SosListTable = ({
   searchParams,
   setSosData,
   setLocation,
+  numOfItems,
   setNumOfItems,
   query,
   type,
@@ -20,6 +22,7 @@ export const SosListTable = ({
   searchParams: SearchParams
   setSosData: (data: UserEmergencyData) => void
   setLocation: ({ lng, lat }: { lng: number; lat: number }) => void
+  numOfItems: any
   setNumOfItems: any
   query: any
   type: 'SOS' | '낙상'
@@ -68,28 +71,48 @@ export const SosListTable = ({
     <div className="flex-1">
       <GenericTable
         loading={loading}
-        mobileContents={(item: UserEmergencyData, idx) => (
-          <Link
-            key={idx}
-            href={type === 'SOS' ? PATHS.SOS_DETAIL() : PATHS.FALL_DETAIL()}
-          >
-            <div className="space-x-1">
-              <span>No. {item.id}</span>
-              <span>이름 : {item.name}</span>
-              <span>아이디 : {item.user_id}</span>
-            </div>
-            <div className="space-x-1">
-              <span>좌표X : {item.longitude.toFixed(3)} </span>
-              <span>좌표Y : {item.latitude.toFixed(3)} </span>
-              {/* <span>응급코드 : {item.emergency_code}</span> */}
-            </div>
-            <div>비상연락처 : {item.phone}</div>
-            <div>기록일시 : {item.sos_date}</div>
-            <SosStatus status={item.emergency_status_code} />
-          </Link>
-        )}
+        mobileContents={(item: UserEmergencyData, idx) => {
+          const number = getRowNum(
+            numOfItems,
+            Number(searchParams.page_num),
+            idx,
+          )
+          return (
+            <Link
+              key={idx}
+              href={type === 'SOS' ? PATHS.SOS_DETAIL() : PATHS.FALL_DETAIL()}
+            >
+              <div className="space-x-1">
+                <span>No. {number}</span>
+                <span>이름 : {item.name}</span>
+                <span>아이디 : {item.user_id}</span>
+              </div>
+              <div className="space-x-1">
+                <span>좌표X : {item.longitude.toFixed(3)} </span>
+                <span>좌표Y : {item.latitude.toFixed(3)} </span>
+                {/* <span>응급코드 : {item.emergency_code}</span> */}
+              </div>
+              <div>비상연락처 : {item.phone}</div>
+              <div>기록일시 : {item.sos_date}</div>
+              <SosStatus status={item.emergency_status_code} />
+            </Link>
+          )
+        }}
         columns={[
-          { field: 'id', title: 'No', width: '40px' },
+          {
+            field: 'no',
+            title: 'No',
+            width: '40px',
+            render: (_, idx) => {
+              const number = getRowNum(
+                numOfItems,
+                Number(searchParams.page_num),
+                idx,
+              )
+
+              return <div>{number > 0 && number}</div>
+            },
+          },
           { field: 'name', title: '이름', width: '2fr' },
           { field: 'user_id', title: '아이디', width: '2fr' },
           {

@@ -129,6 +129,7 @@ export default function HealthInfoPage(pageProps: {
       </div>
 
       <HealthSearchTable
+        selectedUserIndex={userIndex}
         searchParams={searchParams}
         query={query}
         setUserIndex={setUserIndex}

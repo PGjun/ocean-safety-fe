@@ -193,6 +193,7 @@ export default function FallPage(pageProps: {
           searchParams={searchParams}
           setSosData={setSosData}
           setLocation={setLocation}
+          numOfItems={numOfItems}
           setNumOfItems={setNumOfItems}
           query={query}
           type="낙상"

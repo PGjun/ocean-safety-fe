@@ -34,3 +34,7 @@ body {
 input::placeholder {
   color: #c4c4c4; /* 원하는 플레이스홀더 색상 지정 */
 }
+/* DatePicker의 z-index를 높여서 다른 요소 위에 표시 */
+.react-datepicker-popper {
+  z-index: 3000 !important; /* 충분히 높은 값 */
+}

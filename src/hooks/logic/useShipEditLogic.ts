@@ -56,7 +56,7 @@ export const useShipEditLogic = ({ shipId }: { shipId: number }) => {
     getShipInfo({ ship_id: shipId.toString() })
     getBeacons({ ship_id: shipId })
     getRestrictAreas({ ship_id: shipId })
-  }, [getShipInfo, getBeacons, getRestrictAreas, shipId])
+  }, [getShipInfo, shipId])
 
   //* 비콘, 제한구역 초기화
   useEffect(() => {

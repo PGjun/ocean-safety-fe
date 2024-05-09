@@ -56,21 +56,23 @@ export const MonitoringTab = ({
         <div>
           <div className="mt-[20px] border-t border-[#c4c4c4] text-[14px] md:text-[16px]">
             {crewMessages &&
-              crewMessages.map((item: { content: string }, idx: number) => {
-                return (
-                  <div key={idx} className="border-b px-[8px] py-[10px]">
-                    {item.content}
-                  </div>
-                )
-              })}
+              crewMessages
+                .slice(0, 10)
+                .map((item: { content: string }, idx: number) => {
+                  return (
+                    <div key={idx} className="border-b px-[8px] py-[10px]">
+                      {item.content}
+                    </div>
+                  )
+                })}
           </div>
-          <div className="mt-[20px] flex w-full justify-center">
+          {/* <div className="mt-[20px] flex w-full justify-center">
             <Pagination
               path={() => {
                 return '/'
               }}
             />
-          </div>
+          </div> */}
         </div>
       )}
       {activeTab === 'tab2' && <UserOwnEmergencyList userId={userIndex} />}

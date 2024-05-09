@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useUser } from '@/hooks/useUser'
 import { UserHealthData } from '@/types/responseData'
 import { ROLES } from '@/constants/roles'
+import { getRowNum } from '@/utils/getRowNum'
 
 export const HealthSearchTable = ({
   searchParams,
@@ -13,16 +14,19 @@ export const HealthSearchTable = ({
   setUserIndex,
   setUserName,
   setNumOfItems,
+  selectedUserIndex,
 }: {
   searchParams: SearchParams
   query: any
   setUserIndex: (userIndex: number) => void
   setUserName: (userName: string) => void
   setNumOfItems: any
+  selectedUserIndex: any
 }) => {
   const { user, role } = useUser()
 
   const [healthList, setHealthList] = useState([])
+  const [localNumofItems, setLocalNumofItems] = useState(0)
 
   const pageSize = '5'
   const [totalPage, setTotalPage] = useState(1)
@@ -43,7 +47,8 @@ export const HealthSearchTable = ({
         setHealthList(res.data.data)
         setTotalPage(res.data.total_page)
         setNumOfItems(res.data.num_of_items)
-        if (res.data.data[0]) {
+        setLocalNumofItems(res.data.num_of_items)
+        if (res.data.data[0] && !selectedUserIndex) {
           setUserIndex(res.data.data[0].user_index)
           setUserName(res.data.data[0].name)
         }
@@ -56,27 +61,56 @@ export const HealthSearchTable = ({
 
     // setInterval에 의해 설정된 타이머를 해제합니다.
     return () => clearInterval(intervalId)
-  }, [pageSize, searchParams, query, user, role, setUserIndex, setUserName])
+  }, [
+    pageSize,
+    searchParams,
+    query,
+    user,
+    role,
+    setUserIndex,
+    setUserName,
+    selectedUserIndex,
+  ])
 
   return (
     <div className="flex-1">
       <GenericTable
-        mobileContents={(item: UserHealthData) => (
-          <>
-            <div className="space-x-1">
-              <span>No. {item.id}</span>
-              <span>{item.name}</span>
-            </div>
-            <div className="space-x-1">
-              <span>심박수 : {item.health_rate}</span>
-              <span>피부온도 : {item.temperature}</span>
-              <span>산소포화도 : {item.oxygen_saturation}</span>
-            </div>
-            <div>기록일시 : {item.health_date}</div>
-          </>
-        )}
+        mobileContents={(item: UserHealthData, idx) => {
+          const number = getRowNum(
+            localNumofItems,
+            Number(searchParams.page_num),
+            idx,
+          )
+          return (
+            <>
+              <div className="space-x-1">
+                <span>No. {number}</span>
+                <span>{item.name}</span>
+              </div>
+              <div className="space-x-1">
+                <span>심박수 : {item.health_rate}</span>
+                <span>피부온도 : {item.temperature}</span>
+                <span>산소포화도 : {item.oxygen_saturation}</span>
+              </div>
+              <div>기록일시 : {item.health_date}</div>
+            </>
+          )
+        }}
         columns={[
-          { field: 'id', title: 'No', width: '1fr' },
+          {
+            field: 'id',
+            title: 'No',
+            width: '1fr',
+            render: (_, idx) => {
+              const number = getRowNum(
+                localNumofItems,
+                Number(searchParams.page_num),
+                idx,
+              )
+
+              return <div>{number > 0 && number}</div>
+            },
+          },
           { field: 'name', title: '이름', width: '2fr' },
           { field: 'health_rate', title: '심박수', width: '2fr' },
           { field: 'temperature', title: '피부온도', width: '2fr' },

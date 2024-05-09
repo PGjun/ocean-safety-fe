@@ -1,18 +1,10 @@
 import CanvasDots from '@/components/common/CanvasDots'
 import CanvasRect from '@/components/common/CanvasRect'
+import { wrapperzIndex } from '@/constants/wrapperStyles'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { CommonIcon } from '@/icons/common'
 import Image from 'next/image'
-import { CSSProperties, ChangeEvent, useRef, useState } from 'react'
-
-const wrapperStyles: CSSProperties = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  zIndex: 1,
-  width: '100%',
-  height: '100%',
-}
+import { ChangeEvent, useRef, useState } from 'react'
 
 const formatMacAddress = (value: string) => {
   if (!value) return value
@@ -29,7 +21,7 @@ const formatMacAddress = (value: string) => {
   return formatted.length <= 17 ? formatted : formatted.slice(0, 17)
 }
 
-const DotInputComponent = ({ dots, setDots }: any) => {
+const DotInputComponent = ({ dots, setDots, readOnly }: any) => {
   // 레이블 변경 핸들러
   const handleNameChange = (index: number, beacon_name: string) => {
     const newDots = [...dots]
@@ -66,24 +58,26 @@ const DotInputComponent = ({ dots, setDots }: any) => {
             onChange={(e) => handleNameChange(index, e.target.value)}
           />
           <input
-            className="min-w-0 flex-grow outline-none"
+            className="min-w-0 flex-grow py-[11px] outline-none"
             type="text"
             placeholder="Mac Address"
             value={dot.mac_address || ''}
             onChange={(e) => handleMcAdressChange(index, e.target.value)}
           />
-          <div className="px-[18px] py-[15px] text-[20px] leading-[16px]">
-            <button type="button" onClick={() => handleRemoveDot(index)}>
-              <CommonIcon.Xmark />
-            </button>
-          </div>
+          {!readOnly && (
+            <div className="px-[18px] text-[20px] leading-[16px]">
+              <button type="button" onClick={() => handleRemoveDot(index)}>
+                <CommonIcon.Xmark />
+              </button>
+            </div>
+          )}
         </div>
       ))}
     </div>
   )
 }
 
-const RectInputComponent = ({ rects, setRects }: any) => {
+const RectInputComponent = ({ rects, setRects, readOnly }: any) => {
   // 레이블 변경 핸들러
   const handleNameChange = (index: number, area_name: string) => {
     const newRects = [...rects]
@@ -108,18 +102,19 @@ const RectInputComponent = ({ rects, setRects }: any) => {
             {index + 1}
           </div>
           <input
-            className="min-w-0 flex-grow border-r outline-none"
+            className="min-w-0 flex-grow border-r py-[11px] outline-none"
             type="text"
             placeholder="제한구역 이름"
             value={rect.area_name || ''}
             onChange={(e) => handleNameChange(index, e.target.value)}
           />
-
-          <div className="px-[18px] py-[15px] text-[20px] leading-[16px]">
-            <button type="button" onClick={() => handleRemoveRect(index)}>
-              <CommonIcon.Xmark />
-            </button>
-          </div>
+          {!readOnly && (
+            <div className="px-[18px] text-[20px] leading-[16px]">
+              <button type="button" onClick={() => handleRemoveRect(index)}>
+                <CommonIcon.Xmark />
+              </button>
+            </div>
+          )}
         </div>
       ))}
     </div>
@@ -134,22 +129,24 @@ export const ShipDrawing = ({
   rects,
   setRects,
   shipDrawingsUrl,
+  readOnly,
 }: {
-  file: File | null
-  setFile: (file: File) => void
+  file?: File | null
+  setFile?: (file: File) => void
   dots: {
     location_x: number
     location_y: number
   }[]
-  setDots: any
+  setDots?: any
   rects: {
     location_start_x: number
     location_start_y: number
     location_end_x: number
     location_end_y: number
   }[]
-  setRects: any
+  setRects?: any
   shipDrawingsUrl?: string
+  readOnly?: boolean
 }) => {
   const isMobile = useMediaQuery('768')
 
@@ -157,6 +154,7 @@ export const ShipDrawing = ({
   const fileRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!setFile) return
     const localFile = event.target.files ? event.target.files[0] : null
     if (localFile) {
       // 파일이 선택되었을 때만 타입 검사 진행
@@ -206,41 +204,51 @@ export const ShipDrawing = ({
   }
 
   return (
-    <div>
-      <div className="text-[18px] font-bold">선박 도면</div>
-      <div className="mt-[10px] flex w-full justify-between rounded py-[7px] pl-[16px] pr-[6px] text-[14px] outline-dotted outline-[2px] outline-[#C4C4C4]">
-        <input
-          type="text"
-          className="flex-1 bg-white"
-          placeholder="선박 도면을 등록해 주세요."
-          value={file ? file.name : ''}
-          disabled
+    <div className="relative">
+      {readOnly && (
+        <div
+          style={{ ...wrapperzIndex, zIndex: 3 }}
+          className="absolute w-full"
         />
-        <button
-          type="button"
-          onClick={() => fileRef.current?.click()}
-          className="rounded border border-[#C4C4C4] px-[12px] py-[2px] text-[12px]"
-        >
-          파일 업로드
-        </button>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/png, image/jpeg" // PNG, JPG, JPEG만 선택 가능
-          onChange={handleFileChange}
-          className="hidden"
-        />
-      </div>
+      )}
+      {!readOnly && (
+        <>
+          <div className="text-[18px] font-bold">선박 도면</div>
+          <div className="mt-[10px] flex w-full justify-between rounded py-[7px] pl-[16px] pr-[6px] text-[14px] outline-dotted outline-[2px] outline-[#C4C4C4]">
+            <input
+              type="text"
+              className="flex-1 bg-white"
+              placeholder="선박 도면을 등록해 주세요."
+              value={file ? file.name : ''}
+              disabled
+            />
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              className="rounded border border-[#C4C4C4] px-[12px] py-[2px] text-[12px]"
+            >
+              파일 업로드
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/png, image/jpeg" // PNG, JPG, JPEG만 선택 가능
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </div>
+        </>
+      )}
       {(preview || shipDrawingsUrl) && (
         <>
-          <div className="mt-[20px] text-[12px] font-bold md:text-[14px]">
-            비콘 위치 설정
+          <div className="mt-[20px] text-[14px] font-bold md:text-[16px]">
+            비콘 위치 {!readOnly && '설정'}
           </div>
           <div className="mt-[5px] rounded bg-[#F3F2F8]">
             <div className="relative h-[92px] outline outline-1 md:h-[270px] md:w-[1100px]">
               <div
                 style={{
-                  ...wrapperStyles,
+                  ...wrapperzIndex,
                   zIndex: 2,
                 }}
               >
@@ -255,7 +263,7 @@ export const ShipDrawing = ({
                   onDotsChange={onDotsChange}
                 />
               </div>
-              <div style={wrapperStyles}>
+              <div style={wrapperzIndex}>
                 <Image
                   src={imgView()}
                   alt="선박 도면 미리보기"
@@ -266,22 +274,28 @@ export const ShipDrawing = ({
             </div>
           </div>
           {dots.length !== 0 && (
-            <div className="mb-[5px] mt-[10px]">선택 영역</div>
+            <div className="mb-[5px] mt-[10px] text-[12px] md:text-[14px]">
+              선택 영역
+            </div>
           )}
-          <DotInputComponent dots={dots} setDots={setDots} />
+          <DotInputComponent
+            dots={dots}
+            setDots={setDots}
+            readOnly={readOnly}
+          />
         </>
       )}
 
       {(preview || shipDrawingsUrl) && (
         <>
-          <div className="mt-[20px] text-[12px] font-bold md:text-[14px]">
-            제한구역 설정
+          <div className="mt-[20px] text-[14px] font-bold md:text-[16px]">
+            제한구역 {!readOnly && '설정'}
           </div>
           <div className="mt-[5px] bg-[#F3F2F8]">
             <div className="relative h-[92px] outline outline-1 md:h-[270px] md:w-[1100px]">
               <div
                 style={{
-                  ...wrapperStyles,
+                  ...wrapperzIndex,
                   zIndex: 2,
                 }}
               >
@@ -298,7 +312,7 @@ export const ShipDrawing = ({
                   onRectsChange={onRectsChange}
                 />
               </div>
-              <div style={wrapperStyles}>
+              <div style={wrapperzIndex}>
                 <Image
                   src={imgView()}
                   alt="선박 도면 미리보기"
@@ -309,9 +323,15 @@ export const ShipDrawing = ({
             </div>
           </div>
           {rects.length !== 0 && (
-            <div className="mb-[5px] mt-[10px]">선택 영역</div>
+            <div className="mb-[5px] mt-[10px] text-[12px] md:text-[14px]">
+              선택 영역
+            </div>
           )}
-          <RectInputComponent rects={rects} setRects={setRects} />
+          <RectInputComponent
+            rects={rects}
+            setRects={setRects}
+            readOnly={readOnly}
+          />
         </>
       )}
     </div>

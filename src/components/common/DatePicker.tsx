@@ -30,7 +30,8 @@ CustomInput.displayName = 'CustomInput'
 RangeCustomInput.displayName = 'RangeCustomInput'
 
 const currentYear = new Date().getFullYear()
-const minYear = currentYear - 100
+// const minYear = currentYear - 100
+const maxYear = currentYear + 5
 
 export const DatePickerSingle = ({
   name,
@@ -49,8 +50,8 @@ export const DatePickerSingle = ({
       showMonthDropdown
       showYearDropdown
       dropdownMode="select"
-      minDate={new Date(minYear, 0, 1)} // 100년 전 1월 1일
-      maxDate={new Date()} // 100년 후 12월 31일
+      minDate={new Date(1900, 0, 1)} // 100년 전 1월 1일
+      maxDate={new Date(maxYear, 11, 31)} // 100년 후 12월 31일
     />
   )
 }

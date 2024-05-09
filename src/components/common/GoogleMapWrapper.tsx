@@ -20,9 +20,21 @@ const center = {
 
 function GoogleMapWrapper({
   location,
+  preLocaion1,
+  preLocaion2,
   info,
 }: {
   location?: { lng: number; lat: number }
+  preLocaion1?: {
+    location: { lng: number; lat: number }
+    // name: string
+    sos_date: string
+  }
+  preLocaion2?: {
+    location: { lng: number; lat: number }
+    // name: string
+    sos_date: string
+  }
   info?: { name: string; sos_date: string }
 }) {
   const { isLoaded } = useJsApiLoader({
@@ -67,6 +79,7 @@ function GoogleMapWrapper({
       console.log(newCenter?.lat(), newCenter?.lng())
     }
   }, [map])
+  console.log('🚀 ~ preLocaion1:', preLocaion1)
 
   const currentPath = usePathname()
   return isLoaded ? (
@@ -74,19 +87,19 @@ function GoogleMapWrapper({
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={currentCenter}
-        zoom={10}
+        zoom={15}
         onLoad={onLoad}
         onUnmount={onUnmount}
         onCenterChanged={onCenterChanged} // 지도 중심 변경 이벤트 핸들러 추가
       >
         <>
           <OverlayView position={currentCenter} mapPaneName="overlayLayer">
-            {currentPath !== '/sos/detail' ? (
+            {currentPath !== '/sos/detail' && currentPath !== '/fall/detail' ? (
               <div className="absolute -left-[55px] -top-[80px] flex w-[108px] flex-col items-center rounded-[10px] bg-[#FF3819] py-[8px] text-[12px] font-bold text-white">
                 SOS Location
               </div>
             ) : (
-              <div className="absolute -left-[130px] -top-[135px] flex w-[257px] flex-col items-center rounded-[10px] bg-[#FF3819] py-[8px] text-[18px] font-bold text-white">
+              <div className="absolute -left-[130px] -top-[135px] z-30 flex w-[257px] flex-col items-center rounded-[10px] bg-[#FF3819] py-[8px] text-[18px] font-bold text-white">
                 SOS Location Tracking
                 <div className="mt-[8px] text-[16px] font-normal">
                   {info?.name}
@@ -98,12 +111,55 @@ function GoogleMapWrapper({
             )}
           </OverlayView>
           <Marker
+            zIndex={3}
             position={currentCenter}
             onClick={() => alert('마커 클릭')}
             icon={{
               url: '/icons/map-marker.svg', // 이 경로는 서버에서 접근 가능한 경로로 설정해야 합니다.
             }}
           />
+
+          {preLocaion1 && preLocaion1?.sos_date && (
+            <>
+              <OverlayView
+                position={preLocaion1?.location}
+                mapPaneName="overlayLayer"
+              >
+                <div className="absolute -left-[73px] -top-[70px] z-20 flex w-[150px] flex-col items-center rounded-[10px] bg-[#2262C6] py-[8px] text-[12px] font-bold text-white">
+                  {preLocaion1.sos_date}
+                </div>
+              </OverlayView>
+              <Marker
+                zIndex={2}
+                position={preLocaion1?.location}
+                onClick={() => alert(preLocaion1.sos_date)}
+                icon={{
+                  url: '/icons/tracking-marker.svg', // 이 경로는 서버에서 접근 가능한 경로로 설정해야 합니다.
+                }}
+              />
+            </>
+          )}
+          {preLocaion2 && preLocaion2?.sos_date && (
+            <>
+              <OverlayView
+                position={preLocaion2?.location}
+                mapPaneName="overlayLayer"
+              >
+                <div className="absolute -left-[73px] -top-[70px] z-10 flex w-[150px] flex-col items-center rounded-[10px] bg-[#2262C6] py-[8px] text-[12px] font-bold text-white">
+                  {preLocaion2.sos_date}
+                </div>
+              </OverlayView>
+              <Marker
+                zIndex={1}
+                position={preLocaion2?.location}
+                onClick={() => alert(preLocaion2.sos_date)}
+                // onMouseOver={() => alert(preLocaion2.sos_date)}
+                icon={{
+                  url: '/icons/tracking-marker.svg', // 이 경로는 서버에서 접근 가능한 경로로 설정해야 합니다.
+                }}
+              />
+            </>
+          )}
         </>
       </GoogleMap>
     </>

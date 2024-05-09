@@ -75,26 +75,15 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
       <div className="text-[26px] font-bold">SOS/낙상감지 상세내역</div>
       <div className="mb-[10px] flex justify-end">
         <div className="mt-[16px] flex max-w-[332px] flex-1 flex-col gap-[4px] md:flex-row">
-          <Controller
-            name="code"
-            control={control}
-            render={({ field }) => {
-              return (
-                <DropDown.Container>
-                  <DropDown.Content
-                    id="sos_detail_type"
-                    dropData={[
-                      { value: '1', label: 'SOS' },
-                      { value: '2', label: '낙상' },
-                    ]}
-                    placeholder="응급코드 선택"
-                    fieldOnChange={field.onChange}
-                    fieldValue={field.value}
-                  />
-                </DropDown.Container>
-              )
+          <div
+            style={{
+              background:
+                data.data[0].emergency_code === 'SOS' ? '#FF3819' : '#2AB0FC',
             }}
-          />
+            className="h-[46.67px] w-full place-content-center rounded text-center font-bold text-white"
+          >
+            {data.data[0].emergency_code}
+          </div>
           <Controller
             name="status"
             control={control}
@@ -122,7 +111,7 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
         mobileContents={(item: UserEmergencyData, idx) => (
           <Link key={idx} href={PATHS.SOS_DETAIL()}>
             <div className="space-x-1">
-              <span>No. {item.id}</span>
+              {/* <span>No. {item.id}</span> */}
               <span>이름 : {item.name}</span>
               <span>아이디 : {item.user_id}</span>
             </div>
@@ -137,7 +126,7 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
           </Link>
         )}
         columns={[
-          { field: 'id', title: 'No', width: '50px' },
+          // { field: 'id', title: 'No', width: '50px' },
           { field: 'name', title: '이름', width: '1fr' },
           { field: 'user_id', title: '아이디', width: '1fr' },
           {
@@ -204,12 +193,16 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
       </div> */}
       <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
         <button
+          type="button"
           onClick={() => router.back()}
           className="rounded border border-[#C4C4C4] bg-[#DEE2E6] px-[36px] py-[10px] text-[14px] font-bold md:py-[15px] md:text-[18px]"
         >
           이전
         </button>
-        <button className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]">
+        <button
+          type="submit"
+          className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]"
+        >
           완료
         </button>
       </div>

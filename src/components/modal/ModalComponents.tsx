@@ -80,9 +80,9 @@ const Emergencies = ({
       ) : (
         <FallImg size={size} />
       )}
-      <button onClick={closeModal} className="absolute right-[10px] top-[3px]">
+      {/* <button onClick={closeModal} className="absolute right-[10px] top-[3px]">
         x
-      </button>
+      </button> */}
       <div className="mt-[20px]">
         {emer && (
           <div className="flex flex-col items-center">
@@ -133,9 +133,9 @@ const GroupAdd = ({ closeModal }: { closeModal: () => void }) => {
   }
   return (
     <div className="relative flex flex-col items-center rounded-[12px] bg-white p-[15px] md:p-[46px]">
-      <button onClick={closeModal} className="absolute right-[10px] top-[3px]">
+      {/* <button onClick={closeModal} className="absolute right-[10px] top-[3px]">
         x
-      </button>
+      </button> */}
       <div className="w-full">
         <div className="font-bold md:text-[26px]">그룹 추가</div>
       </div>

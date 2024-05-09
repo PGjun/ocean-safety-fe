@@ -17,6 +17,7 @@ import { useUser } from '@/hooks/useUser'
 import { UserInfoData } from '@/types/responseData'
 import { ROLES } from '@/constants/roles'
 import { useGroupShipDropDown } from '@/hooks/useGroupShipDropDown'
+import { getRowNum } from '@/utils/getRowNum'
 
 export default function CrewInfoPage(pageProps: {
   params: {}
@@ -30,8 +31,9 @@ export default function CrewInfoPage(pageProps: {
   const { DropDownFC } = useGroupShipDropDown()
 
   const [query, setQuery] = useState<any>()
-  const [totalPage, setTotalPage] = useState(1)
   const [userList, setUserList] = useState([])
+  const [totalPage, setTotalPage] = useState(1)
+  const [numOfItems, setNumOfItems] = useState(0)
   const [userId, setUserId] = useState<number | null>(null)
 
   const searchFields: SearchFields = [
@@ -83,6 +85,7 @@ export default function CrewInfoPage(pageProps: {
 
         setUserList(res.data.data)
         setTotalPage(res.data.total_page)
+        setNumOfItems(res.data.num_of_items)
         if (resData[0]) {
           setUserId(Number(resData[0].id))
         }
@@ -133,20 +136,41 @@ export default function CrewInfoPage(pageProps: {
       </div>
 
       <GenericTable
-        mobileContents={(item: UserInfoData, idx) => (
-          <>
-            <div>
-              No. {item.id} &nbsp; {item.name ?? ''}
-            </div>
-            <div>
-              <span>아이디 : {item.user_id ?? ''} &nbsp;</span>
-              <span>구분 : {item.crew_level}</span>
-            </div>
-            <div>가입일 : {item.created_at ?? ''}</div>
-          </>
-        )}
+        mobileContents={(item: UserInfoData, idx) => {
+          const number = getRowNum(
+            numOfItems,
+            Number(searchParams.page_num),
+            idx,
+          )
+
+          return (
+            <>
+              <div>
+                No. {number} &nbsp; {item.name ?? ''}
+              </div>
+              <div>
+                <span>아이디 : {item.user_id ?? ''} &nbsp;</span>
+                <span>구분 : {item.crew_level}</span>
+              </div>
+              <div>가입일 : {item.created_at ?? ''}</div>
+            </>
+          )
+        }}
         columns={[
-          { field: 'id', title: 'No', width: '1fr' },
+          {
+            field: 'no',
+            title: 'No',
+            width: '1fr',
+            render: (_, idx) => {
+              const number = getRowNum(
+                numOfItems,
+                Number(searchParams.page_num),
+                idx,
+              )
+
+              return <div>{number > 0 && number}</div>
+            },
+          },
           { field: 'name', title: '이름', width: '2fr' },
           { field: 'user_id', title: '아이디', width: '2fr' },
           { field: 'crew_level', title: '구분', width: '2fr' },

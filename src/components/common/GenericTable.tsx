@@ -7,7 +7,7 @@ export interface ColProps {
   field: string
   title: string
   width?: string
-  render?: (value: string) => void
+  render?: (value: string, idx: number) => void
 }
 
 type onRowClick = (item: any) => void
@@ -51,22 +51,26 @@ export const GenericTable = ({
     </div>
   )
 
-  const renderRow = (item: any, idx: number) => (
-    <div
-      key={idx}
-      className={`grid border-b px-[20px] py-[16px] text-center ${hover && 'cursor-pointer hover:bg-slate-50'}`}
-      style={{ gridTemplateColumns }}
-      onClick={() => onRowClick(item)}
-    >
-      {columns.map((col, colIdx) => {
-        return (
-          <div key={colIdx}>
-            {col.render ? col.render(item[col.field]) : item[col.field]}
-          </div>
-        )
-      })}
-    </div>
-  )
+  const renderRow = (item: any, idx: number) => {
+    // 넘버링 계산
+    // const number = totalPosts - (currentPage - 1) * postsPerPage - idx;
+    return (
+      <div
+        key={idx}
+        className={`grid border-b px-[20px] py-[16px] text-center ${hover && 'cursor-pointer hover:bg-slate-50'}`}
+        style={{ gridTemplateColumns }}
+        onClick={() => onRowClick(item)}
+      >
+        {columns.map((col, colIdx) => {
+          return (
+            <div key={colIdx}>
+              {col.render ? col.render(item[col.field], idx) : item[col.field]}
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
 
   const renderMobile = () => (
     <div className="border-t border-[#c4c4c4]">

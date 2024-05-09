@@ -1,16 +1,17 @@
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { useShipNames } from '../fetch/useShipNames'
 import { useShipInfo } from '../fetch/useShipInfo'
-import { useUser } from '../useUser'
 import { useUserHealthList } from '../fetch/useUserHealthList'
 import { useCrewLocations } from '../fetch/useCrewLocations'
 import { useMediaQuery } from '../useMediaQuery'
 import { DropItem } from '@/types/common'
 import { useCrewNames } from '../fetch/useCrewNames'
 import { useCrewMessages } from '../fetch/useCrewMessages'
+import { useGroupShipDropDown } from '../useGroupShipDropDown'
 
 export const useMonitoringLogic = () => {
+  const { shipDrop, DropDownFC } = useGroupShipDropDown('preload')
+
   //선택한 선박 - 선박정보, 승선원이름목록,일반메시지 업데이트
   const [selectedShip, setSelectedShip] = useState<DropItem>()
   //선택한 승선원 - 응급메시지, 건강정보 업데이트
@@ -21,7 +22,6 @@ export const useMonitoringLogic = () => {
   const h_page_num = searchParams.get('h_page_num')
   const pageNums = { s_page_num, h_page_num }
 
-  const { user } = useUser()
   const isMobile = useMediaQuery('768')
 
   // 호출 훅
@@ -46,6 +46,11 @@ export const useMonitoringLogic = () => {
 
   //   setSelectedShip(foundShip)
   // }, [user, shipNames])
+  useEffect(() => {
+    if (!shipDrop) return
+
+    setSelectedShip(shipDrop)
+  }, [shipDrop])
 
   // 첫 랜더링 시 승선원 선택 업데이트 (ship_id 의존)
   useEffect(() => {
@@ -101,7 +106,8 @@ export const useMonitoringLogic = () => {
     selectedUser,
     userHealthList,
     crewMessages,
-    handleShipChange: setSelectedShip,
-    handleUserChange: setSelectedUser,
+    setSelectedShip,
+    setSelectedUser,
+    DropDownFC,
   }
 }

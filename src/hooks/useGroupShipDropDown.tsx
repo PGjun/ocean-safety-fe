@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useUser } from './useUser'
-import { useMediaQuery } from './useMediaQuery'
 import { useGroupNames } from './fetch/useGroupNames'
 import { useShipNames } from './fetch/useShipNames'
 import { SliderDropDown } from '@/components/common/SliderDropDown'
@@ -30,25 +29,30 @@ export const useGroupShipDropDown = (
 
   // 타입이 preload이면 초기값 세팅
   useEffect(() => {
-    if (type !== 'preload' || !groupNames || !user) return
-    setSelGroupDrop(
-      groupNames.find((item) => item.value === user.group_id.toString()),
-    )
+    if (type === 'preload' && groupNames && user) {
+      setSelGroupDrop(
+        groupNames.find((item) => item.value === user.group_id.toString()),
+      )
+    }
   }, [groupNames, user, type])
 
   // 타입이 preload이면 초기값 세팅
   useEffect(() => {
-    if (type !== 'preload' || !shipNames || !user) return
-    setSelShipDrop(
-      shipNames.find((item) => item.value === user.ship_id.toString()),
-    )
+    if (type === 'preload' && shipNames && user) {
+      setSelShipDrop(
+        shipNames.find((item) => item.value === user.ship_id.toString()),
+      )
+    }
   }, [shipNames, user, type])
 
   //그룹 선택 시 선박 목록 호출
-  const handleGroup = (data: DropItem) => {
-    setSelGroupDrop(data)
-    getShipNames(data.value)
-  }
+  const handleGroup = useCallback(
+    (data: DropItem) => {
+      setSelGroupDrop(data)
+      getShipNames(data.value)
+    },
+    [getShipNames],
+  )
 
   const renderGroupMain = () => (
     <div className={role !== ROLES.ADMIN ? 'hidden' : ''}>
@@ -100,6 +104,10 @@ export const useGroupShipDropDown = (
       control={control}
       name={name}
       render={({ field }) => {
+        const fieldValue = field.value
+          ? field.value
+          : { value: '0', label: '전체' }
+
         const wrapGroupNames =
           groupNames?.length !== 0
             ? [{ value: '0', label: '전체' }, ...(groupNames || [])]
@@ -114,7 +122,7 @@ export const useGroupShipDropDown = (
             </div>
             <div className="h-[21px]">
               <DropDown.Content
-                fieldValue={field.value}
+                fieldValue={fieldValue}
                 fieldOnChange={(value) => {
                   handleGroup(value)
                   setValue('shipDrop', '')
@@ -147,6 +155,12 @@ export const useGroupShipDropDown = (
       control={control}
       name={name}
       render={({ field }) => {
+        const fieldValue = field.value
+          ? field.value
+          : role === ROLES.GROUP
+            ? { value: '0', label: '전체' }
+            : null
+
         const wrapShipNames =
           shipNames?.length !== 0
             ? [{ value: '0', label: '전체' }, ...(shipNames || [])]
@@ -166,7 +180,7 @@ export const useGroupShipDropDown = (
             </div>
             <div className="h-[21px]">
               <DropDown.Content
-                fieldValue={field.value}
+                fieldValue={fieldValue}
                 fieldOnChange={(value) => {
                   field.onChange(value)
                 }}

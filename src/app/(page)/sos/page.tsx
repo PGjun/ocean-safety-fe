@@ -193,6 +193,7 @@ export default function SosPage(pageProps: {
           searchParams={searchParams}
           setSosData={setSosData}
           setLocation={setLocation}
+          numOfItems={numOfItems}
           setNumOfItems={setNumOfItems}
           query={query}
           type="SOS"

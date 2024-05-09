@@ -4,6 +4,7 @@ import Image from 'next/image'
 import RestrictRects from '@/components/common/RestrictAreaRects'
 import { useBeacons } from '@/hooks/fetch/useBeacons'
 import LocationDots from '@/components/common/LocationDots'
+import { ShipDrawing } from '../shipadd/components/ShipDrawing'
 
 const wrapperStyles: CSSProperties = {
   position: 'absolute',
@@ -47,6 +48,7 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
   const [loading, setLoading] = useState(true)
 
   const { beacons, getBeacons } = useBeacons()
+  console.log('🚀 ~ ShipDetail ~ beacons:', beacons)
 
   useEffect(() => {
     if (!shipId) return
@@ -90,20 +92,36 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
     <>
       <div className="md:grid md:grid-cols-3 md:gap-x-[32px] md:gap-y-[16px]">
         {detail &&
-          detail.map((item, idx) => {
+          detail.map(({ title, content }, idx) => {
             return (
               <div key={idx}>
-                <div className="mt-[12px] text-[12px] font-bold">
-                  {item.title}
-                </div>
+                <div className="mt-[12px] text-[12px] font-bold">{title}</div>
                 <div className="rounded bg-[#F8F9FA] p-[8px] text-[14px]">
-                  {item.content}
+                  {content}
                 </div>
               </div>
             )
           })}
       </div>
-      <div className="mt-[50px] text-[18px] font-bold">비콘 위치</div>
+      {beacons && restricts && (
+        <ShipDrawing
+          dots={beacons.map(({ name, ...rest }) => ({
+            ...rest,
+            beacon_name: name,
+            location_x: rest.location_x,
+            location_y: rest.location_y,
+          }))}
+          rects={restricts}
+          shipDrawingsUrl={shipImg}
+          readOnly
+        />
+      )}
+    </>
+  )
+}
+
+{
+  /* <div className="mt-[50px] text-[18px] font-bold">비콘 위치</div>
 
       <div className="mt-[5px] rounded bg-[#F3F2F8]">
         <div className="relative h-[92px] md:h-[270px] md:w-[1100px]">
@@ -178,7 +196,5 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
             </>
           )}
         </div>
-      </div>
-    </>
-  )
+      </div> */
 }
