@@ -201,7 +201,7 @@ export default function FallPage(pageProps: {
         {!isMobile && (
           <div className=" flex flex-col gap-[8px]">
             <div className="h-[330px] w-[259px]">
-              <GoogleMapWrapper location={location} />
+              <GoogleMapWrapper markerInfo={{ location: location }} />
             </div>
 
             {sosData && (
