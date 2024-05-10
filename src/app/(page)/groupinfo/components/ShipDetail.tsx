@@ -1,31 +1,21 @@
-import { CSSProperties, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { fetchRestrictAreas, fetchShipInfo } from '@/services/api/user'
-import Image from 'next/image'
-import RestrictRects from '@/components/common/RestrictAreaRects'
 import { useBeacons } from '@/hooks/fetch/useBeacons'
-import LocationDots from '@/components/common/LocationDots'
-import { ShipDrawing } from '../shipadd/components/ShipDrawing'
-
-const wrapperStyles: CSSProperties = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  zIndex: 1,
-  width: '100%',
-  height: '100%',
-}
+import { ShipDrawing } from '../../../../components/common/ShipDrawing'
 
 const shipDetails = [
-  { name: 'ship_number', title: '선박번호', content: '191-' },
-  { name: 'ship_name', title: '선박명', content: '한국호' },
-  { name: 'nationality', title: '선적항(국적)', content: '제주(대한민국)' },
-  { name: 'inter_tonnage', title: '국제총톤수', content: '28,827.00' },
-  { name: 'weight_tonnage', title: '재화중량톤수', content: '38.985.00' },
-  { name: 'reg_classname', title: '등록선급명', content: '등록선급명' },
-  { name: 'launch_date', title: '진수일', content: '2012-11-23' },
-  { name: 'shipyard', title: '조선소', content: 'Hyundai Mipo' },
-  { name: 'ship_owner', title: '선박소유자', content: '해운㈜' },
-  { name: 'business_name', title: '사업자명', content: '해운㈜' },
+  { name: 'ship_number', title: '선박번호', content: '' },
+  { name: 'ship_name', title: '선박명', content: '' },
+  { name: 'ship_real_width', title: '선박실제너비', content: '' },
+  { name: 'ship_real_height', title: '선박실제높이', content: '' },
+  { name: 'nationality', title: '선적항(국적)', content: '' },
+  { name: 'inter_tonnage', title: '국제총톤수', content: '' },
+  { name: 'weight_tonnage', title: '재화중량톤수', content: '' },
+  { name: 'reg_classname', title: '등록선급명', content: '' },
+  { name: 'launch_date', title: '진수일', content: '' },
+  { name: 'shipyard', title: '조선소', content: '' },
+  { name: 'ship_owner', title: '선박소유자', content: '' },
+  { name: 'business_name', title: '사업자명', content: '' },
   { name: 'ship_lessee', title: '선박임차인', content: '-' },
   { name: 'rental_period', title: '임차기간', content: '-' },
 ]
@@ -44,11 +34,8 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
     },
   ])
   const [shipImg, setShipImg] = useState('')
-
   const [loading, setLoading] = useState(true)
-
   const { beacons, getBeacons } = useBeacons()
-  console.log('🚀 ~ ShipDetail ~ beacons:', beacons)
 
   useEffect(() => {
     if (!shipId) return
@@ -118,83 +105,4 @@ export const ShipDetail = ({ shipId }: { shipId: number | null }) => {
       )}
     </>
   )
-}
-
-{
-  /* <div className="mt-[50px] text-[18px] font-bold">비콘 위치</div>
-
-      <div className="mt-[5px] rounded bg-[#F3F2F8]">
-        <div className="relative h-[92px] md:h-[270px] md:w-[1100px]">
-          {beacons && (
-            <>
-              <div
-                style={{
-                  ...wrapperStyles,
-                  zIndex: 2,
-                }}
-              >
-                <LocationDots
-                  width={1100}
-                  height={270}
-                  dots={beacons.map((item) => ({
-                    ...item,
-                    x: item.location_y,
-                    y: item.location_x,
-                    name: item.name,
-                  }))}
-                  onSelectDot={() => {}}
-                />
-              </div>
-              <div style={wrapperStyles}>
-                {shipImg && shipImg !== 'None' && (
-                  <Image
-                    src={process.env.NEXT_PUBLIC_API_URL + '/' + shipImg}
-                    alt="선박 도면 미리보기"
-                    layout="fill"
-                    objectFit="fill"
-                  />
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="mt-[50px] text-[18px] font-bold">제한구역</div>
-      <div className="mt-[5px] rounded bg-[#F3F2F8]">
-        <div className="relative h-[92px] md:h-[270px] md:w-[1100px]">
-          {restricts && (
-            <>
-              <div
-                style={{
-                  ...wrapperStyles,
-                  zIndex: 2,
-                }}
-              >
-                <RestrictRects
-                  width={1100}
-                  height={270}
-                  rects={restricts.map((item) => ({
-                    ...item,
-                    x1: item.location_start_x,
-                    x2: item.location_end_x,
-                    y1: item.location_start_y,
-                    y2: item.location_end_y,
-                  }))}
-                />
-              </div>
-              <div style={wrapperStyles}>
-                {shipImg && shipImg !== 'None' && (
-                  <Image
-                    src={process.env.NEXT_PUBLIC_API_URL + '/' + shipImg}
-                    alt="선박 도면 미리보기"
-                    layout="fill"
-                    objectFit="fill"
-                  />
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </div> */
 }

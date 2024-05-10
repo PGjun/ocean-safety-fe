@@ -3,29 +3,20 @@
 import { CreateDataTable } from '@/components/common/CreateDataTable'
 import { PATHS } from '@/constants/paths'
 import { postAddShip } from '@/services/api/user'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { ShipDrawing } from './components/ShipDrawing'
-import { ShipAddForm, groupFields } from './components/ShipAddForm'
 import { useUser } from '@/hooks/useUser'
 import moment from 'moment'
 import { formatPhoneNumber } from '@/utils/formatPhonNumber'
+import { ShipInputForm } from '@/components/form/ShipInputForm'
+import { ShipDrawing } from '@/components/common/ShipDrawing'
+import { shipForm } from '@/hooks/logic/useShipEditLogic'
 
 export default function GroupAddPage() {
-  // useForm에서 defaultValues(초기값)를 동적으로 생성
-  const defaultValues = groupFields.reduce(
-    (acc: { [key: string]: any }, field) => {
-      acc[field.name] = field.defaultValue
-      return acc
-    },
-    {},
-  )
-
   const router = useRouter()
   const { user } = useUser()
-  const { control, handleSubmit } = useForm({ defaultValues })
+  const { control, handleSubmit } = useForm({ defaultValues: shipForm })
 
   const [file, setFile] = useState<File | null>(null)
   const [dots, setDots] = useState<
@@ -157,7 +148,7 @@ export default function GroupAddPage() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="md:mx-[40px]">
       <div className="text-[22px] font-bold">그룹(선박) 추가</div>
-      <ShipAddForm control={control} />
+      <ShipInputForm control={control} />
       <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
       <ShipDrawing
         file={file}

@@ -16,15 +16,17 @@ interface GenericTableProps {
   onRowClick?: onRowClick
   hover?: boolean
   handleData?: any
+  rowDatas?: any
 }
 
 export const CreateDataTable = ({
   columns,
   hover = true,
   handleData = (data: any) => {},
+  rowDatas,
 }: GenericTableProps) => {
   const isMobile = useMediaQuery('768')
-  const [data, setData] = useState(Array(5).fill({})) // 초기 데이터 상태, 5개의 빈 객체로 시작
+  const [data, setData] = useState(rowDatas ? rowDatas : Array(5).fill({})) // 초기 데이터 상태, 5개의 빈 객체로 시작
 
   const onChangeData = (data: any) => {
     setData(data)
@@ -37,7 +39,7 @@ export const CreateDataTable = ({
     .join(' ')
 
   const handleInputChange = (value: any, rowIdx: any, field: any) => {
-    const newData = data.map((item, idx) =>
+    const newData = data.map((item: any, idx: any) =>
       idx === rowIdx ? { ...item, [field]: value } : item,
     )
     onChangeData(newData)
@@ -48,7 +50,8 @@ export const CreateDataTable = ({
   }
 
   const removeRow = (rowIdx: any) => {
-    if (data.length > 5) onChangeData(data.filter((_, idx) => idx !== rowIdx)) // 행 삭제
+    if (data.length > 0)
+      onChangeData(data.filter((_: any, idx: any) => idx !== rowIdx)) // 행 삭제
   }
 
   const renderRow = (item: any, idx: number) => (

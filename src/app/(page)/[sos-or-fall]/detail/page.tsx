@@ -63,7 +63,6 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
       alert('모든 필드를 입력해주세요.')
       return // 함수를 여기서 종료
     }
-    console.log('🚀 ~ onSubmit ~ params:', params)
 
     const res = await postModifyEmergencyCall(params)
     if (res?.status === 202) {
@@ -174,28 +173,25 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
       />
       <div className="mt-[28px] h-[410px]">
         <GoogleMapWrapper
-          location={{
-            lng: Number(data.data[0].longitude),
-            lat: Number(data.data[0].latitude),
-          }}
-          info={{
-            name: data.data[0].name,
-            sos_date: data.data[0].sos_date,
-          }}
-          preLocaion1={{
+          markerInfo={{
             location: {
-              lat: Number(data.last_location_data[0]?.latitude),
-              lng: Number(data.last_location_data[0]?.longitude),
+              lng: data.data[0].longitude,
+              lat: data.data[0].latitude,
             },
-            sos_date: data.last_location_data[0]?.send_timestamp,
-          }}
-          preLocaion2={{
-            location: {
-              lat: Number(data.last_location_data[1]?.latitude),
-              lng: Number(data.last_location_data[1]?.longitude),
+            info: {
+              name: data.data[0].name,
+              sos_date: data.data[0].sos_date,
             },
-            sos_date: data.last_location_data[1]?.send_timestamp,
           }}
+          trackingMarkerInfos={data.last_location_data
+            .slice(0, 2)
+            .map(({ latitude, longitude, send_timestamp }) => ({
+              position: {
+                lat: latitude,
+                lng: longitude,
+              },
+              info: send_timestamp,
+            }))}
         />
       </div>
       <div className="mt-[28px] text-[18px] font-bold">처리 내용</div>
@@ -205,7 +201,7 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
         render={({ field }) => {
           return (
             <textarea
-              value={field.value}
+              value={field.value || ''}
               onChange={field.onChange}
               rows={5}
               className="w-full resize-none rounded border border-[#C4C4C4] p-[10px] text-[14px]"
@@ -213,7 +209,15 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
           )
         }}
       />
-
+      <div className="mt-[28px] text-[18px] font-bold">처리 내역</div>
+      <textarea
+        value={''}
+        readOnly
+        disabled
+        onChange={() => {}}
+        rows={5}
+        className="w-full resize-none rounded border border-[#C4C4C4] p-[10px] text-[14px]"
+      />
       <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
         <button
           type="button"

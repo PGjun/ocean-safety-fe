@@ -26,6 +26,20 @@ export const ShipInputForm = ({ control }: { control: Control<any> }) => {
       />
       <NumberFieldController
         control={control}
+        name={'ship_real_width'}
+        label="선박실제너비"
+        placeholder="선박실제너비를 입력하세요."
+        maxLength={20}
+      />
+      <NumberFieldController
+        control={control}
+        name={'ship_real_height'}
+        label="선박실제높이"
+        placeholder="선박실제높이를 입력하세요."
+        maxLength={20}
+      />
+      <NumberFieldController
+        control={control}
         name={'inter_tonnage'}
         label="국제총톤수"
         placeholder="국제총톤수를 입력하세요."
