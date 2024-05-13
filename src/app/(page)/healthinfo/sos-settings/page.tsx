@@ -14,7 +14,8 @@ const initData = {
   min_skin_temperature: 0,
   max_skin_temperature: 0,
   min_battery: 0,
-  min_sp02: 0,
+  min_spO2: 0,
+  ship_id: 0,
 }
 
 export default function SosSettingsPage() {
@@ -22,31 +23,30 @@ export default function SosSettingsPage() {
   const { user } = useUser()
 
   const [settings, setSettings] = useState<HealthWarningData>()
-  const [newSettings, setNewSettings] = useState<HealthWarningData>()
 
   useEffect(() => {
-    if (!user) return
+    if (!user || settings) return
     const getHealthWarning = async () => {
       const res = await fetchHealthWarning({ ship_id: user.ship_id })
       if (res?.status === 200) {
-        if (res.data.data.length === 0) {
+        const resData = res.data.data
+        // 데이터가 없으면 초기값 세팅
+        if (resData.length === 0) {
           setSettings({ ...initData, ship_id: user.ship_id })
-          setNewSettings({ ...initData, ship_id: user.ship_id })
           return
         }
-        setSettings(res.data.data[res.data.data.length - 1])
-        setNewSettings(res.data.data[res.data.data.length - 1])
+        setSettings(resData[resData.length - 1])
       }
     }
 
     getHealthWarning()
   }, [user])
 
-  const onSettings = async () => {
-    if (!newSettings) return
-    const { id, min_sp02, ...rest } = newSettings
+  const handleSubmit = async () => {
+    if (!settings) return
+    const { id, min_spO2, ...rest } = settings
 
-    const newData = { min_SP02: min_sp02, ...rest }
+    const newData = { min_SPO2: min_spO2, ...rest }
 
     const res = await postHealthWarning(newData)
     if (res?.status === 201) {
@@ -68,7 +68,7 @@ export default function SosSettingsPage() {
                 min={40}
                 max={80}
                 settingName={'min_heartrate'}
-                setNewSettings={setNewSettings}
+                setNewSettings={setSettings}
               />
               <Slider
                 title="최대 심박수"
@@ -76,7 +76,7 @@ export default function SosSettingsPage() {
                 min={80}
                 max={150}
                 settingName={'max_heartrate'}
-                setNewSettings={setNewSettings}
+                setNewSettings={setSettings}
               />
             </div>
           </div>
@@ -89,7 +89,7 @@ export default function SosSettingsPage() {
                 min={30}
                 max={35}
                 settingName={'min_skin_temperature'}
-                setNewSettings={setNewSettings}
+                setNewSettings={setSettings}
               />
               <Slider
                 title="최대 피부온도"
@@ -97,7 +97,7 @@ export default function SosSettingsPage() {
                 min={35}
                 max={45}
                 settingName={'max_skin_temperature'}
-                setNewSettings={setNewSettings}
+                setNewSettings={setSettings}
               />
             </div>
           </div>
@@ -111,7 +111,7 @@ export default function SosSettingsPage() {
                   min={1}
                   max={100}
                   settingName={'min_battery'}
-                  setNewSettings={setNewSettings}
+                  setNewSettings={setSettings}
                 />
               </div>
             </div>
@@ -120,11 +120,11 @@ export default function SosSettingsPage() {
               <div className="grid md:p-[8px]">
                 <Slider
                   title="산소포화도량"
-                  current={settings.min_sp02}
+                  current={settings.min_spO2}
                   min={1}
                   max={100}
-                  settingName={'min_sp02'}
-                  setNewSettings={setNewSettings}
+                  settingName={'min_spO2'}
+                  setNewSettings={setSettings}
                 />
               </div>
             </div>
@@ -141,7 +141,7 @@ export default function SosSettingsPage() {
         </button>
         <button
           type="button"
-          onClick={onSettings}
+          onClick={handleSubmit}
           className="flex-1 rounded border border-[#333333] bg-[#333333] px-[36px] py-[10px] text-[14px] font-bold text-white md:flex-none md:py-[15px] md:text-[18px]"
         >
           완료

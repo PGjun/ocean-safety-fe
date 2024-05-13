@@ -335,6 +335,7 @@ export const fetchCrewLocation = async (params: { ship_id: number }) => {
 //* 승선원 일반메시지 목록 조회
 export const fetchCrewMessage = async (params: {
   ship_id: number
+  user_index: string
   message_level_name: string
 }) => {
   return httpClient({

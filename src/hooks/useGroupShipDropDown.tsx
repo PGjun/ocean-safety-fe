@@ -39,9 +39,11 @@ export const useGroupShipDropDown = (
   // 타입이 preload이면 초기값 세팅
   useEffect(() => {
     if (type === 'preload' && shipNames && user) {
-      setSelShipDrop(
-        shipNames.find((item) => item.value === user.ship_id.toString()),
-      )
+      const updateShipDrop =
+        shipNames.find((item) => item.value === user.ship_id.toString()) ??
+        shipNames[0]
+
+      setSelShipDrop(updateShipDrop)
     }
   }, [shipNames, user, type])
 
@@ -199,6 +201,7 @@ export const useGroupShipDropDown = (
   return {
     groupId: selGroupDrop?.value,
     shipId: selShipDrop?.value,
+    groupDrop: selGroupDrop,
     shipDrop: selShipDrop,
     DropDownFC: {
       GroupMain: renderGroupMain,

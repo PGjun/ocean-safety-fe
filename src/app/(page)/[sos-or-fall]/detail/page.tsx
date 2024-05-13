@@ -25,6 +25,7 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
   const { data } = useFetch<
     {
       data: UserEmergencyData[]
+      history_data: UserEmergencyData[]
       last_location_data: { latitude: 0; longitude: 0; send_timestamp: '' }[]
     },
     number
@@ -47,6 +48,7 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
         },
       ],
       last_location_data: [{ latitude: 0, longitude: 0, send_timestamp: '' }],
+      history_data: [],
     },
   })
 
@@ -211,11 +213,16 @@ export default function SosDetailPage(pageProps: PageProps<UserEmergencyData>) {
       />
       <div className="mt-[28px] text-[18px] font-bold">처리 내역</div>
       <textarea
-        value={''}
+        value={data.history_data
+          .map(
+            ({ sos_date, emergency_status_code, name, content }) =>
+              `[${sos_date}] [${emergency_status_code} - ${name}] \n ${content ? content + '\n' : ''}`,
+          )
+          .join('')}
         readOnly
         disabled
         onChange={() => {}}
-        rows={5}
+        rows={10}
         className="w-full resize-none rounded border border-[#C4C4C4] p-[10px] text-[14px]"
       />
       <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">

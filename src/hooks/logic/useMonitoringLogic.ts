@@ -47,7 +47,10 @@ export const useMonitoringLogic = () => {
   //   setSelectedShip(foundShip)
   // }, [user, shipNames])
   useEffect(() => {
-    if (!shipDrop) return
+    if (!shipDrop) {
+      setSelectedUser(undefined)
+      return
+    }
 
     setSelectedShip(shipDrop)
   }, [shipDrop])
@@ -71,19 +74,20 @@ export const useMonitoringLogic = () => {
 
   // 3초 주기로 위치, 메시지 업데이트
   useEffect(() => {
-    if (!selectedShip) return
+    if (!selectedShip || !selectedUser) return
     const ship_id = selectedShip.value
+    const userIndex = selectedUser.value
 
     getCrewLocations({ ship_id })
-    getCrewMessages({ ship_id })
+    getCrewMessages({ ship_id, userIndex })
 
     const interval = setInterval(() => {
       getCrewLocations({ ship_id })
-      getCrewMessages({ ship_id })
+      getCrewMessages({ ship_id, userIndex })
     }, 3000)
 
     return () => clearInterval(interval)
-  }, [getCrewMessages, getCrewLocations, selectedShip])
+  }, [getCrewMessages, getCrewLocations, selectedShip, selectedUser])
 
   // 건강정보 1. 선택 선박 2. 선택유저 3. 페이지 변경 시 업데이트
   useEffect(() => {
@@ -99,7 +103,7 @@ export const useMonitoringLogic = () => {
     pageNums,
     isMobile,
     // shipNames,
-    crewNames,
+    crewNames: selectedUser ? crewNames : [],
     shipInfo,
     crewLocations,
     selectedShip,

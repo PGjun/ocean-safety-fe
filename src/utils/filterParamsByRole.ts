@@ -8,7 +8,6 @@ export const filterParamsByRole = async ({ params }: { params: any }) => {
   if (!session?.user) return params // 세션 또는 사용자 정보가 없으면 기본 파라미터 반환
 
   const role = roles[session.user.crew_level]
-  console.log('🚀 ~ filterParamsByRole ~ role:', role)
   const newParams = { ...params }
 
   // 'SHIP' 또는 'CREW' 권한이 아닌 경우 ship_id 제거

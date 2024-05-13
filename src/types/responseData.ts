@@ -120,6 +120,6 @@ export interface HealthWarningData {
   min_skin_temperature: number
   max_skin_temperature: number
   min_battery: number
-  min_sp02: number
+  min_spO2: number
   ship_id: number
 }

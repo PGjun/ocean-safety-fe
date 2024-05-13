@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { SliderDropDown } from '@/components/common/SliderDropDown'
 import { MonitoringTab } from './components/MonitoringTab'
 import { useMonitoringLogic } from '@/hooks/logic/useMonitoringLogic'
@@ -16,6 +16,7 @@ const Monitoring = () => {
     crewMessages,
     crewNames,
     selectedUser,
+    selectedShip,
     setSelectedShip,
     setSelectedUser,
     shipInfo,

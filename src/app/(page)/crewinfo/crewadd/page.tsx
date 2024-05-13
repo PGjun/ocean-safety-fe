@@ -18,6 +18,7 @@ import { SliderDropDown } from '@/components/common/SliderDropDown'
 import { useRouter } from 'next/navigation'
 import { ROLES } from '@/constants/roles'
 import { formatPhoneNumber } from '@/utils/formatPhonNumber'
+import { useGroupShipDropDown } from '@/hooks/useGroupShipDropDown'
 
 interface Field {
   control: Control<any>
@@ -28,6 +29,8 @@ interface Field {
   placeholder?: string
   maxLength?: number
   dropDatas?: { crewLevels?: []; companies?: [] }
+  setValue: any
+  DropDownFC: any
 }
 
 const PhoneController = ({ control, name, label, placeholder }: Field) => (
@@ -282,6 +285,42 @@ const RadioFieldController = ({ control, name, label }: Field) => {
   )
 }
 
+const GroupDropController = ({
+  control,
+  name,
+  label,
+  placeholder,
+  setValue,
+  DropDownFC,
+}: Field) => {
+  return (
+    <DropDownFC.GroupSearchController
+      setValue={setValue}
+      control={control}
+      name={name}
+      label={label}
+      placeholder={placeholder}
+    />
+  )
+}
+
+const ShipDropController = ({
+  control,
+  name,
+  label,
+  placeholder,
+  DropDownFC,
+}: Field) => {
+  return (
+    <DropDownFC.ShipSearchController
+      control={control}
+      name={name}
+      label={label}
+      placeholder={placeholder}
+    />
+  )
+}
+
 // 필드 설정을 포함한 배열 정의
 const crewInfoInit = [
   {
@@ -402,20 +441,40 @@ const crewInfoInit = [
     defaultValue: '',
     component: DatePickerSingleController,
   },
+  {
+    name: 'groupDrop',
+    label: '그룹',
+    placeholder: '그룹 선택',
+    defaultValue: '',
+    component: GroupDropController,
+  },
+  {
+    name: 'shipDrop',
+    label: '선박',
+    placeholder: '선박 선택',
+    defaultValue: '',
+    component: ShipDropController,
+  },
 ]
 
 const CrewInfoForm = ({
   control,
   dropDatas,
+  setValue,
+  DropDownFC,
 }: {
   control: Control<any>
   dropDatas?: { crewLevels?: []; companies?: [] }
+  setValue: any
+  DropDownFC: any
 }) => {
   return (
     <div className="mt-[10px] grid gap-[16px] md:mx-[10px] md:grid-cols-3 md:gap-[32px]">
       {crewInfoInit.map((fields, index) => {
         return (
           <fields.component
+            DropDownFC={DropDownFC}
+            setValue={setValue}
             dropDatas={dropDatas}
             key={index}
             control={control}
@@ -478,6 +537,7 @@ export default function CrewAddPage() {
   const [crewLevels, setCrewLevels] = useState()
   const [companies, setCompanies] = useState()
   const [ships, setShips] = useState()
+  const { DropDownFC } = useGroupShipDropDown('preload')
 
   useEffect(() => {
     if (!user) return
@@ -588,7 +648,12 @@ export default function CrewAddPage() {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="text-[22px] font-bold">승선원 추가</div>
         <div className="mt-[20px] font-bold">승선원 내역</div>
-        <CrewInfoForm control={control} dropDatas={{ crewLevels, companies }} />
+        <CrewInfoForm
+          control={control}
+          setValue={setValue}
+          dropDatas={{ crewLevels, companies }}
+          DropDownFC={DropDownFC}
+        />
         <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
         <GroupDropBoxs control={control} ships={ships} />
         <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">

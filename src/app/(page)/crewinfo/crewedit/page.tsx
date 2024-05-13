@@ -17,33 +17,34 @@ import { ROLES } from '@/constants/roles'
 import { PATHS } from '@/constants/paths'
 import { useRouter } from 'next/navigation'
 
+const editDefaultValues: any = {
+  name: '',
+  user_id: '',
+  // password: '',
+  phone: '',
+  birth: '',
+  age: '',
+  gender: '',
+  zipcode: '',
+  roadname: '',
+  address: '',
+  company_id: '',
+  safety_training: '',
+  safety_training_date: '',
+  crewlevel: '',
+  join_date: '',
+  personal_agreement: '',
+  personal_agreement_date: '',
+}
+
 export default function CrewEditPage(props: PageProps<{ user_id: number }>) {
-  const editDefaultValues: any = {
-    name: '',
-    user_id: '',
-    // password: '',
-    phone: '',
-    birth: '',
-    age: '',
-    gender: '',
-    zipcode: '',
-    roadname: '',
-    address: '',
-    company_id: '',
-    safety_training: '',
-    safety_training_date: '',
-    crewlevel: '',
-    join_date: '',
-    personal_agreement: '',
-    personal_agreement_date: '',
-  }
   const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: editDefaultValues,
   })
   const router = useRouter()
   const userId = props.searchParams.user_id
   const { user, role } = useUser()
-  const [crewLevels, setCrewLevels] = useState()
+  const [crewLevels, setCrewLevels] = useState<[]>()
   const [companies, setCompanies] = useState()
   const [ships, setShips] = useState()
   const [shipId, setShipId] = useState()
@@ -100,7 +101,7 @@ export default function CrewEditPage(props: PageProps<{ user_id: number }>) {
 
   //! 1
   useEffect(() => {
-    if (!user) return
+    if (!user || (crewLevels && crewLevels.length > 0)) return
     const getCrewLevel = async () => {
       const res = await fetchCrewLevel()
 
@@ -185,7 +186,7 @@ export default function CrewEditPage(props: PageProps<{ user_id: number }>) {
     }
 
     getUserInfo()
-  }, [userId, setValue, crewLevels])
+  }, [setValue, crewLevels, companies, userId])
 
   return (
     <div className="md:mx-[40px]">

@@ -75,7 +75,7 @@ export interface HealthWarningParams {
   min_skin_temperature: number
   max_skin_temperature: number
   min_battery: number
-  min_SP02: number
+  min_SPO2: number
 }
 
 export interface UserEmergencyListParams {
