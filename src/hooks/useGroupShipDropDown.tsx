@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useUser } from './useUser'
 import { useGroupNames } from './fetch/useGroupNames'
 import { useShipNames } from './fetch/useShipNames'
@@ -14,47 +14,51 @@ export const useGroupShipDropDown = (
   const { user, role } = useUser()
   const { groupNames, getGroupNames } = useGroupNames()
   const { shipNames, getShipNames } = useShipNames()
-  const [selGroupDrop, setSelGroupDrop] = useState<DropItem | undefined>(
+  const [selectedGroup, setSelectedGroup] = useState<DropItem | undefined>(
     undefined,
   )
-  const [selShipDrop, setSelShipDrop] = useState<DropItem | undefined>(
+  const [selectedShip, setSelectedShip] = useState<DropItem | undefined>(
     undefined,
   )
 
   // 초기 호춢
   useEffect(() => {
     getGroupNames()
+  }, [getGroupNames])
+
+  useEffect(() => {
     getShipNames()
-  }, [getGroupNames, getShipNames])
+  }, [getShipNames])
 
   // 타입이 preload이면 초기값 세팅
   useEffect(() => {
     if (type === 'preload' && groupNames && user) {
-      setSelGroupDrop(
-        groupNames.find((item) => item.value === user.group_id.toString()),
+      //선택된 그룹이 있으면 종료
+      if (selectedGroup) return
+
+      const foundGroup = groupNames.find(
+        (item) => item.value === user.group_id.toString(),
       )
+      setSelectedGroup(foundGroup)
     }
-  }, [groupNames, user, type])
+  }, [groupNames, user])
 
   // 타입이 preload이면 초기값 세팅
   useEffect(() => {
     if (type === 'preload' && shipNames && user) {
-      const updateShipDrop =
+      const foundShip =
         shipNames.find((item) => item.value === user.ship_id.toString()) ??
         shipNames[0]
 
-      setSelShipDrop(updateShipDrop)
+      setSelectedShip(foundShip)
     }
-  }, [shipNames, user, type])
+  }, [shipNames])
 
   //그룹 선택 시 선박 목록 호출
-  const handleGroup = useCallback(
-    (data: DropItem) => {
-      setSelGroupDrop(data)
-      getShipNames(data.value)
-    },
-    [getShipNames],
-  )
+  const handleGroup = (data: DropItem) => {
+    setSelectedGroup(data)
+    getShipNames(data.value)
+  }
 
   const renderGroupMain = () => (
     <div className={role !== ROLES.ADMIN ? 'hidden' : ''}>
@@ -62,7 +66,7 @@ export const useGroupShipDropDown = (
       <SliderDropDown
         id="main_group_dropdown"
         dropData={groupNames}
-        fieldValue={selGroupDrop}
+        fieldValue={selectedGroup}
         placeholder="그룹 선택"
         fieldOnChange={handleGroup}
       />
@@ -77,13 +81,13 @@ export const useGroupShipDropDown = (
       <SliderDropDown
         id="main_ship_dropdown"
         dropData={shipNames}
-        fieldValue={selShipDrop}
+        fieldValue={selectedShip}
         placeholder="선박 선택"
         fieldOnChange={(value) => {
           if (handleShipChange) {
             handleShipChange(value)
           }
-          setSelShipDrop(value)
+          setSelectedShip(value)
         }}
       />
     </div>
@@ -199,10 +203,10 @@ export const useGroupShipDropDown = (
   )
 
   return {
-    groupId: selGroupDrop?.value,
-    shipId: selShipDrop?.value,
-    groupDrop: selGroupDrop,
-    shipDrop: selShipDrop,
+    groupId: selectedGroup?.value,
+    shipId: selectedShip?.value,
+    groupDrop: selectedGroup,
+    shipDrop: selectedShip,
     DropDownFC: {
       GroupMain: renderGroupMain,
       ShipMain: renderShipMain,

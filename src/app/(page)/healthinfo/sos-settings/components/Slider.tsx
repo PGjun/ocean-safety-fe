@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export const Slider = ({
   title = '최저 심박수',
@@ -10,7 +10,13 @@ export const Slider = ({
   settingName = '',
   setNewSettings,
 }: any) => {
-  const [value, setValue] = useState(current)
+  const [value, setValue] = useState(0)
+
+  useEffect(() => {
+    if (current !== null && current !== undefined) {
+      setValue(current)
+    }
+  }, [current])
 
   // 슬라이더의 값에 따라 배경 색상을 계산합니다.
   const calculateBackground = (value: any) => {

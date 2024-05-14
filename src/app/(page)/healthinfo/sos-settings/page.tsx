@@ -4,35 +4,39 @@ import { useRouter } from 'next/navigation'
 import { Slider } from './components/Slider'
 import { useEffect, useState } from 'react'
 import { fetchHealthWarning, postHealthWarning } from '@/services/api/user'
-import { useUser } from '@/hooks/useUser'
 import { HealthWarningData } from '@/types/responseData'
+import { useGroupShipDropDown } from '@/hooks/useGroupShipDropDown'
 
 const initData = {
   id: 0,
-  min_heartrate: 0,
-  max_heartrate: 0,
-  min_skin_temperature: 0,
-  max_skin_temperature: 0,
-  min_battery: 0,
-  min_spO2: 0,
+  max_blood_pressure: 0,
+  min_blood_pressure: 0,
+  min_heartrate: 60,
+  max_heartrate: 120,
+  min_skin_temperature: 33,
+  max_skin_temperature: 40,
+  min_battery: 50,
+  min_spO2: 50,
   ship_id: 0,
 }
 
 export default function SosSettingsPage() {
   const router = useRouter()
-  const { user } = useUser()
+  const { shipId, DropDownFC } = useGroupShipDropDown('preload')
 
   const [settings, setSettings] = useState<HealthWarningData>()
 
   useEffect(() => {
-    if (!user || settings) return
+    if (!shipId) return
     const getHealthWarning = async () => {
-      const res = await fetchHealthWarning({ ship_id: user.ship_id })
+      const res = await fetchHealthWarning({
+        ship_id: Number(shipId),
+      })
       if (res?.status === 200) {
         const resData = res.data.data
         // 데이터가 없으면 초기값 세팅
         if (resData.length === 0) {
-          setSettings({ ...initData, ship_id: user.ship_id })
+          setSettings({ ...initData, ship_id: Number(shipId) })
           return
         }
         setSettings(resData[resData.length - 1])
@@ -40,10 +44,11 @@ export default function SosSettingsPage() {
     }
 
     getHealthWarning()
-  }, [user])
+  }, [shipId])
 
   const handleSubmit = async () => {
     if (!settings) return
+    if (!shipId) return alert('선박을 선택해주세요')
     const { id, min_spO2, ...rest } = settings
 
     const newData = { min_SPO2: min_spO2, ...rest }
@@ -57,76 +62,88 @@ export default function SosSettingsPage() {
   return (
     <div className="max-w-[310px] md:mx-[40px] md:max-w-full ">
       <div className="text-[22px] font-bold md:text-[26px]">SOS 자동 설정</div>
+      <div className="flex gap-3">
+        <DropDownFC.GroupMain />
+        <DropDownFC.ShipMain />
+      </div>
       {settings && (
         <section className="mt-[44px] flex flex-col gap-[44px] md:mt-[24px] md:gap-[24px]">
           <div className="rounded-[8px] border-[#E9ECEF] md:border md:p-[28px]">
             <div className="text-[18px] font-bold">심박수 SOS 설정</div>
-            <div className="grid md:grid-cols-2 md:gap-[48px] md:p-[8px]">
-              <Slider
-                title="최저 심박수"
-                current={settings.min_heartrate}
-                min={40}
-                max={80}
-                settingName={'min_heartrate'}
-                setNewSettings={setSettings}
-              />
-              <Slider
-                title="최대 심박수"
-                current={settings.max_heartrate}
-                min={80}
-                max={150}
-                settingName={'max_heartrate'}
-                setNewSettings={setSettings}
-              />
-            </div>
+            {shipId && (
+              <div className="grid md:grid-cols-2 md:gap-[48px] md:p-[8px]">
+                <Slider
+                  title="최저 심박수"
+                  current={settings.min_heartrate}
+                  min={40}
+                  max={80}
+                  settingName={'min_heartrate'}
+                  setNewSettings={setSettings}
+                />
+                <Slider
+                  title="최대 심박수"
+                  current={settings.max_heartrate}
+                  min={80}
+                  max={150}
+                  settingName={'max_heartrate'}
+                  setNewSettings={setSettings}
+                />
+              </div>
+            )}
           </div>
           <div className="rounded-[8px] border-[#E9ECEF] md:border md:p-[28px]">
             <div className="text-[18px] font-bold">피부온도 SOS 설정</div>
-            <div className="grid md:grid-cols-2 md:gap-[48px] md:p-[8px]">
-              <Slider
-                title="최저 피부온도"
-                current={settings.min_skin_temperature}
-                min={30}
-                max={35}
-                settingName={'min_skin_temperature'}
-                setNewSettings={setSettings}
-              />
-              <Slider
-                title="최대 피부온도"
-                current={settings.max_skin_temperature}
-                min={35}
-                max={45}
-                settingName={'max_skin_temperature'}
-                setNewSettings={setSettings}
-              />
-            </div>
+            {shipId && (
+              <div className="grid md:grid-cols-2 md:gap-[48px] md:p-[8px]">
+                <Slider
+                  title="최저 피부온도"
+                  current={settings.min_skin_temperature}
+                  min={30}
+                  max={35}
+                  settingName={'min_skin_temperature'}
+                  setNewSettings={setSettings}
+                />
+                <Slider
+                  title="최대 피부온도"
+                  current={settings.max_skin_temperature}
+                  min={35}
+                  max={45}
+                  settingName={'max_skin_temperature'}
+                  setNewSettings={setSettings}
+                />
+              </div>
+            )}
           </div>
           <div className="flex flex-col gap-[20px] md:flex-row">
             <div className="w-full rounded-[8px] border-[#E9ECEF] md:border md:p-[28px]">
               <div className="text-[18px] font-bold">배터리 SOS 설정</div>
-              <div className="grid md:p-[8px]">
-                <Slider
-                  title="배터리량"
-                  current={settings.min_battery}
-                  min={1}
-                  max={100}
-                  settingName={'min_battery'}
-                  setNewSettings={setSettings}
-                />
-              </div>
+              {shipId && (
+                <div className="grid md:p-[8px]">
+                  <Slider
+                    title="배터리량"
+                    current={settings.min_battery}
+                    min={1}
+                    max={100}
+                    settingName={'min_battery'}
+                    setNewSettings={setSettings}
+                  />
+                </div>
+              )}
             </div>
             <div className="w-full rounded-[8px] border-[#E9ECEF] md:border md:p-[28px]">
               <div className="text-[18px] font-bold">산소포화도 SOS 설정</div>
-              <div className="grid md:p-[8px]">
-                <Slider
-                  title="산소포화도량"
-                  current={settings.min_spO2}
-                  min={1}
-                  max={100}
-                  settingName={'min_spO2'}
-                  setNewSettings={setSettings}
-                />
-              </div>
+              {shipId && (
+                <div className="grid md:p-[8px]">
+                  <Slider
+                    title="산소포화도량"
+                    current={settings.min_spO2}
+                    min={1}
+                    max={100}
+                    settingName={'min_spO2'}
+                    setNewSettings={setSettings}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </section>
