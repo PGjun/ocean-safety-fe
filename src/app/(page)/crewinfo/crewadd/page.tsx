@@ -441,20 +441,20 @@ const crewInfoInit = [
     defaultValue: '',
     component: DatePickerSingleController,
   },
-  {
-    name: 'groupDrop',
-    label: '그룹',
-    placeholder: '그룹 선택',
-    defaultValue: '',
-    component: GroupDropController,
-  },
-  {
-    name: 'shipDrop',
-    label: '선박',
-    placeholder: '선박 선택',
-    defaultValue: '',
-    component: ShipDropController,
-  },
+  // {
+  //   name: 'groupDrop',
+  //   label: '그룹',
+  //   placeholder: '그룹 선택',
+  //   defaultValue: '',
+  //   component: GroupDropController,
+  // },
+  // {
+  //   name: 'shipDrop',
+  //   label: '선박',
+  //   placeholder: '선박 선택',
+  //   defaultValue: '',
+  //   component: ShipDropController,
+  // },
 ]
 
 const CrewInfoForm = ({
@@ -489,16 +489,23 @@ const CrewInfoForm = ({
 const GroupDropBoxs = ({
   control,
   ships,
+  DropDownFC,
 }: {
   control: Control<any>
   ships: any
+  DropDownFC: any
 }) => {
   if (!ships) return
+
   return (
     <>
       <div className="mt-[32px] font-bold">소속 그룹</div>
       <div className="mt-[15px] flex flex-col items-start gap-5 md:mx-[10px] md:flex-row md:items-center">
-        <div>
+        <div className="flex gap-3">
+          <DropDownFC.GroupMain />
+          <DropDownFC.ShipMain />
+        </div>
+        {/* <div>
           <div className="text-[14px] md:text-[16px]">선박 선택</div>
           <Controller
             name="ship_id"
@@ -515,7 +522,7 @@ const GroupDropBoxs = ({
               )
             }}
           />
-        </div>
+        </div> */}
       </div>
     </>
   )
@@ -655,7 +662,11 @@ export default function CrewAddPage() {
           DropDownFC={DropDownFC}
         />
         <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
-        <GroupDropBoxs control={control} ships={ships} />
+        <GroupDropBoxs
+          control={control}
+          ships={ships}
+          DropDownFC={DropDownFC}
+        />
         <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
           <button
             onClick={() => router.back()}
