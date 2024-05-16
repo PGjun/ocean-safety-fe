@@ -35,6 +35,7 @@ export default function CrewInfoPage(pageProps: {
   const [totalPage, setTotalPage] = useState(1)
   const [numOfItems, setNumOfItems] = useState(0)
   const [userId, setUserId] = useState<number | null>(null)
+  const [userRole, setUserRole] = useState('')
 
   const searchFields: SearchFields = [
     {
@@ -115,6 +116,18 @@ export default function CrewInfoPage(pageProps: {
     router.push(PATHS.CREW_INFO({ page_num: '1' }))
   }
 
+  const accessEdit = () => {
+    if (!userId) return
+    if (role === ROLES.GROUP && userRole === '관리자') {
+      return alert('권한이 없습니다.')
+    }
+    if (role === ROLES.SHIP && userRole !== '승선원') {
+      return alert('권한이 없습니다.')
+    }
+
+    router.push(PATHS.CREW_EDIT({ user_id: userId }))
+  }
+
   return (
     <div className="md:mx-[40px]">
       <div className="text-[26px] font-bold">승선원 정보</div>
@@ -185,6 +198,7 @@ export default function CrewInfoPage(pageProps: {
         data={userList}
         onRowClick={(item: UserInfoData) => {
           setUserId(item.id)
+          setUserRole(item.crew_level)
         }}
       />
 
@@ -200,7 +214,7 @@ export default function CrewInfoPage(pageProps: {
           <div className="mt-[40px] flex items-center justify-between">
             <div className="text-[18px] font-bold">승선원 상세</div>
             <button
-              onClick={() => router.push(PATHS.CREW_EDIT({ user_id: userId }))}
+              onClick={() => accessEdit()}
               className="rounded border border-[#c4c4c4] px-[10px] py-[3px] text-[12px] font-bold"
             >
               수정

@@ -544,7 +544,7 @@ export default function CrewAddPage() {
   const [crewLevels, setCrewLevels] = useState()
   const [companies, setCompanies] = useState()
   const [ships, setShips] = useState()
-  const { DropDownFC } = useGroupShipDropDown('preload')
+  const { shipId, DropDownFC } = useGroupShipDropDown('preload')
 
   useEffect(() => {
     if (!user) return
@@ -622,7 +622,7 @@ export default function CrewAddPage() {
       join_date: moment(data.join_date).format('YYYY-MM-DD'), // 날짜를 문자열로 포맷
       company_id: data.company_id.value, // company_id에서 value 추출
       crewlevel: data.crewlevel.value, // crewlevel에서 value 추출
-      ship_id: data.ship_id.value, // ship_id에서 value 추출
+      ship_id: shipId, // DropBox에서 shipId 추출
       personal_agreement: data.personal_agreement === 'Y', // 'Y'이면 true, 아니면 false
       safety_training: data.safety_training === 'Y', // 'Y'이면 true, 아니면 false
     }
@@ -662,11 +662,13 @@ export default function CrewAddPage() {
           DropDownFC={DropDownFC}
         />
         <div className="my-[30px] h-[1px] w-full bg-[#DEE2E6]" />
-        <GroupDropBoxs
-          control={control}
-          ships={ships}
-          DropDownFC={DropDownFC}
-        />
+        {role !== ROLES.SHIP && (
+          <GroupDropBoxs
+            control={control}
+            ships={ships}
+            DropDownFC={DropDownFC}
+          />
+        )}
         <div className="mt-[30px] flex justify-center gap-[5px] md:mt-[60px]">
           <button
             onClick={() => router.back()}

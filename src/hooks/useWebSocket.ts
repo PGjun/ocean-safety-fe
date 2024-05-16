@@ -34,7 +34,6 @@ const useWebSocket = () => {
       const modalId = useModalStore
         .getState()
         .openModal('EMERGENCIES', { sosData }, false)
-      console.log('알림 열림', modalId)
 
       //   setTimeout(() => {
       //     useModalStore.getState().closeModal(modalId)

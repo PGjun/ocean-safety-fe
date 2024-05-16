@@ -36,7 +36,7 @@ export interface UserInfoData {
   password: string
   created_at: string
   ship_id: number
-  crew_level: number
+  crew_level: string
   user_id: string
 }
 
